@@ -1,24 +1,33 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html><head><script src="site/js/theme.js"></script><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><style>h1{font-family:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;font-weight:800;letter-spacing:-.035em;font-variation-settings:"opsz" 96}</style>
+<style>
+/* light and dark switch, same as the landing page's */
+.tgl{position:fixed;top:12px;right:12px;z-index:50;width:58px;height:34px;border-radius:999px;border:1.5px solid var(--line);background:var(--panel);cursor:pointer;padding:0;transition:background .3s,border-color .3s}
+.tgl .k{position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--bg);display:grid;place-items:center;transition:transform .5s cubic-bezier(.16,1,.3,1)}
+:root[data-theme="dark"] .tgl .k{transform:translateX(24px)}
+.tgl svg{position:absolute;width:15px;height:15px;transition:opacity .3s,transform .6s cubic-bezier(.16,1,.3,1)}
+.tgl .moon{opacity:0;transform:rotate(-90deg) scale(.5)}
+:root[data-theme="dark"] .tgl .sun{opacity:0;transform:rotate(90deg) scale(.5)}
+:root[data-theme="dark"] .tgl .moon{opacity:1;transform:none}
+.tgl:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+</style>
+</head><body>
+<button class="tgl" type="button" role="switch" aria-checked="false" aria-label="Dark mode" data-theme-toggle><span class="k"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5.3 5.3l1.7 1.7M17 17l1.7 1.7M5.3 18.7L7 17M17 7l1.7-1.7"/></svg><svg class="moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg></span></button>
+<script>document.querySelector("[data-theme-toggle]").addEventListener("click",()=>toggleTheme());syncThemeToggle();</script>
 <title>Internship Deal Sheet</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
 /* Layout: a CRE deal sheet — pipeline strip up top, "needs you" queue, then the full deal log and outreach log */
 :root{
-  --bg:#f3f4f2; --panel:#ffffff; --fg:#1d2427; --muted:#5f6b6f; --line:#d9dedc;
-  --accent:#9a6a1c; --accent-soft:#f3e8d4;
-  --ok:#2f7a4c; --ok-soft:#e1f1e6; --warn:#a55f00; --warn-soft:#fbead2; --bad:#a3342f; --bad-soft:#f7dfdd; --info:#2c5d8a; --info-soft:#dfe9f3;
-  --display:"Archivo","Helvetica Neue",Arial,sans-serif; --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --bg:#e7e4dc; --panel:#ffffff; --fg:#14121f; --muted:#5a5d70; --line:#cfcabf;
+  --accent:#855410; --accent-soft:#f3e3c6;
+  --ok:#25744a; --ok-soft:#dcebe0; --warn:#855410; --warn-soft:#f3e3c6; --bad:#b04e2a; --bad-soft:#f6dfd6; --info:#4b5a9a; --info-soft:#e3e6f3;
+  --display:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#14191b; --panel:#1c2326; --fg:#e6ebe9; --muted:#95a2a5; --line:#2e383b;
-  --accent:#d9a553; --accent-soft:#3a2e1a;
-  --ok:#6fcf93; --ok-soft:#1d3527; --warn:#f0b35a; --warn-soft:#3b2c16; --bad:#ef8a84; --bad-soft:#3d2120; --info:#8dbbe6; --info-soft:#1d2e3e;
-  color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#14191b; --panel:#1c2326; --fg:#e6ebe9; --muted:#95a2a5; --line:#2e383b;
-  --accent:#d9a553; --accent-soft:#3a2e1a;
-  --ok:#6fcf93; --ok-soft:#1d3527; --warn:#f0b35a; --warn-soft:#3b2c16; --bad:#ef8a84; --bad-soft:#3d2120; --info:#8dbbe6; --info-soft:#1d2e3e;
+  --bg:#0b0d14; --panel:#141826; --fg:#eeeae2; --muted:#929ab5; --line:#363e58;
+  --accent:#e9b872; --accent-soft:#2f2616;
+  --ok:#8dbd98; --ok-soft:#1c2d22; --warn:#e9b872; --warn-soft:#2f2616; --bad:#e0896a; --bad-soft:#36211a; --info:#8394d8; --info-soft:#1f2540;
   color-scheme:dark}
 body{background:var(--bg);color:var(--fg);font-family:var(--display);font-size:14px;line-height:1.45}
 .wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 56px;display:grid;gap:28px}
