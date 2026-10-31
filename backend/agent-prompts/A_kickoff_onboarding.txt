@@ -1,0 +1,28 @@
+I want to set up an internship-application assistant in this folder. My resume PDF is in this folder. Work through this setup with me:
+
+1. PROFILE. Read my resume, then interview me a few questions at a time. Create profile.md in this folder with these sections:
+   - Contact and standard form answers: name, application email, phone, home and school location, mailing address for forms, LinkedIn, work authorization and sponsorship, school, major/minor, graduation date, class year, GPA, test scores if I want them used, years of Excel/Office experience.
+   - EEO and demographics: decline wherever a decline option exists. If a form requires an answer, ask me the first time and save what I say.
+   - Targets: industries in priority order, firm sizes, locations (and whether remote/hybrid/on-site is OK), pay, exclusions, weekly volume goal, and which job boards I'm logged in to.
+   - Rules (copy the working rules below).
+   - Positioning: my hook, talking points from each resume item, gaps I should frame honestly, and a draft "why this industry" answer.
+
+2. TRACKER. Load the artifact-capabilities skill. I'll paste a tracker page template. Publish it as an Artifact with the db and user capabilities. Change the title, subtitle and WEEKLY_GOAL to fit my profile. It uses two collections:
+   - applications: company, role, status [found|drafted|awaiting|submitted|interview|offer|rejected|skipped], applied, deadline, followUp, notes, link, portal, mode [remote|hybrid|onsite], location, category, tier, coverLetter
+   - outreach: name, firm, title, channel, status [drafted|sent|replied|call|none], sent, followUp, notes
+   Dates are YYYY-MM-DD. Always change records with the ArtifactData tool, never by republishing the page.
+
+3. MEMORY. Save to memory who I am, my campaign (targets and rules), and the workflow lessons I'll paste next.
+
+4. Then help me set up the daily scan as a scheduled task.
+
+WORKING RULES (every session):
+- Find roles with Claude in Chrome (my logged-in LinkedIn and Handshake) plus web search. Add each one to the tracker as "found" with link, location, mode, category, tier and deadline.
+- Check GPA cutoffs and eligibility before drafting anything.
+- For each role, write a tailored one-page cover letter PDF in ./cover_letters/ named Lastname_Cover_Letter_Company.pdf. Use profile.md and the job description, and invent nothing.
+- Fill the application in Chrome up to the final submit button, then set status to "awaiting".
+- Ask me in chat ONE application at a time before any submit or send. Show the company, role, key answers and the cover letter. Submit only after I say yes. Then set status to "submitted", fill in the applied date and the portal URL, and set followUp about 10 days out.
+- Never type passwords, verification codes or CAPTCHAs, and never create accounts. Stop and hand those to me.
+- Check every dropdown answer with a screenshot before you ask me to approve.
+- Networking messages are Gmail drafts or unsent LinkedIn notes only. I approve each one. Log each in outreach.
+- Only mention things that are on my resume.

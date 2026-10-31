@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Review application | Lanyard</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='5' y='6' width='14' height='16' rx='3' fill='%23ffd84d' stroke='%2312152a' stroke-width='1.5'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/base.css">
+<style>
+  main{padding:var(--p-space-7) 0 var(--p-space-9)}
+  .crumbs{margin-bottom:var(--p-space-4);font-size:.92rem}
+  .head{display:flex;justify-content:space-between;gap:var(--p-space-5);flex-wrap:wrap;align-items:flex-start;margin-bottom:var(--p-space-6)}
+  .head h1{font-size:var(--p-step-3);margin-bottom:4px}
+  .cols{display:grid;grid-template-columns:1.35fr 1fr;gap:var(--p-space-6);align-items:start}
+  .ans{border-top:2px solid var(--border-strong)}
+  .a{padding:var(--p-space-4) 0;border-bottom:1.5px solid var(--border)}
+  .a .q{display:flex;justify-content:space-between;gap:12px;font-weight:600;margin-bottom:6px}
+  .a .v{width:100%;border:1.5px solid transparent;border-radius:var(--p-radius-sm);padding:8px 10px;margin-left:-10px;background:transparent;font:inherit;color:var(--text);resize:none;min-height:0;overflow:hidden}
+  .a .v:hover{border-color:var(--border)} .a .v:focus{border-color:var(--focus);background:var(--surface)}
+  .a.flag{background:color-mix(in srgb,var(--highlight) 22%,var(--bg));margin-inline:-12px;padding-inline:12px;border-radius:var(--p-radius-sm)}
+  .letter{background:#fff;color:#12152a;border:1.5px solid var(--border);border-radius:4px;padding:var(--p-space-6);font:400 .95rem/1.55 Georgia,"Times New Roman",serif;max-width:620px}
+  .letter p{max-width:none;margin:0 0 .9em}
+  .sticky{position:sticky;top:88px;display:grid;gap:var(--p-space-4)}
+  .todo{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+  .todo label{display:flex;gap:10px;align-items:flex-start;font-size:.93rem}
+  .todo input{margin-top:4px;width:18px;height:18px;accent-color:var(--primary);flex:none}
+  .decision{display:grid;gap:10px}
+  .shot{border:1.5px solid var(--border);border-radius:var(--p-radius-sm);background:var(--surface-sunk);height:120px;display:grid;place-items:center;color:var(--text-muted);font-size:.85rem}
+  .done{display:none;text-align:center;padding:var(--p-space-7) 0}
+  body.finished .done{display:block} body.finished .cols,body.finished .head{display:none}
+  @media(max-width:900px){.cols{grid-template-columns:1fr}.sticky{position:static}}
+</style>
+</head>
+<body>
+<header class="bar" id="bar"></header>
+<main class="wrap">
+  <p class="crumbs"><a href="app.html">Dashboard</a> / Review</p>
+
+  <div class="head">
+    <div>
+      <h1 id="role">Clinical Research Intern</h1>
+      <p class="muted" id="co" style="margin:0">Northwind Health, Boston, MA</p>
+    </div>
+    <div id="due"></div>
+  </div>
+
+  <div class="cols">
+    <div>
+      <h2 style="font-size:1.35rem">Answers Lanyard filled in</h2>
+      <p class="muted small">Select any answer to edit it. Items marked "Check this" are ones where a wrong answer causes real problems.</p>
+      <div class="ans" id="ans"></div>
+
+      <h2 style="font-size:1.35rem;margin-top:var(--p-space-7)">Cover letter</h2>
+      <article class="letter" id="letter" contenteditable="true" aria-label="Cover letter, editable"></article>
+    </div>
+
+    <aside class="sticky">
+      <div class="panel">
+        <h3>Before you approve</h3>
+        <ul class="todo" id="todo">
+          <li><label><input type="checkbox"><span>My GPA, graduation date, and school are correct.</span></label></li>
+          <li><label><input type="checkbox"><span>Work authorization and sponsorship match my situation.</span></label></li>
+          <li><label><input type="checkbox"><span>Every dropdown on the form shows what I meant.</span></label></li>
+          <li><label><input type="checkbox"><span>I read the cover letter and everything in it is true.</span></label></li>
+        </ul>
+      </div>
+      <div class="panel decision">
+        <div class="shot" role="img" aria-label="Screenshot of the filled form (placeholder)">Screenshot of the filled form</div>
+        <button class="btn lg" id="approve" type="button" disabled>Approve application</button>
+        <p class="small muted" style="margin:0" id="why">Tick all four boxes to approve. After you approve, you submit it on the employer's page.</p>
+        <button class="btn secondary" id="reject" type="button">Don't apply</button>
+      </div>
+    </aside>
+  </div>
+
+  <div class="done" id="done" role="status">
+    <h1 style="font-size:var(--p-step-3)">Approved.</h1>
+    <p class="muted" style="margin-inline:auto">Open the employer's page to press the final submit button. We've saved your answers and added a reminder to mark it submitted.</p>
+    <p><a class="btn lg" href="app.html">Back to dashboard</a></p>
+  </div>
+</main>
+
+<script src="js/data.js"></script>
+<script src="js/common.js"></script>
+<script>
+  renderBar("review", "app");
+  const posts = store.get("posts", null) || LAN.postings;
+  const id = new URLSearchParams(location.search).get("id");
+  const p = posts.find(x => x.id === id) || posts.find(x => x.status === "awaiting") || posts[0];
+  const profile = store.get("profile", {});
+  const name = profile.name || "Jordan Sample";
+  document.title = `Review ${p.role} | Lanyard`;
+  document.getElementById("role").textContent = p.role;
+  document.getElementById("co").textContent = `${p.company}, ${p.location}`;
+  document.getElementById("due").innerHTML = dueLabel(p.deadlineIn);
+
+  const A = [
+    ["Full name", name], ["School", profile.school || "State University"], ["Major", profile.major || "Biology"], ["Expected graduation", profile.grad || "May 2028"],
+    ["GPA", profile.gpa || "3.6", "Check this", "The posting asks for 3.2 or higher."],
+    ["Are you legally authorized to work in the US?", "Yes", "Check this", "Taken from your profile."],
+    ["Will you now or later need sponsorship?", "No", "Check this", "Taken from your profile."],
+    ["How did you hear about this role?", "Lanyard match (job board)"],
+    ["Gender, race, and veteran status", "Decline to answer", "", "Your default. Change it in your profile."],
+    ["Why are you interested in this role?", "I want hands-on research experience, and the group's work on sample handling lines up with what I did last year as a lab assistant: 120 hours of sample preparation and recordkeeping in a cell biology lab."],
+  ];
+  document.getElementById("ans").innerHTML = A.map(([q, v, flag, note]) => `
+    <div class="a ${flag ? "flag" : ""}"><div class="q"><span>${esc(q)}</span>${flag ? '<span class="tag due">Check this</span>' : (q.startsWith("Why") ? '<span class="tag info">Drafted from your resume</span>' : '<span class="tag">From your profile</span>')}</div>
+    <textarea class="v" rows="${v.length > 70 ? 3 : 1}" aria-label="${esc(q)}">${esc(v)}</textarea>${note ? `<div class="small muted">${esc(note)}</div>` : ""}</div>`).join("");
+  document.querySelectorAll(".v").forEach(t => { const fit = () => { t.style.height = "auto"; t.style.height = t.scrollHeight + 4 + "px"; }; t.addEventListener("input", fit); fit(); });
+
+  document.getElementById("letter").innerHTML = `
+    <p><strong>${esc(name)}</strong></p>
+    <p>October 30, 2026</p>
+    <p>${esc(p.company)}<br>${esc(p.role)}<br>${esc(p.location)}</p>
+    <p>Dear ${esc(p.company)} Recruiting Team,</p>
+    <p>I am a junior at ${esc(profile.school || "State University")} majoring in ${esc(profile.major || "Biology")}, and I am applying for the ${esc(p.role)} position. Over the past year I logged 120 hours as a lab assistant in a cell biology group, where I prepared samples and kept the records the team relied on each week.</p>
+    <p>The posting describes supporting data collection and following study protocols closely. That is the work I did most, and I would like to do it at a larger scale. One area I'm still building is statistical analysis, and I'm taking a course on it this term.</p>
+    <p>Thank you for your consideration.</p>
+    <p>Sincerely,<br>${esc(name)}</p>`;
+
+  const boxes = [...document.querySelectorAll("#todo input")], approve = document.getElementById("approve");
+  const sync = () => { const n = boxes.filter(b => b.checked).length; approve.disabled = n < boxes.length; document.getElementById("why").textContent = n < boxes.length ? `Tick all four boxes to approve (${n} of 4). After you approve, you submit it on the employer's page.` : "Ready. After you approve, you submit it on the employer's page."; };
+  boxes.forEach(b => b.addEventListener("change", sync)); sync();
+  const setStatus = s => { p.status = s; store.set("posts", posts); };
+  approve.addEventListener("click", () => { setStatus("submitted"); document.body.classList.add("finished"); });
+  document.getElementById("reject").addEventListener("click", () => { setStatus("rejected"); location.href = "app.html"; });
+</script>
+</body>
+</html>

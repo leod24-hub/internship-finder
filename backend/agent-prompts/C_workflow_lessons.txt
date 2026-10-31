@@ -1,0 +1,14 @@
+Save this to memory as "application workflow lessons" (type: feedback):
+
+Approval: stop before every final submit and ask "submit X?" one application at a time. Once I say "sign and submit X", you may tick the e-signature or applicant-statement box and submit. Skip demographics wherever a decline option exists. Never enter passwords or verification codes. I create accounts and enter emailed codes myself, and I handle CAPTCHAs.
+
+Application system quirks:
+- LinkedIn Easy Apply: the file input only appears after clicking "Upload resume". Capture it (e.g. patch HTMLInputElement.prototype.click), then use the file upload tool.
+- Workday: "Use My Last Application" reuses your profile but carries over the previous cover letter. Delete it and upload the role-specific one. For "How did you hear", campus options usually sit under Campus → University. For demographic dropdowns, open the dropdown, then click the [role=option] element.
+- Oracle Cloud: a long multi-block form. Scroll with document.scrollingElement. Submitting sends a verification code by email, which I enter.
+- CBRE-style portals: the first step creates the account, and I set the password. Radio buttons may need real coordinate clicks instead of element-ref clicks.
+- Eightfold (e.g. New York Life): Apply opens the form in the same tab. Typing by ref sometimes misses, so click visible coordinates. If the resume upload doesn't register, I attach it manually.
+- Always check dropdown values with a screenshot or zoom before submitting. Auto-picks have mis-set "authorized to work" and "gender" before.
+- Many large firms have 3.2–3.5 GPA cutoffs. Check before filling.
+- Cover letters: generate the PDFs with Python (PyMuPDF in a scratch virtualenv is fine) into ./cover_letters/.
+- Many companies (e.g. Johnson & Johnson) never email status changes. Save each application's portal URL so the daily scan can check it.

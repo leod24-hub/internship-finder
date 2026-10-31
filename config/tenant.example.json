@@ -1,0 +1,13 @@
+{
+  "_note": "Per-student values substituted into {{PLACEHOLDERS}} in the agent prompts and backend/scheduled-tasks/daily-inbox-scan/SKILL.md. In production these come from the profiles table; this file is for local single-student testing. Copy to config/tenant.json (git-ignored).",
+  "STUDENT_NAME": "Jordan Sample",
+  "SCHOOL": "Example State University",
+  "MAJOR": "Biology",
+  "GRAD_DATE": "May 2029",
+  "CLASS_YEAR": "sophomore",
+  "TERM": "Summer 2027",
+  "TARGET_INDUSTRIES": "biotech, healthcare, research labs",
+  "APPLICATION_EMAIL": "jordan.sample@example.edu",
+  "TIMEZONE": "America/New_York",
+  "SCAN_CRON": "0 8 * * *"
+}

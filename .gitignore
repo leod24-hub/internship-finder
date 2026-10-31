@@ -1,0 +1,10 @@
+.env
+config/tenant.json
+out/
+users/*/
+!users/_template/
+*.pdf
+!docs/**/*.pdf
+__pycache__/
+.DS_Store
+node_modules/

@@ -1,0 +1,227 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Internship Deal Sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a CRE deal sheet — pipeline strip up top, "needs you" queue, then the full deal log and outreach log */
+:root{
+  --bg:#f3f4f2; --panel:#ffffff; --fg:#1d2427; --muted:#5f6b6f; --line:#d9dedc;
+  --accent:#9a6a1c; --accent-soft:#f3e8d4;
+  --ok:#2f7a4c; --ok-soft:#e1f1e6; --warn:#a55f00; --warn-soft:#fbead2; --bad:#a3342f; --bad-soft:#f7dfdd; --info:#2c5d8a; --info-soft:#dfe9f3;
+  --display:"Archivo","Helvetica Neue",Arial,sans-serif; --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14191b; --panel:#1c2326; --fg:#e6ebe9; --muted:#95a2a5; --line:#2e383b;
+  --accent:#d9a553; --accent-soft:#3a2e1a;
+  --ok:#6fcf93; --ok-soft:#1d3527; --warn:#f0b35a; --warn-soft:#3b2c16; --bad:#ef8a84; --bad-soft:#3d2120; --info:#8dbbe6; --info-soft:#1d2e3e;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14191b; --panel:#1c2326; --fg:#e6ebe9; --muted:#95a2a5; --line:#2e383b;
+  --accent:#d9a553; --accent-soft:#3a2e1a;
+  --ok:#6fcf93; --ok-soft:#1d3527; --warn:#f0b35a; --warn-soft:#3b2c16; --bad:#ef8a84; --bad-soft:#3d2120; --info:#8dbbe6; --info-soft:#1d2e3e;
+  color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--display);font-size:14px;line-height:1.45}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:28px 56px;display:grid;gap:28px}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px;border-bottom:2px solid var(--fg);padding-bottom:14px}
+h1{margin:0;font-size:clamp(26px,4vw,38px);font-weight:800;letter-spacing:-.02em;text-wrap:balance}
+.sub{color:var(--muted);font-size:13px}
+.meta{font-family:var(--mono);font-size:12px;color:var(--muted);text-align:right}
+h2{margin:0 0 10px;font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:600}
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));border:1px solid var(--line);background:var(--panel)}
+.stage{padding:12px 14px;border-right:1px solid var(--line);display:grid;gap:2px}
+.stage:last-child{border-right:0}
+.stage b{font-family:var(--mono);font-size:26px;font-weight:600;font-variant-numeric:tabular-nums}
+.stage span{font-size:12px;color:var(--muted)}
+.stage.goal b{color:var(--accent)}
+.queue{display:grid;gap:8px}
+.qi{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--warn);padding:10px 14px}
+.qi.approve{border-left-color:var(--accent)}
+.qi .what{font-weight:600;min-width:0;flex:1 1 240px}
+.qi .why{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.qi .act{font-weight:400;font-size:13px;color:var(--muted);margin-top:3px;text-wrap:pretty}
+.empty{background:var(--panel);border:1px dashed var(--line);padding:18px;color:var(--muted)}
+.filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.chip{font:inherit;font-size:12px;border:1px solid var(--line);background:var(--panel);color:var(--fg);padding:5px 10px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tbl{overflow-x:auto;border:1px solid var(--line);background:var(--panel)}
+table{border-collapse:collapse;width:100%;min-width:860px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600;background:var(--bg)}
+tr:last-child td{border-bottom:0}
+td.num{font-family:var(--mono);font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.co{font-weight:600}
+.role{color:var(--muted);font-size:13px}
+a{color:var(--accent)}
+.pill{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:3px;white-space:nowrap}
+.s-found{background:var(--line);color:var(--fg)}
+.s-drafted{background:var(--info-soft);color:var(--info)}
+.s-awaiting{background:var(--accent-soft);color:var(--accent)}
+.s-submitted{background:var(--info-soft);color:var(--info)}
+.s-interview{background:var(--ok-soft);color:var(--ok)}
+.s-offer{background:var(--ok);color:var(--panel)}
+.s-rejected{background:var(--bad-soft);color:var(--bad)}
+.s-skipped{background:var(--bg);color:var(--muted)}
+.m-remote{background:var(--ok-soft);color:var(--ok)}
+.m-hybrid{background:var(--info-soft);color:var(--info)}
+.m-onsite{background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+#modes{margin-top:-4px}
+.tier{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase}
+.due-soon{color:var(--warn);font-weight:600}
+.overdue{color:var(--bad);font-weight:600}
+select{font:inherit;font-size:12px;background:var(--panel);color:var(--fg);border:1px solid var(--line);padding:3px 4px}
+.notes{font-size:12px;color:var(--muted);max-width:280px}
+.foot{font-size:12px;color:var(--muted)}
+.applied{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.ac{background:var(--panel);border:1px solid var(--line);padding:12px 14px;display:grid;gap:6px;min-width:0}
+.ac .top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.ac .co{overflow-wrap:anywhere}
+.ac .row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px;color:var(--muted)}
+.ac .num{font-family:var(--mono);font-size:12px}
+@media (prefers-reduced-motion:no-preference){.qi{transition:border-color .2s}}
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Internship Deal Sheet</h1>
+      <div class="sub">Your target industries · your target region &amp; remote</div>
+    </div>
+    <div class="meta" id="meta">Connecting to tracker…</div>
+  </header>
+
+  <section aria-labelledby="h-pipe">
+    <h2 id="h-pipe">Pipeline</h2>
+    <div class="strip" id="strip"></div>
+  </section>
+
+  <section aria-labelledby="h-q">
+    <h2 id="h-q">Needs you</h2>
+    <div class="queue" id="queue"></div>
+  </section>
+
+  <section aria-labelledby="h-done">
+    <h2 id="h-done">Applied</h2>
+    <div class="applied" id="applied"></div>
+  </section>
+
+  <section aria-labelledby="h-apps">
+    <h2 id="h-apps">Applications</h2>
+    <div class="filters" id="filters" role="group" aria-label="Filter by status"></div>
+    <div class="filters" id="modes" role="group" aria-label="Filter by work mode"></div>
+    <div class="tbl"><table>
+      <thead><tr><th>Firm / role</th><th>Type</th><th>Location</th><th>Mode</th><th>Deadline</th><th>Status</th><th>Applied</th><th>Follow-up</th><th>Links</th><th>Notes</th></tr></thead>
+      <tbody id="apps"></tbody>
+    </table></div>
+  </section>
+
+  <section aria-labelledby="h-out">
+    <h2 id="h-out">Networking outreach</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Contact</th><th>Firm</th><th>Channel</th><th>Status</th><th>Sent</th><th>Follow-up</th><th>Notes</th></tr></thead>
+      <tbody id="out"></tbody>
+    </table></div>
+  </section>
+
+  <p class="foot">Claude updates this sheet as it finds roles, drafts applications and scans your inbox. Nothing is submitted or sent without your yes in chat.</p>
+</div>
+
+<script>
+const STAGES=[["found","Found"],["drafted","Drafted"],["awaiting","Awaiting your OK"],["submitted","Submitted"],["interview","Interview"],["offer","Offer"],["rejected","Rejected"]];
+const LABEL=Object.fromEntries([...STAGES,["skipped","Skipped"]]);
+const OUT_LABEL={drafted:"Draft ready",sent:"Sent",replied:"Replied",call:"Call set",none:"No reply"};
+const WEEKLY_GOAL=15;
+let apps=[],outreach=[],filter="all",mode="all",db=null,canWrite=false;
+const MODES=[["all","Any mode"],["remote","Remote"],["hybrid","Hybrid"],["onsite","On-site"]];
+const modeOf=a=>a.mode||(/remote/i.test(a.location||"")?"remote":/hybrid/i.test(a.location||"")?"hybrid":"onsite");
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const today=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
+const parse=s=>{if(!s)return null;const d=new Date(s+"T00:00:00");return isNaN(d)?null:d};
+const days=s=>{const d=parse(s);return d?Math.round((d-today())/864e5):null};
+const fmt=s=>{const d=parse(s);return d?d.toLocaleDateString("en-US",{month:"short",day:"numeric"}):"—"};
+function dueCls(s,closed){const n=days(s);if(n===null||closed)return"";return n<0?"overdue":n<=3?"due-soon":""}
+const safeUrl=u=>/^https:\/\//i.test(u||"")?u:null;
+
+function render(){
+  const counts=Object.fromEntries(STAGES.map(([k])=>[k,0]));
+  apps.forEach(a=>{if(counts[a.status]!==undefined)counts[a.status]++});
+  const wk=new Date(today());wk.setDate(wk.getDate()-((wk.getDay()+6)%7));
+  const thisWeek=apps.filter(a=>{const d=parse(a.applied);return d&&d>=wk}).length;
+  $("strip").innerHTML=STAGES.map(([k,l])=>`<div class="stage"><b>${counts[k]}</b><span>${l}</span></div>`).join("")+
+    `<div class="stage goal"><b>${thisWeek}/${WEEKLY_GOAL}</b><span>Submitted this week</span></div>`;
+
+  const q=[];
+  apps.forEach(a=>{
+    const closed=["submitted","interview","offer","rejected","skipped"].includes(a.status);
+    const act=a.nextAction||"";
+    if(a.status==="awaiting")q.push({cls:"approve",what:`${a.company} — ${a.role}`,why:"Ready for your approval in chat",act});
+    const n=days(a.deadline);const dl=!closed&&n!==null&&n<=7;
+    const f=days(a.followUp);const fu=f!==null&&f<=0&&!["offer","rejected","skipped"].includes(a.status);
+    if(dl||fu)q.push({cls:"",what:`${a.company} — ${a.role}`,why:dl?(n<0?`Deadline passed ${-n}d ago`:`Deadline in ${n}d (${fmt(a.deadline)})`):(f<0?`Follow-up ${-f}d overdue`:"Follow-up due today"),act});
+  });
+  outreach.forEach(o=>{const act=o.nextAction||"";if(o.status==="drafted")q.push({cls:"approve",what:`${o.name} · ${o.firm}`,why:"Outreach draft ready to review",act});
+    const f=days(o.followUp);if(f!==null&&f<=0&&["sent","none"].includes(o.status))q.push({cls:"",what:`${o.name} · ${o.firm}`,why:f<0?`Outreach follow-up ${-f}d overdue`:"Outreach follow-up due today",act})});
+  $("queue").innerHTML=q.length?q.map(i=>`<div class="qi ${i.cls}"><div class="what">${esc(i.what)}${i.act?`<div class="act">${esc(i.act)}</div>`:""}</div><span class="why">${esc(i.why)}</span></div>`).join("")
+    :`<div class="empty">Nothing needs you right now. Approvals, deadlines within 7 days and due follow-ups show up here.</div>`;
+
+  const done=apps.filter(a=>["submitted","interview","offer","rejected"].includes(a.status)).sort((a,b)=>String(b.applied||"").localeCompare(String(a.applied||""))||String(a.company).localeCompare(b.company));
+  $("applied").innerHTML=done.length?done.map(a=>`<div class="ac"><div class="top"><div><div class="co">${esc(a.company)}</div><div class="role">${esc(a.role)}</div></div><span class="pill s-${esc(a.status)}">${esc(LABEL[a.status]||a.status)}</span></div><div class="row"><span class="pill m-${modeOf(a)}">${{remote:"Remote",hybrid:"Hybrid",onsite:"On-site"}[modeOf(a)]}</span><span>${esc(a.location||"")}</span></div><div class="row"><span>Applied <span class="num">${fmt(a.applied)}</span></span><span>· Follow up <span class="num ${dueCls(a.followUp,["offer","rejected"].includes(a.status))}">${fmt(a.followUp)}</span></span>${safeUrl(a.link)?`<span>· <a href="${esc(a.link)}" target="_blank" rel="noopener">Posting</a></span>`:""}</div></div>`).join("")
+    :`<div class="empty">Nothing submitted yet. Each application shows up here the moment it's sent.</div>`;
+  const fl=[["all","All"],...STAGES,["skipped","Skipped"]];
+  $("filters").innerHTML=fl.map(([k,l])=>`<button class="chip" id="f-${k}" data-f="${k}" aria-pressed="${filter===k}">${l}${k==="all"?` · ${apps.length}`:""}</button>`).join("");
+
+  $("modes").innerHTML=MODES.map(([k,l])=>`<button class="chip" id="m-${k}" data-m="${k}" aria-pressed="${mode===k}">${l}${k!=="all"?` · ${apps.filter(a=>modeOf(a)===k).length}`:""}</button>`).join("");
+  const rows=apps.filter(a=>(filter==="all"||a.status===filter)&&(mode==="all"||modeOf(a)===mode))
+    .sort((a,b)=>(parse(a.deadline)||9e15)-(parse(b.deadline)||9e15)||String(a.company).localeCompare(b.company));
+  $("apps").innerHTML=rows.length?rows.map(a=>{
+    const closed=["submitted","interview","offer","rejected","skipped"].includes(a.status);
+    const st=canWrite?`<select id="st-${esc(a.id)}" data-id="${esc(a.id)}" aria-label="Status for ${esc(a.company)}">${[...STAGES,["skipped","Skipped"]].map(([k,l])=>`<option value="${k}"${a.status===k?" selected":""}>${l}</option>`).join("")}</select>`
+      :`<span class="pill s-${esc(a.status)}">${esc(LABEL[a.status]||a.status)}</span>`;
+    const links=[safeUrl(a.link)&&`<a href="${esc(a.link)}" target="_blank" rel="noopener">Posting</a>`,safeUrl(a.coverLetter)&&`<a href="${esc(a.coverLetter)}" target="_blank" rel="noopener">Cover letter</a>`].filter(Boolean).join("<br>")||"—";
+    return `<tr><td><div class="co">${esc(a.company)}</div><div class="role">${esc(a.role)}</div></td>
+      <td><div>${esc(a.category||"")}</div><div class="tier">${esc(a.tier||"")}</div></td>
+      <td>${esc(a.location||"—")}</td><td><span class="pill m-${modeOf(a)}">${{remote:"Remote",hybrid:"Hybrid",onsite:"On-site"}[modeOf(a)]}</span></td>
+      <td class="num ${dueCls(a.deadline,closed)}">${a.deadline?fmt(a.deadline):"Rolling"}</td>
+      <td>${st}</td><td class="num">${fmt(a.applied)}</td>
+      <td class="num ${dueCls(a.followUp,["offer","rejected","skipped"].includes(a.status))}">${fmt(a.followUp)}</td>
+      <td>${links}</td><td class="notes">${esc(a.notes||"")}</td></tr>`}).join("")
+    :`<tr><td colspan="10" class="empty" style="border:0">${apps.length?"No applications in this stage.":"No roles yet. Claude adds each firm here as soon as it finds a matching posting."}</td></tr>`;
+
+  $("out").innerHTML=outreach.length?outreach.slice().sort((a,b)=>String(a.firm).localeCompare(b.firm)).map(o=>`<tr>
+      <td><div class="co">${esc(o.name)}</div><div class="role">${esc(o.title||"")}</div></td><td>${esc(o.firm)}</td><td>${esc(o.channel||"")}</td>
+      <td><span class="pill ${o.status==="replied"||o.status==="call"?"s-interview":o.status==="drafted"?"s-awaiting":"s-submitted"}">${esc(OUT_LABEL[o.status]||o.status)}</span></td>
+      <td class="num">${fmt(o.sent)}</td><td class="num">${fmt(o.followUp)}</td><td class="notes">${esc(o.notes||"")}</td></tr>`).join("")
+    :`<tr><td colspan="7" class="empty" style="border:0">No outreach yet. Cold emails to alumni and professionals in your field appear here once drafted.</td></tr>`;
+}
+
+$("filters").addEventListener("click",e=>{const b=e.target.closest("[data-f]");if(b){filter=b.dataset.f;render()}});
+$("modes").addEventListener("click",e=>{const b=e.target.closest("[data-m]");if(b){mode=b.dataset.m;render()}});
+$("apps").addEventListener("change",async e=>{
+  const s=e.target.closest("select[data-id]");if(!s||!db)return;
+  const patch={status:s.value};
+  if(s.value==="submitted"){const a=apps.find(x=>x.id===s.dataset.id);if(a&&!a.applied)patch.applied=new Date().toISOString().slice(0,10)}
+  try{await db.doc("applications/"+s.dataset.id).update(patch)}catch(err){canWrite=false;render();$("meta").textContent="Read-only view"}
+});
+
+render();
+(async()=>{
+  db=(window.claude&&claude.use)?await claude.use("db"):null;
+  if(!db){
+    // Standalone mode (outside Claude): seed from sample-data JSON, keep edits in localStorage.
+    // Swap this block for your own backend API in production.
+    const KEY="dealsheet.v1";let saved=null;try{saved=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){}
+    if(!saved){try{saved=await (await fetch("../sample-data/sample-jobs.json")).json()}catch(e){saved={applications:[],outreach:[]}}}
+    apps=saved.applications||[];outreach=saved.outreach||[];canWrite=true;
+    const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify({applications:apps,outreach}))}catch(e){}};
+    db={doc:p=>({update:async patch=>{const id=p.split("/")[1];const a=apps.find(x=>x.id===id);if(a)Object.assign(a,patch);persist();render()}})};
+    $("meta").textContent="Local demo · "+apps.length+" roles";render();return}
+  const user=await claude.use("user");
+  const w=user?await user.can("data.write"):null;canWrite=w!==false;
+  const stamp=()=>$("meta").innerHTML=`Live · updated ${new Date().toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"})}`;
+  db.collection("applications").onSnapshot(s=>{apps=s.docs.map(d=>({id:d.id,...d.data()}));render();stamp()},e=>{$("meta").textContent="Lost connection — reload to retry"});
+  db.collection("outreach").onSnapshot(s=>{outreach=s.docs.map(d=>({id:d.id,...d.data()}));render();stamp()},()=>{});
+})();
+</script>
+
+</body></html>

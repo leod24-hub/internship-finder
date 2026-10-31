@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Set up your profile | Lanyard</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='5' y='6' width='14' height='16' rx='3' fill='%23ffd84d' stroke='%2312152a' stroke-width='1.5'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/base.css">
+<style>
+  .layout{display:grid;grid-template-columns:260px 1fr;gap:var(--p-space-7);padding:var(--p-space-7) 0 var(--p-space-9)}
+  .steps{list-style:none;margin:0;padding:0;position:sticky;top:96px;align-self:start;display:grid;gap:4px}
+  .steps button{all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:var(--p-radius-md);color:var(--text-muted);font-weight:500}
+  .steps button:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+  .steps .n{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border);display:grid;place-items:center;font-size:.8rem;font-weight:700;flex:none}
+  .steps li[aria-current=step] button{color:var(--text);background:var(--surface-sunk)}
+  .steps li[aria-current=step] .n{background:var(--text);color:var(--bg);border-color:var(--text)}
+  .steps li.done .n{background:var(--success);border-color:var(--success);color:var(--bg)}
+  .stage{max-width:760px}
+  .stage > section{display:none}
+  .stage > section.on{display:block}
+  .stage h1{font-size:var(--p-step-3)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:var(--p-space-4)}
+  .wall{display:flex;flex-wrap:wrap;gap:10px;margin:var(--p-space-4) 0}
+  .legend{display:flex;gap:var(--p-space-4);flex-wrap:wrap;font-size:var(--p-step--1);color:var(--text-muted);align-items:center}
+  .narrow{margin-top:var(--p-space-5);display:grid;gap:var(--p-space-4)}
+  .narrow h3{font-size:1rem;display:flex;gap:8px;align-items:center;margin-bottom:var(--p-space-2)}
+  .subs{display:flex;flex-wrap:wrap;gap:8px}
+  .selected-bar{position:sticky;bottom:0;margin-top:var(--p-space-6);padding:var(--p-space-4) 0;background:linear-gradient(transparent,var(--bg) 24%)}
+  .nav{display:flex;justify-content:space-between;align-items:center;margin-top:var(--p-space-6);padding-top:var(--p-space-5);border-top:1.5px solid var(--border)}
+  .drop{border:2px dashed var(--border-strong);border-radius:var(--p-radius-lg);padding:var(--p-space-6);text-align:center;background:var(--surface);cursor:pointer}
+  .drop:hover,.drop.over{background:var(--surface-sunk)}
+  .module{border-left:4px solid var(--hue);padding:var(--p-space-2) 0 var(--p-space-2) var(--p-space-4);margin:var(--p-space-5) 0}
+  .module h3{font-size:1.05rem;display:flex;gap:8px;align-items:center}
+  .check{display:flex;gap:12px;align-items:flex-start;padding:var(--p-space-4);background:var(--surface);border:1.5px solid var(--border);border-radius:var(--p-radius-md)}
+  .check input{margin-top:5px;width:18px;height:18px;accent-color:var(--primary)}
+  @media(max-width:860px){
+    .layout{grid-template-columns:1fr;gap:var(--p-space-5)}
+    .steps{position:static;grid-auto-flow:column;overflow-x:auto}
+    .steps .t{display:none}
+    .two{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<header class="bar" id="bar"></header>
+<main class="wrap layout">
+  <ol class="steps" id="steps" aria-label="Setup steps"></ol>
+
+  <div class="stage" id="stage">
+    <!-- 1 -->
+    <section data-step="0">
+      <h1>Tell us where you are in school.</h1>
+      <p class="muted">We use this to filter out openings you aren't eligible for, like roles for seniors only or with a GPA cutoff.</p>
+      <div class="field"><label for="name">Full name</label><input id="name" type="text" autocomplete="name" placeholder="Jordan Sample"></div>
+      <div class="two">
+        <div class="field"><label for="school">School</label><input id="school" type="text" list="schools" placeholder="Start typing your school"><datalist id="schools"></datalist></div>
+        <div class="field"><label for="major">Major</label><input id="major" type="text" list="majors" placeholder="Start typing your major"><datalist id="majors"></datalist></div>
+      </div>
+      <div class="field"><span class="label">Class year</span>
+        <div class="seg" id="classYear">
+          <label><input type="radio" name="cy" value="freshman"><span>Freshman</span></label>
+          <label><input type="radio" name="cy" value="sophomore"><span>Sophomore</span></label>
+          <label><input type="radio" name="cy" value="junior"><span>Junior</span></label>
+          <label><input type="radio" name="cy" value="senior"><span>Senior</span></label>
+          <label><input type="radio" name="cy" value="grad"><span>Graduate</span></label>
+        </div>
+      </div>
+      <div class="two">
+        <div class="field"><label for="grad">Graduation date</label><input id="grad" type="text" placeholder="May 2028"></div>
+        <div class="field"><label for="gpa">GPA <span class="muted">(optional)</span></label><input id="gpa" type="text" inputmode="decimal" placeholder="3.6"><span class="hint">Used only to skip roles with a cutoff you don't meet.</span></div>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section data-step="1">
+      <h1>Which fields do you want to explore?</h1>
+      <p class="muted">Pick as many as you like. You can change this any time.</p>
+      <div class="field" style="margin-bottom:0"><label class="sr" for="find">Search fields</label><input id="find" type="text" placeholder="Search fields, like nursing, policy, or design"></div>
+      <div class="legend" aria-hidden="true"><span>Select once to add a field.</span><span>Select again to mark it a top choice.</span><span>A third time removes it.</span></div>
+      <div class="wall" id="wall" role="group" aria-label="Fields"></div>
+      <p class="muted" id="none" hidden>No field matches that search. Try a broader word, or paste a link to any posting from your dashboard later.</p>
+      <div class="narrow" id="narrow"></div>
+      <div class="selected-bar"><span id="sum" aria-live="polite" class="muted"></span></div>
+    </section>
+
+    <!-- 3 -->
+    <section data-step="2">
+      <h1>What kind of opportunity, and where?</h1>
+      <p class="muted">These narrow your matches. Nothing here is permanent.</p>
+      <div class="field"><span class="label">Type</span>
+        <div class="seg" id="types">
+          <label><input type="checkbox" value="Internship" checked><span>Internship</span></label>
+          <label><input type="checkbox" value="Co-op"><span>Co-op</span></label>
+          <label><input type="checkbox" value="Research"><span>Research program</span></label>
+          <label><input type="checkbox" value="Fellowship"><span>Fellowship</span></label>
+          <label><input type="checkbox" value="Externship"><span>Externship</span></label>
+          <label><input type="checkbox" value="Summer program"><span>Summer program</span></label>
+        </div>
+      </div>
+      <div class="field"><span class="label">Work style</span>
+        <div class="seg" id="modes">
+          <label><input type="checkbox" value="remote" checked><span>Remote</span></label>
+          <label><input type="checkbox" value="hybrid" checked><span>Hybrid</span></label>
+          <label><input type="checkbox" value="onsite" checked><span>On-site</span></label>
+        </div>
+      </div>
+      <div class="two">
+        <div class="field"><label for="where">Places you'd work</label><input id="where" type="text" placeholder="Boston, Chicago, anywhere in Texas"><span class="hint">Separate places with commas.</span></div>
+        <div class="field"><label for="term">When</label>
+          <select id="term"><option>Summer 2027</option><option>Fall 2027</option><option>Spring 2027</option><option>Winter 2027</option><option>Any term</option></select></div>
+      </div>
+      <div class="field"><span class="label">Pay</span>
+        <div class="seg" id="pay">
+          <label><input type="radio" name="pay" value="any" checked><span>Show everything</span></label>
+          <label><input type="radio" name="pay" value="paid"><span>Paid only</span></label>
+          <label><input type="radio" name="pay" value="paid-stipend"><span>Paid or stipend</span></label>
+        </div>
+      </div>
+      <div class="field"><label for="auth">Work authorization</label>
+        <select id="auth"><option>Authorized to work in the US, no sponsorship needed</option><option>Authorized now, will need sponsorship later</option><option>Need sponsorship</option><option>Not applying in the US</option></select>
+        <span class="hint">Some federal and defense roles require citizenship. We'll flag those instead of hiding them.</span></div>
+    </section>
+
+    <!-- 4 -->
+    <section data-step="3">
+      <h1>Add your resume and links.</h1>
+      <p class="muted">Lanyard drafts answers only from what you give it here. It never makes up experience.</p>
+      <label class="drop" id="drop" for="resume"><strong id="dropTitle">Choose your resume</strong><br><span class="muted small" id="dropSub">PDF, up to 5 MB. You can drag it in.</span><input class="sr" id="resume" type="file" accept=".pdf"></label>
+      <div class="two" style="margin-top:var(--p-space-5)">
+        <div class="field"><label for="li">LinkedIn <span class="muted">(optional)</span></label><input id="li" type="url" placeholder="linkedin.com/in/you"></div>
+        <div class="field"><label for="site">Portfolio or website <span class="muted">(optional)</span></label><input id="site" type="url" placeholder="yourname.com"></div>
+      </div>
+      <div id="modules"></div>
+      <div class="check"><input id="eeo" type="checkbox" checked><label for="eeo"><strong>Decline demographic questions</strong><br><span class="muted small">Employers often ask about race, gender, disability, or veteran status. Leave this on and Lanyard answers "decline to answer" wherever that option exists. Turn it off only if you want to enter answers yourself.</span></label></div>
+    </section>
+
+    <!-- 5 -->
+    <section data-step="4">
+      <h1 id="doneTitle">You're set.</h1>
+      <p class="muted" id="doneText"></p>
+      <div id="doneChips" class="wall"></div>
+      <p><a class="btn lg" href="app.html">Go to my dashboard</a></p>
+    </section>
+
+    <div class="nav" id="nav">
+      <button class="btn ghost" id="back" type="button">Back</button>
+      <button class="btn" id="next" type="button">Continue</button>
+    </div>
+  </div>
+</main>
+
+<script src="js/data.js"></script>
+<script src="js/common.js"></script>
+<script>
+  renderBar("profile", "app");
+  const STEPS = ["About you", "Fields", "Preferences", "Resume and links", "Done"];
+  const state = Object.assign({ step: 0, name: "", school: "", major: "", classYear: "", grad: "", gpa: "", cats: {}, subs: {}, types: ["Internship"], modes: ["remote", "hybrid", "onsite"], where: "", term: "Summer 2027", pay: "any", auth: "", li: "", site: "", resumeName: "", eeoDecline: true }, store.get("profile", {}));
+  const $ = id => document.getElementById(id);
+  $("schools").innerHTML = LAN.schools.map(s => `<option value="${esc(s)}">`).join("");
+  $("majors").innerHTML = LAN.majors.map(s => `<option value="${esc(s)}">`).join("");
+
+  // restore simple fields
+  ["name", "school", "major", "grad", "gpa", "where", "term", "auth", "li", "site"].forEach(k => { if (state[k]) $(k).value = state[k]; });
+  if (state.classYear) { const r = document.querySelector(`input[name=cy][value=${state.classYear}]`); if (r) r.checked = true; }
+  document.querySelectorAll("#types input").forEach(i => i.checked = state.types.includes(i.value));
+  document.querySelectorAll("#modes input").forEach(i => i.checked = state.modes.includes(i.value));
+  const pr = document.querySelector(`input[name=pay][value="${state.pay}"]`); if (pr) pr.checked = true;
+  $("eeo").checked = state.eeoDecline;
+  if (state.resumeName) { $("dropTitle").textContent = state.resumeName; $("dropSub").textContent = "Select to replace it."; }
+
+  function save() {
+    state.name = $("name").value; state.school = $("school").value; state.major = $("major").value; state.grad = $("grad").value; state.gpa = $("gpa").value;
+    state.classYear = (document.querySelector("input[name=cy]:checked") || {}).value || "";
+    state.types = [...document.querySelectorAll("#types input:checked")].map(i => i.value);
+    state.modes = [...document.querySelectorAll("#modes input:checked")].map(i => i.value);
+    state.where = $("where").value; state.term = $("term").value; state.auth = $("auth").value;
+    state.pay = (document.querySelector("input[name=pay]:checked") || {}).value || "any";
+    state.li = $("li").value; state.site = $("site").value; state.eeoDecline = $("eeo").checked;
+    store.set("profile", state);
+  }
+
+  // steps rail
+  function renderSteps() {
+    $("steps").innerHTML = STEPS.map((s, i) => `<li ${i === state.step ? 'aria-current="step"' : ""} class="${i < state.step ? "done" : ""}"><button type="button" data-go="${i}"><span class="n">${i < state.step ? "&#10003;" : i + 1}</span><span class="t">${s}</span></button></li>`).join("");
+  }
+  $("steps").addEventListener("click", e => { const b = e.target.closest("[data-go]"); if (b && +b.dataset.go <= state.step) go(+b.dataset.go); });
+
+  // category wall: off -> selected -> top -> off
+  function renderWall(filter = "") {
+    const q = filter.trim().toLowerCase();
+    const list = LAN.categories.filter(c => !q || c.name.toLowerCase().includes(q) || c.subs.some(s => s.name.toLowerCase().includes(q)));
+    $("wall").innerHTML = list.map(c => {
+      const st = state.cats[c.id];
+      return `<button type="button" class="chip ${st === 2 ? "top" : ""}" data-hue="${c.hue}" data-id="${c.id}" aria-pressed="${!!st}" ${st === 2 ? 'title="Top choice"' : ""}>${esc(c.name)}${st === 2 ? " (top choice)" : ""}</button>`;
+    }).join("");
+    $("none").hidden = list.length > 0;
+  }
+  function renderNarrow() {
+    const picked = LAN.categories.filter(c => state.cats[c.id]);
+    $("narrow").innerHTML = picked.map(c => `<div data-hue="${c.hue}"><h3><span class="dot"></span>${esc(c.name)}: narrow it down <span class="muted small" style="font-weight:400">(optional)</span></h3>
+      <div class="subs">${c.subs.map(s => `<button type="button" class="chip sub" data-hue="${c.hue}" data-sub="${s.id}" aria-pressed="${!!state.subs[s.id]}">${esc(s.name)}</button>`).join("")}</div></div>`).join("");
+    const n = picked.length, tops = picked.filter(c => state.cats[c.id] === 2).length;
+    $("sum").textContent = n ? `${n} ${n === 1 ? "field" : "fields"} selected${tops ? `, ${tops} marked as top choice` : ""}.` : "No fields selected yet.";
+  }
+  $("find").addEventListener("input", e => renderWall(e.target.value));
+  $("wall").addEventListener("click", e => {
+    const b = e.target.closest(".chip"); if (!b) return;
+    const id = b.dataset.id, cur = state.cats[id] || 0;
+    if (cur === 0) state.cats[id] = 1; else if (cur === 1) state.cats[id] = 2; else delete state.cats[id];
+    renderWall($("find").value); renderNarrow(); save();
+    const again = document.querySelector(`#wall [data-id="${id}"]`); if (again) again.focus();
+  });
+  $("narrow").addEventListener("click", e => {
+    const b = e.target.closest("[data-sub]"); if (!b) return;
+    const id = b.dataset.sub; state.subs[id] ? delete state.subs[id] : state.subs[id] = true;
+    b.setAttribute("aria-pressed", !!state.subs[id]); save();
+  });
+
+  // category-specific modules on step 4
+  const MODULES = {
+    "software-it": ["GitHub profile", "Languages and tools you've used"], "data-ai": ["GitHub or notebooks", "Tools and libraries"],
+    "healthcare-clinical": ["Certifications (CPR, BLS, others)", "Clinical or volunteer hours"], "biotech-life-sciences": ["Lab techniques you've used", "Lab or research experience"],
+    "research-labs": ["Research experience and advisor", "Publications or posters"], "design-creative-arts": ["Portfolio link", "Software you use"],
+    "media-communications": ["Writing samples or clips", "Publications or channels you've worked on"], "government-policy": ["Citizenship status (some roles require it)", "Security clearance, if any"],
+    "education": ["Teaching or tutoring hours", "Background check consent"], "engineering": ["CAD and lab tools", "Project or capstone summary"],
+    "architecture-construction": ["Portfolio link", "Software (Revit, AutoCAD, others)"], "law-legal": ["Writing sample", "Relevant coursework"],
+  };
+  function renderModules() {
+    const picked = LAN.categories.filter(c => state.cats[c.id] && MODULES[c.id]);
+    $("modules").innerHTML = picked.length ? `<h2 style="font-size:1.2rem;margin-top:var(--p-space-6)">Extra details for your fields</h2><p class="muted small">Many employers in these fields ask for the following. Add what you have. Skip what you don't.</p>` +
+      picked.map(c => `<div class="module" data-hue="${c.hue}"><h3><span class="dot"></span>${esc(c.name)}</h3>${MODULES[c.id].map(f => `<div class="field"><label>${esc(f)}</label><input type="text"></div>`).join("")}</div>`).join("") : "";
+  }
+
+  // resume (mock: keeps only the file name)
+  $("resume").addEventListener("change", e => { const f = e.target.files[0]; if (f) { state.resumeName = f.name; $("dropTitle").textContent = f.name; $("dropSub").textContent = "Select to replace it."; save(); } });
+  ["dragover", "dragleave", "drop"].forEach(ev => $("drop").addEventListener(ev, e => { if (ev === "drop") { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) { state.resumeName = f.name; $("dropTitle").textContent = f.name; $("dropSub").textContent = "Select to replace it."; save(); } } else { e.preventDefault(); $("drop").classList.toggle("over", ev === "dragover"); } }));
+
+  function go(n) {
+    save(); state.step = n;
+    document.querySelectorAll("#stage > section").forEach(s => s.classList.toggle("on", +s.dataset.step === n));
+    if (n === 3) renderModules();
+    if (n === 4) {
+      const picked = LAN.categories.filter(c => state.cats[c.id]);
+      $("doneTitle").textContent = state.name ? `You're set, ${state.name.split(" ")[0]}.` : "You're set.";
+      $("doneText").textContent = picked.length ? "We'll match openings in these fields. Your first matches are on your dashboard." : "You haven't picked any fields yet. You can add them from your dashboard, or paste a link to any posting.";
+      $("doneChips").innerHTML = picked.map(c => chipButton(c, true)).join("");
+      $("nav").hidden = true;
+    } else $("nav").hidden = false;
+    $("back").style.visibility = n === 0 ? "hidden" : "visible";
+    $("next").textContent = n === 3 ? "Finish setup" : "Continue";
+    renderSteps(); window.scrollTo({ top: 0 });
+    store.set("profile", state);
+  }
+  $("next").addEventListener("click", () => go(Math.min(state.step + 1, 4)));
+  $("back").addEventListener("click", () => go(Math.max(state.step - 1, 0)));
+  document.querySelectorAll("#stage input, #stage select").forEach(el => el.addEventListener("change", save));
+
+  renderWall(); renderNarrow(); go(Math.min(state.step, 3));
+</script>
+</body>
+</html>

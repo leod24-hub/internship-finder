@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard | Lanyard</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='5' y='6' width='14' height='16' rx='3' fill='%23ffd84d' stroke='%2312152a' stroke-width='1.5'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/base.css">
+<style>
+  main{padding:var(--p-space-7) 0 var(--p-space-9)}
+  .top{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--p-space-5);flex-wrap:wrap;margin-bottom:var(--p-space-6)}
+  .top h1{font-size:var(--p-step-3);margin:0}
+  .figures{display:flex;gap:var(--p-space-6);flex-wrap:wrap}
+  .figures div{min-width:5rem}
+  .figures b{display:block;font:800 2.4rem/1 var(--font-display)}
+  .figures span{color:var(--text-muted);font-size:.9rem}
+
+  .grid{display:grid;grid-template-columns:1.25fr 1fr;gap:var(--p-space-6);align-items:start}
+  h2.s{font-size:1.35rem;margin-bottom:var(--p-space-4);display:flex;align-items:baseline;gap:var(--p-space-3)}
+  h2.s .tag{font-family:var(--font-body)}
+
+  .queue{border-top:2px solid var(--border-strong)}
+  .q{display:grid;grid-template-columns:auto 1fr auto;gap:var(--p-space-4);align-items:center;padding:var(--p-space-4) 4px;border-bottom:1.5px solid var(--border)}
+  .q b{font-family:var(--font-display);font-size:1.05rem}
+  .q .act{color:var(--text-muted);font-size:.92rem}
+  .q .bar-d{width:6px;align-self:stretch;border-radius:3px;background:var(--hue)}
+  .empty{padding:var(--p-space-6) 0;color:var(--text-muted)}
+
+  .paste{display:flex;gap:var(--p-space-2);margin-bottom:var(--p-space-4)}
+  .paste input{flex:1}
+  .filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:var(--p-space-4)}
+  .m{display:grid;gap:6px;padding:var(--p-space-4);border:1.5px solid var(--border);border-radius:var(--p-radius-md);background:var(--surface);margin-bottom:10px;border-left:6px solid var(--hue)}
+  .m .l1{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+  .m b{font-family:var(--font-display);font-size:1.05rem}
+  .m .meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;color:var(--text-muted);font-size:.88rem}
+  .m .acts{display:flex;gap:8px;margin-top:6px}
+
+  .pipeline{margin-top:var(--p-space-8)}
+  .cols{display:grid;grid-template-columns:repeat(6,minmax(170px,1fr));gap:var(--p-space-3);overflow-x:auto;padding-bottom:var(--p-space-3)}
+  .col h3{font:600 .9rem var(--font-body);margin:0 0 var(--p-space-3);display:flex;justify-content:space-between;color:var(--text-muted);padding-bottom:8px;border-bottom:2px solid var(--border-strong)}
+  .k{background:var(--surface);border:1.5px solid var(--border);border-top:4px solid var(--hue);border-radius:var(--p-radius-sm);padding:10px;margin-bottom:8px;font-size:.88rem}
+  .k b{display:block;font-family:var(--font-display);font-size:.95rem;line-height:1.2}
+  .meter{height:8px;border-radius:4px;background:var(--surface-sunk);overflow:hidden;margin:var(--p-space-2) 0}
+  .meter i{display:block;height:100%;width:66%;background:var(--primary)}
+  .side .panel{margin-bottom:var(--p-space-4)}
+  @media(max-width:960px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="bar" id="bar"></header>
+<main class="wrap">
+  <div class="top">
+    <div>
+      <h1 id="hello">Your dashboard</h1>
+      <p class="muted" id="sub" style="margin:6px 0 0"></p>
+    </div>
+    <div class="figures" id="figures"></div>
+  </div>
+
+  <div class="grid">
+    <div>
+      <h2 class="s">Needs you <span class="tag due" id="needCount"></span></h2>
+      <div class="queue" id="queue"></div>
+
+      <h2 class="s" style="margin-top:var(--p-space-8)">New matches</h2>
+      <form class="paste" id="paste"><label class="sr" for="link">Posting link</label><input id="link" type="url" placeholder="Paste a link to any internship posting"><button class="btn" type="submit">Add posting</button></form>
+      <div class="filters" id="filters" role="group" aria-label="Filter matches by field"></div>
+      <div id="matches" aria-live="polite"></div>
+    </div>
+
+    <aside class="side">
+      <div class="panel">
+        <h3>This month</h3>
+        <p class="muted small" style="margin-bottom:6px">Assisted applications on the Free plan</p>
+        <div class="meter" role="img" aria-label="2 of 3 used"><i></i></div>
+        <p class="small" style="margin:0">2 of 3 used. Resets Dec 1.</p>
+        <p style="margin:var(--p-space-3) 0 0"><a class="btn sm" href="index.html#pricing">See plans</a></p>
+      </div>
+      <div class="panel">
+        <h3>Your fields</h3>
+        <div class="filters" id="myFields" style="margin-bottom:var(--p-space-3)"></div>
+        <a href="onboarding.html" class="small">Change fields and preferences</a>
+      </div>
+      <div class="panel">
+        <h3>Heads up</h3>
+        <p class="small muted" style="margin-bottom:8px">Two sites in your list need you to sign in or confirm a code before Lanyard can continue. You'll get a prompt when you open them.</p>
+      </div>
+    </aside>
+  </div>
+
+  <section class="pipeline" aria-labelledby="pl">
+    <h2 class="s" id="pl">Everything you're tracking</h2>
+    <div class="cols" id="cols"></div>
+  </section>
+</main>
+
+<script src="js/data.js"></script>
+<script src="js/common.js"></script>
+<script>
+  renderBar("app", "app");
+  const profile = store.get("profile", {});
+  const myCats = LAN.categories.filter(c => profile.cats && profile.cats[c.id]);
+  const first = (profile.name || "").split(" ")[0];
+  document.getElementById("hello").textContent = first ? `Hi ${first}, here's where things stand.` : "Here's where things stand.";
+  document.getElementById("sub").textContent = myCats.length ? `Showing matches in ${myCats.length} ${myCats.length === 1 ? "field" : "fields"}.` : "You haven't picked fields yet, so everything is shown.";
+
+  const posts = store.get("posts", null) || LAN.postings;
+  const save = () => store.set("posts", posts);
+  const STAGES = [["found", "Found"], ["drafted", "Drafted"], ["awaiting", "Awaiting approval"], ["submitted", "Submitted"], ["interview", "Interview"], ["rejected", "Closed"]];
+
+  // figures
+  const cnt = s => posts.filter(p => p.status === s).length;
+  document.getElementById("figures").innerHTML =
+    `<div><b>${cnt("submitted") + cnt("interview")}</b><span>Applied</span></div><div><b>${cnt("interview")}</b><span>Interviews</span></div><div><b>${cnt("awaiting")}</b><span>Waiting on you</span></div>`;
+
+  // needs you
+  const need = posts.filter(p => p.status === "awaiting" || (p.status === "drafted" && p.deadlineIn <= 7) || p.status === "interview")
+    .sort((a, b) => a.deadlineIn - b.deadlineIn);
+  document.getElementById("needCount").textContent = need.length;
+  const nextAction = p => p.status === "awaiting" ? "Review your answers and approve." : p.status === "interview" ? "Interview invite received. Pick a time." : "Finish the cover letter before the deadline.";
+  document.getElementById("queue").innerHTML = need.length ? need.map(p => `
+    <div class="q" data-hue="${p.hue}"><span class="bar-d"></span>
+      <div><b>${esc(p.role)}</b> <span class="muted">at ${esc(p.company)}</span><div class="act">${nextAction(p)}</div></div>
+      <div style="display:flex;gap:10px;align-items:center">${p.status === "awaiting" ? dueLabel(p.deadlineIn) : ""}<a class="btn sm" href="review.html?id=${p.id}">${p.status === "awaiting" ? "Review" : p.status === "interview" ? "Open" : "Continue"}</a></div></div>`).join("")
+    : `<div class="empty">Nothing is waiting on you. New matches are below.</div>`;
+
+  // matches
+  let active = new Set();
+  const filterEl = document.getElementById("filters");
+  const fieldList = myCats.length ? myCats : LAN.categories.filter(c => posts.some(p => p.category === c.name));
+  filterEl.innerHTML = fieldList.map(c => chipButton(c, false)).join("");
+  document.getElementById("myFields").innerHTML = myCats.length ? myCats.map(c => `<span class="chip sub" data-hue="${c.hue}" aria-pressed="true" style="cursor:default">${esc(c.name)}</span>`).join("") : '<span class="muted small">None yet</span>';
+  filterEl.addEventListener("click", e => { const b = e.target.closest(".chip"); if (!b) return; const id = b.dataset.id; active.has(id) ? active.delete(id) : active.add(id); b.setAttribute("aria-pressed", active.has(id)); paintMatches(); });
+
+  function paintMatches() {
+    const allowed = myCats.length ? new Set(myCats.map(c => c.name)) : null;
+    let list = posts.filter(p => p.status === "found" && (!allowed || allowed.has(p.category) || p.manual));
+    if (active.size) list = list.filter(p => active.has(LAN.byName[p.category]?.id));
+    document.getElementById("matches").innerHTML = list.length ? list.map(p => `
+      <article class="m" data-hue="${p.hue || "slate"}"><div class="l1"><div><b>${esc(p.role)}</b><div class="muted small">${esc(p.company)}, ${esc(p.location)}</div></div>${dueLabel(p.deadlineIn)}</div>
+        <div class="meta"><span class="tag">${esc(p.type)}</span><span class="tag">${esc(p.pay)}</span><span class="tag">${esc(p.mode)}</span><span>${esc(p.ats)}</span></div>
+        <div class="acts"><button class="btn sm" data-prep="${p.id}" type="button">Prepare application</button><button class="btn sm ghost" data-skip="${p.id}" type="button">Not interested</button></div></article>`).join("")
+      : `<div class="empty">No matches with these filters. Remove a filter, or add a field from "Change fields and preferences."</div>`;
+  }
+  document.getElementById("matches").addEventListener("click", e => {
+    const prep = e.target.closest("[data-prep]"), skip = e.target.closest("[data-skip]");
+    const id = (prep || skip || {}).dataset?.prep || (skip || {}).dataset?.skip; if (!id) return;
+    const p = posts.find(x => x.id === id); if (!p) return;
+    p.status = prep ? "drafted" : "rejected"; save(); location.reload();
+  });
+
+  document.getElementById("paste").addEventListener("submit", e => {
+    e.preventDefault();
+    const v = document.getElementById("link").value.trim(); if (!v) return;
+    let host = v; try { host = new URL(v.startsWith("http") ? v : "https://" + v).hostname.replace(/^www\./, ""); } catch (x) {}
+    posts.unshift({ id: "u" + Date.now(), company: host, role: "Posting added from link", location: "To be read from the page", mode: "remote", category: "Business & Management", hue: "slate", type: "Internship", pay: "Unknown", deadlineIn: 30, status: "found", ats: "Detecting", manual: true });
+    save(); location.reload();
+  });
+
+  // pipeline
+  document.getElementById("cols").innerHTML = STAGES.map(([k, label]) => {
+    const items = posts.filter(p => p.status === k);
+    return `<div class="col"><h3>${label}<span>${items.length}</span></h3>${items.map(p => `<div class="k" data-hue="${p.hue || "slate"}"><b>${esc(p.role)}</b><span class="muted">${esc(p.company)}</span></div>`).join("") || '<div class="muted small">Empty</div>'}</div>`;
+  }).join("");
+  paintMatches();
+</script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+/* Lanyard design tokens: primitive -> semantic -> component.
+   Components never use raw values; they read semantic or component tokens. */
+
+:root {
+  /* ---- Primitive: color ---- */
+  --p-ink-950: #12152a;
+  --p-ink-800: #2b3050;
+  --p-ink-600: #565c7a;
+  --p-ink-400: #8a8fa9;
+  --p-ink-200: #d6d9e6;
+  --p-ink-100: #e6e8f1;
+  --p-ink-50:  #f4f6fa;
+  --p-white:   #ffffff;
+  --p-night-950: #0d1020;
+  --p-night-900: #141831;
+  --p-night-800: #1d2240;
+  --p-night-600: #3a4166;
+  --p-night-100: #eceffb;
+  --p-night-300: #a6acc9;
+  --p-cobalt-700: #1e2cb5;
+  --p-cobalt-600: #2b3ce0;
+  --p-cobalt-300: #96a0f7;
+  --p-yellow-400: #ffd84d;
+  --p-green-600: #117a55;
+  --p-green-300: #5ccb9f;
+  --p-red-600:   #c23a30;
+  --p-red-300:   #f4908a;
+  /* category hues (solid fill with white text unless --on says otherwise) */
+  --p-hue-blue:   #2b3ce0;
+  --p-hue-teal:   #0f766e;
+  --p-hue-green:  #117a55;
+  --p-hue-yellow: #f0c000;
+  --p-hue-orange: #c2410c;
+  --p-hue-rose:   #be185d;
+  --p-hue-purple: #6d3ad6;
+  --p-hue-slate:  #4a5370;
+
+  /* ---- Primitive: type, space, radius, motion ---- */
+  --p-font-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --p-font-body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --p-step--1: 0.8125rem;
+  --p-step-0:  1rem;
+  --p-step-1:  1.25rem;
+  --p-step-2:  1.5625rem;
+  --p-step-3:  clamp(1.75rem, 1.3rem + 1.6vw, 2.4rem);
+  --p-step-4:  clamp(2.3rem, 1.4rem + 3.6vw, 4.1rem);
+  --p-space-1: 4px;  --p-space-2: 8px;  --p-space-3: 12px; --p-space-4: 16px;
+  --p-space-5: 24px; --p-space-6: 32px; --p-space-7: 48px; --p-space-8: 72px; --p-space-9: 112px;
+  --p-radius-sm: 6px; --p-radius-md: 10px; --p-radius-lg: 18px; --p-radius-pill: 999px;
+  --p-ease: cubic-bezier(.2,.7,.2,1);
+}
+
+/* ---- Semantic: light (default) ---- */
+:root {
+  --bg: var(--p-ink-50);
+  --surface: var(--p-white);
+  --surface-sunk: var(--p-ink-100);
+  --text: var(--p-ink-950);
+  --text-muted: var(--p-ink-600);
+  --text-faint: var(--p-ink-400);
+  --border: var(--p-ink-200);
+  --border-strong: var(--p-ink-950);
+  --primary: var(--p-cobalt-600);
+  --primary-hover: var(--p-cobalt-700);
+  --on-primary: var(--p-white);
+  --highlight: var(--p-yellow-400);
+  --on-highlight: var(--p-ink-950);
+  --success: var(--p-green-600);
+  --danger: var(--p-red-600);
+  --focus: var(--p-cobalt-600);
+  --hue-blue: var(--p-hue-blue);     --hue-teal: var(--p-hue-teal);
+  --hue-green: var(--p-hue-green);   --hue-yellow: var(--p-hue-yellow);
+  --hue-orange: var(--p-hue-orange); --hue-rose: var(--p-hue-rose);
+  --hue-purple: var(--p-hue-purple); --hue-slate: var(--p-hue-slate);
+}
+
+/* ---- Semantic: dark ---- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: var(--p-night-950);
+    --surface: var(--p-night-900);
+    --surface-sunk: var(--p-night-800);
+    --text: var(--p-night-100);
+    --text-muted: var(--p-night-300);
+    --text-faint: var(--p-night-600);
+    --border: var(--p-night-600);
+    --border-strong: var(--p-night-100);
+    --primary: var(--p-cobalt-300);
+    --primary-hover: #b4bcfa;
+    --on-primary: var(--p-ink-950);
+    --success: var(--p-green-300);
+    --danger: var(--p-red-300);
+    --focus: var(--p-cobalt-300);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: var(--p-night-950);
+  --surface: var(--p-night-900);
+  --surface-sunk: var(--p-night-800);
+  --text: var(--p-night-100);
+  --text-muted: var(--p-night-300);
+  --text-faint: var(--p-night-600);
+  --border: var(--p-night-600);
+  --border-strong: var(--p-night-100);
+  --primary: var(--p-cobalt-300);
+  --primary-hover: #b4bcfa;
+  --on-primary: var(--p-ink-950);
+  --success: var(--p-green-300);
+  --danger: var(--p-red-300);
+  --focus: var(--p-cobalt-300);
+}
+
+/* ---- Component tokens ---- */
+:root {
+  --font-display: var(--p-font-display);
+  --font-body: var(--p-font-body);
+
+  --btn-radius: var(--p-radius-md);
+  --btn-pad-y: 11px;
+  --btn-pad-x: 18px;
+  --btn-bg: var(--primary);
+  --btn-bg-hover: var(--primary-hover);
+  --btn-fg: var(--on-primary);
+
+  --input-radius: var(--p-radius-md);
+  --input-bg: var(--surface);
+  --input-border: var(--border);
+
+  --card-radius: var(--p-radius-lg);
+  --card-bg: var(--surface);
+  --card-border: var(--border);
+
+  --chip-radius: var(--p-radius-pill);
+  --badge-radius: var(--p-radius-sm);
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --p-ease: linear; }
+}

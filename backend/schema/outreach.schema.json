@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Outreach",
+  "type": "object",
+  "required": ["name", "firm", "status"],
+  "properties": {
+    "name": {"type": "string"},
+    "firm": {"type": "string"},
+    "title": {"type": "string"},
+    "channel": {"type": "string", "description": "email, LinkedIn, ..."},
+    "status": {"enum": ["drafted", "sent", "replied", "call", "none"]},
+    "sent": {"type": "string", "format": "date"},
+    "followUp": {"type": "string", "format": "date"},
+    "nextAction": {"type": "string"},
+    "notes": {"type": "string"}
+  }
+}

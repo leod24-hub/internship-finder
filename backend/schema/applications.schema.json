@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Application",
+  "type": "object",
+  "required": ["company", "role", "status"],
+  "properties": {
+    "company": {"type": "string"},
+    "role": {"type": "string"},
+    "status": {"enum": ["found", "drafted", "awaiting", "submitted", "interview", "offer", "rejected", "skipped"],
+               "description": "found = discovered; drafted = cover letter ready; awaiting = form filled, waiting for student's yes; submitted; interview (incl. online assessments); offer; rejected; skipped"},
+    "applied": {"type": "string", "format": "date"},
+    "deadline": {"type": "string", "format": "date"},
+    "followUp": {"type": "string", "format": "date", "description": "~10 days after applying; dashboard flags when due"},
+    "nextAction": {"type": "string", "description": "One sentence telling the student exactly what to do; shown in 'Needs you'. Empty when nothing is needed."},
+    "notes": {"type": "string", "description": "Dated log, e.g. '10/2 portal: Under Review'"},
+    "link": {"type": "string", "format": "uri", "description": "Public job posting"},
+    "portal": {"type": "string", "format": "uri", "description": "Candidate portal for status checks"},
+    "mode": {"enum": ["remote", "hybrid", "onsite"]},
+    "location": {"type": "string"},
+    "category": {"type": "string", "description": "Legacy free-text label. Use category_ids (taxonomy) in the hosted version."},
+    "tier": {"enum": ["big", "mid", "small"]},
+    "source": {"type": "string", "description": "LinkedIn, Handshake, company site, ..."},
+    "coverLetter": {"type": "string", "format": "uri"}
+  }
+}
