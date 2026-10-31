@@ -3,9 +3,13 @@
 Read this first. It tells you what this project is, who does what, what the site should feel like, and what you must not claim.
 
 ## What this is
-A pre-launch product that fills out internship applications for college students, then waits for the student to review and approve before anything is sent. Working names: **Lanyard** (the app and the animated marketing page) and **AutoInterns** (the backend's internal name and a separate landing page). **The name is not decided.** Write copy so the name is easy to swap, and ask before treating either as final.
+A pre-launch **done-for-you internship application service** for college students in **every major**. It fills out applications, then waits for the student to review and approve before anything is sent.
 
-One-line pitch used on the site: *"Stop retyping your GPA into 40 different forms. Lanyard fills out internship applications for you, in any major, then waits for your OK before anything is sent."*
+**Name:** the owner's working brand is **AutoInterns** (decided 2026-10-30; the domain is not bought yet). **Lanyard** is an earlier placeholder name, and it is still the name written into the animated page in `frontend/showcase/` and the app draft in `frontend/site/`. Treat "Lanyard" in those files as a stand-in and keep copy easy to rename.
+
+**Direction the owner has given:** the first impression should read as a *service business*, not a tech company. Use a "we handle it for you" voice and keep the technology in the background. Volume auto-apply tools have a spam reputation, so do not sound like one. Nothing may be limited to finance or business majors.
+
+Example pitch from the animated page (placeholder name): *"Stop retyping your GPA into 40 different forms. Lanyard fills out internship applications for you, in any major, then waits for your OK before anything is sent."*
 
 ## Who does what
 - **Repo owner (GitHub: leod24-hub)** is in charge of the **front end and back end**: everything in `backend/` and the app code in `frontend/site/`.
@@ -23,10 +27,10 @@ There are no customers, no launch date, no real testimonials, and no real user n
 | Database schema and category list | `backend/schema/` | Designed. Includes row-level security and 29 field categories. |
 | Server and worker | `backend/server/` | In progress, per the owner. Express, Postgres, a Playwright worker, a mock job site, Claude API for drafting. Ask the owner what is working. |
 | App UI draft | `frontend/site/` | Clickable draft with sample data. Not the marketing page. |
-| **Marketing page (Lanyard)** | `frontend/showcase/` | The animated page. **This is the vibe reference.** |
-| Alternate landing page (AutoInterns) | `frontend/autointerns/` | Aimed at finance, consulting and business students. Different positioning from the Lanyard page. |
+| **Animated marketing page** | `frontend/showcase/` | Uses the placeholder name Lanyard. **This is the reference for layout, motion, and visual feel**, and the thing the owner likes best so far. |
+| AutoInterns landing page | `frontend/autointerns/` | The newer page under the working brand. Its README says it is positioned for finance, consulting and business students, which **conflicts with the owner's every-major decision**. Ask before relying on that framing. |
 
-**Open decision for the owner and JP:** one product for *every major* (Lanyard page) or a sharper wedge for *finance, consulting and business students* (AutoInterns page). Do not merge or pick between them yourself.
+**Where the two pages disagree (ask the owner, do not pick):** the name (AutoInterns vs the Lanyard placeholder), the audience framing (every major vs finance-first), the voice (service business vs the more tech-demo feel of the animated page, including its AI chat widget), and the prices.
 
 ## The vibe in short
 Full guide: `docs/BRAND_AND_VIBE.md`. The short version:
@@ -44,7 +48,7 @@ Full guide: `docs/BRAND_AND_VIBE.md`. The short version:
 4. **Keep the approval-first promise.** Nothing is submitted without the student's approval. Lanyard does not create accounts, type passwords, enter verification codes, or get around CAPTCHAs or bot checks. Do not write copy or content that suggests otherwise.
 5. **Be straight about rules.** Some sites (LinkedIn is one) prohibit automation, and some employers restrict AI tools. Marketing must not encourage students to break either.
 6. **Mark examples as examples.** The "Maya" week and the dashboard numbers on the Lanyard page are illustrative and labeled that way. Keep the labels.
-7. Pricing ($0 / $49 season pass / $19 per month on the Lanyard page) is a **draft**.
+7. Pricing is **undecided**. The animated page shows $0 / $49 season pass / $19 per month as placeholders, and the AutoInterns page proposes $0 / $179 season / $449 with human review. Both are proposals.
 
 ## Running things
 ```bash
@@ -63,4 +67,4 @@ The Lanyard page loads GSAP from a CDN, so it needs internet. The sign-up form a
 - Brand, voice, and a starter marketing plan: `docs/BRAND_AND_VIBE.md`
 
 ## Ask the owner first
-Renaming the product, changing prices, adding any claim about security or data handling, connecting a real sign-up form or analytics, anything that sends data outside the browser, and any change under `backend/`.
+Renaming the product, choosing between the two pages, changing prices, adding any claim about security or data handling, connecting a real sign-up form or analytics, anything that sends data outside the browser, and any change under `backend/`.

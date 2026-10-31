@@ -1,6 +1,8 @@
 # Brand and vibe
 
-A guide for anyone writing, designing, or promoting the product. The reference is the animated page in `frontend/showcase/`. Open it first.
+A guide for anyone writing, designing, or promoting the product. The reference for layout, motion, and visual feel is the animated page in `frontend/showcase/` (placeholder name "Lanyard"; the owner's working brand is **AutoInterns**). Open it first.
+
+**Voice note from the owner:** the first impression should read as a *service business*, not a tech company. Say "we handle it for you," keep the technology in the background, and avoid anything that sounds like a volume auto-apply tool. Where this guide and the animated page's tech-demo feel differ, ask the owner.
 
 ## Who it's for
 College students, usually sophomores and juniors, in **any major**. They are short on time, short on money, and apply to many places in bursts (fall for the next summer, and again in January to March). They live in group chats, Reddit, TikTok, Discord, and campus clubs. They have seen plenty of "AI tools" that overpromise.
@@ -58,7 +60,8 @@ Plain, specific, a little wry. Student to student, not startup to investor.
 Show the page to five students for five seconds, then ask: *"What does this sell?"* If they can't say "it applies to internships for me," fix the hero before anything else. Also ask what they'd pay, and when in the year they'd want it. Write down exact words, since real quotes are the best copy and are the only testimonials allowed here.
 
 ## Open questions for the owner and JP
-- Final name: Lanyard, AutoInterns, or something else?
-- One product for every major, or a sharper start with finance, consulting, and business students?
-- Prices and plan names (all drafts today).
+- Final name: AutoInterns is the working brand and Lanyard is a placeholder. Confirm, and confirm the domain plan.
+- Audience: the owner has said every major. The AutoInterns landing page still targets finance, consulting and business students and needs to be reconciled.
+- Voice: service business versus the tech-demo feel of the animated page.
+- Prices and plan names (all proposals: $0 / $49 / $19 on the animated page, $0 / $179 / $449 on the AutoInterns page).
 - Which channels and what budget, if any, for the first launch window.
