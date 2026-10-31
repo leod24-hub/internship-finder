@@ -39,7 +39,7 @@
       e.keys.forEach(k => {
         const kk = norm(k);
         if (e.exact) { if (n.trim() === k || n.indexOf(" " + k + " ") >= 0 && n.trim().split(" ").length <= 3) s += 3; return; }
-        if (n.indexOf(kk) >= 0) s += k.indexOf(" ") >= 0 ? 3 : 2;
+        if (n.indexOf(kk) >= 0) s += (k.indexOf(" ") >= 0 ? 3 : 2) + k.length / 100; // longer match wins a tie
       });
       if (s > bestScore) { bestScore = s; best = e; }
     });
@@ -84,7 +84,7 @@
     busy = true;
     const t = document.createElement("div"); t.className = "msg bot typing"; t.setAttribute("aria-label", "Assistant is typing"); t.innerHTML = "<i></i><i></i><i></i>"; log.appendChild(t); scrollDown();
     const delay = reduce ? 0 : Math.min(1100, 450 + entry.a.length * 4);
-    setTimeout(() => { t.remove(); addMsg(entry.a, "bot", entry.actions); setChips(entry.chips || ["What does Lanyard do?", "How much does it cost?", "Is it allowed?", "When can I use it?"].filter(c => c !== (entry.a ? "" : ""))); busy = false; }, delay);
+    setTimeout(() => { t.remove(); addMsg(entry.a, "bot", entry.actions); setChips(entry.chips || ["What does Lanyard do?", "How much does it cost?", "Is it allowed?", "When can I use it?"]); busy = false; }, delay);
   }
   function ask(q) { q = q.trim(); if (!q || busy) return; addMsg(q, "me"); setChips([]); reply(answer(q)); }
 

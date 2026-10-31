@@ -1,9 +1,11 @@
 (function () {
   const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // Without GSAP (blocked CDN, offline) the page falls back to the same static layout as reduced motion.
+  const noLib = typeof gsap === "undefined" || typeof ScrollTrigger === "undefined";
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches || noLib;
   const root = document.documentElement;
   if (reduce) root.classList.add("nomo");
-  gsap.registerPlugin(ScrollTrigger);
+  if (!noLib) gsap.registerPlugin(ScrollTrigger);
 
   /* ---------- theme switch (default is light; choice is remembered) ---------- */
   const tgl = $("#themeToggle");
@@ -110,7 +112,7 @@
     gsap.fromTo("#scan", { y: 0 }, { y: "-2.6em", duration: 1.4, repeat: -1, yoyo: true, ease: "sine.inOut" });
   }
   const hang = $("#hang"), badge = $("#badge");
-  let th = 0, w = 0, dragging = false, running = false, last = 0, moved = 0, lastTh = 0, lastT = 0;
+  let th = 0, w = 0, dragging = false, running = false, last = 0, moved = 0, lastTh = 0, lastT = 0, intro = !reduce;
   const G = 30, C = 1.15;
   function frame(t) {
     const dt = Math.min(0.033, (t - last) / 1000 || 0.016); last = t;
@@ -119,7 +121,8 @@
     if (!dragging && Math.abs(th) < 0.0015 && Math.abs(w) < 0.01) { running = false; th = 0; hang.style.transform = ""; return; }
     requestAnimationFrame(frame);
   }
-  function kick() { if (!running) { running = true; last = performance.now(); requestAnimationFrame(frame); } }
+  // Waits for the bounce-in (both write the transform) and skips a badge that is hidden on narrow screens.
+  function kick() { if (!running && !intro && hang.offsetParent) { running = true; last = performance.now(); requestAnimationFrame(frame); } }
   function angleFor(e) { const p = hang.parentElement.getBoundingClientRect(); const px = p.left + p.width / 2, py = p.top + parseFloat(getComputedStyle(hang).top); return -Math.atan2(e.clientX - px, e.clientY - py); }
   hang.addEventListener("pointerdown", e => { dragging = true; moved = 0; hang.classList.add("drag"); hang.setPointerCapture(e.pointerId); lastTh = th; lastT = performance.now(); w = 0; kick(); });
   hang.addEventListener("pointermove", e => {
@@ -133,7 +136,7 @@
   hang.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); badge.classList.toggle("flip"); w += 2; kick(); } });
   hang.tabIndex = 0; hang.setAttribute("role", "button"); hang.setAttribute("aria-label", "Name badge. Press to flip it.");
   $(".hero").addEventListener("pointermove", e => { if (dragging || reduce) return; w += (e.movementX || 0) * 0.0035; if (Math.abs(w) > 0.02) kick(); });
-  if (!reduce) gsap.from(hang, { y: -420, duration: 1.4, delay: 0.7, ease: "bounce.out", onComplete: () => { hang.style.transform = ""; w = 2.4; kick(); } });
+  if (!reduce) gsap.from(hang, { y: -420, duration: 1.4, delay: 0.7, ease: "bounce.out", onComplete: () => { intro = false; hang.style.transform = ""; w = 2.4; kick(); } });
 
   /* ---------- ribbons ---------- */
   function ribbon(el, items, dir, speed) {
@@ -306,6 +309,8 @@
     });
   }
 
-  addEventListener("load", () => ScrollTrigger.refresh());
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => ScrollTrigger.refresh());
+  if (!noLib) {
+    addEventListener("load", () => ScrollTrigger.refresh());
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => ScrollTrigger.refresh());
+  }
 })();

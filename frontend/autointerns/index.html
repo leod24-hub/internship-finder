@@ -8,34 +8,30 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='3' y='2' width='18' height='20' rx='1.5' fill='%23e3ece7' stroke='%2313233a' stroke-width='1.6'/%3E%3Cpath d='M7.5 12.5l3 3 6-7' fill='none' stroke='%231f6b4f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap">
+<script src="../site/js/theme.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
 <style>
 :root{
-  --paper:#eef1ee;      /* ledger paper */
-  --sheet:#f8faf8;
-  --ink:#13233a;        /* navy ink */
-  --ink-soft:#4a5a6e;
-  --rule:#c9d1cd;
-  --ledger:#1f6b4f;     /* ledger green: actions, approvals */
-  --ledger-soft:#dcebe3;
-  --amber:#a86e0c;      /* deadlines and things to check */
-  --amber-soft:#f6e7c8;
-  --wrong:#a3342f;
+  --paper:#e7e4dc;
+  --sheet:#ffffff;
+  --ink:#14121f;
+  --ink-soft:#5a5d70;
+  --rule:#cfcabf;
+  --ledger:#25744a;     /* done and approved */
+  --ledger-soft:#dcebe0;
+  --amber:#855410;      /* deadlines and things to check */
+  --amber-soft:#f3e3c6;
+  --wrong:#b04e2a;
   --lucite-a:rgba(255,255,255,.72);
   --lucite-b:rgba(214,229,236,.55);
-  --serif:"Libre Caslon Text",Georgia,serif;
-  --display:"Libre Caslon Display","Libre Caslon Text",Georgia,serif;
-  --sans:"Schibsted Grotesk",system-ui,sans-serif;
+  --serif:"Public Sans",system-ui,sans-serif;
+  --display:"Bricolage Grotesque","Avenir Next",system-ui,sans-serif;
+  --sans:"Public Sans",system-ui,sans-serif;
   --wrap:72rem;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --paper:#0f1824;--sheet:#152131;--ink:#e4ebf2;--ink-soft:#9fb0c2;--rule:#2b3a4d;
-  --ledger:#6cc39b;--ledger-soft:#173327;--amber:#e7b45a;--amber-soft:#3a2c12;--wrong:#ef8a84;
-  --lucite-a:rgba(60,82,108,.55);--lucite-b:rgba(26,40,58,.6);
-}}
 :root[data-theme="dark"]{
-  --paper:#0f1824;--sheet:#152131;--ink:#e4ebf2;--ink-soft:#9fb0c2;--rule:#2b3a4d;
-  --ledger:#6cc39b;--ledger-soft:#173327;--amber:#e7b45a;--amber-soft:#3a2c12;--wrong:#ef8a84;
+  --paper:#0b0d14;--sheet:#141826;--ink:#eeeae2;--ink-soft:#929ab5;--rule:#363e58;
+  --ledger:#8dbd98;--ledger-soft:#1c2d22;--amber:#e9b872;--amber-soft:#2f2616;--wrong:#e0896a;
   --lucite-a:rgba(60,82,108,.55);--lucite-b:rgba(26,40,58,.6);
 }
 *{box-sizing:border-box}
@@ -209,8 +205,22 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:1rem 2rem;justify-content:space-bet
   .tomb.set .frame>*{animation:none}
 }
 </style>
+<style>h1,h2,h3{font-weight:800;letter-spacing:-.035em;line-height:1;font-variation-settings:"opsz" 96}</style>
+<style>
+/* light and dark switch, same as the landing page's */
+.tgl{position:fixed;top:12px;right:12px;z-index:50;width:58px;height:34px;border-radius:999px;border:1.5px solid var(--rule);background:var(--sheet);cursor:pointer;padding:0;transition:background .3s,border-color .3s}
+.tgl .k{position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:var(--amber);color:var(--sheet);display:grid;place-items:center;transition:transform .5s cubic-bezier(.16,1,.3,1)}
+:root[data-theme="dark"] .tgl .k{transform:translateX(24px)}
+.tgl svg{position:absolute;width:15px;height:15px;transition:opacity .3s,transform .6s cubic-bezier(.16,1,.3,1)}
+.tgl .moon{opacity:0;transform:rotate(-90deg) scale(.5)}
+:root[data-theme="dark"] .tgl .sun{opacity:0;transform:rotate(90deg) scale(.5)}
+:root[data-theme="dark"] .tgl .moon{opacity:1;transform:none}
+.tgl:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+</style>
 </head>
 <body>
+<button class="tgl" type="button" role="switch" aria-checked="false" aria-label="Dark mode" data-theme-toggle><span class="k"><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5.3 5.3l1.7 1.7M17 17l1.7 1.7M5.3 18.7L7 17M17 7l1.7-1.7"/></svg><svg class="moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg></span></button>
+<script>document.querySelector("[data-theme-toggle]").addEventListener("click",()=>toggleTheme());syncThemeToggle();</script>
 
 <header class="wrap nav">
   <a class="mark" href="#top" aria-label="AutoInterns home">

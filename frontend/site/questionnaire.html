@@ -1,0 +1,670 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Get started | Lanyard</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='5' y='6' width='14' height='16' rx='3' fill='%23ffd84d' stroke='%2312152a' stroke-width='1.5'/%3E%3C/svg%3E">
+<script src="js/theme.js"></script>
+<link rel="stylesheet" href="css/base.css">
+<style>
+  .layout{display:grid;grid-template-columns:260px 1fr;gap:var(--p-space-7);padding:var(--p-space-7) 0 var(--p-space-9)}
+  .steps{list-style:none;margin:0;padding:0;position:sticky;top:96px;align-self:start;display:grid;gap:4px}
+  .steps button{all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:var(--p-radius-md);color:var(--text-muted);font-weight:500}
+  .steps button:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+  .steps .n{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--border);display:grid;place-items:center;font-size:.8rem;font-weight:700;flex:none}
+  .steps li[aria-current=step] button{color:var(--text);background:var(--surface-sunk)}
+  .steps li[aria-current=step] .n{background:var(--text);color:var(--bg);border-color:var(--text)}
+  .steps li.done .n{background:var(--success);border-color:var(--success);color:var(--bg)}
+  .stage{max-width:760px}
+  .stage > section{display:none}
+  .stage > section.on{display:block}
+  .stage h1{font-size:var(--p-step-3)}
+  .stage h2{font-size:1.2rem;margin-top:var(--p-space-6)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:var(--p-space-4)}
+  .three{display:grid;grid-template-columns:2fr 1fr 1fr;gap:var(--p-space-4)}
+  .wall{display:flex;flex-wrap:wrap;gap:10px;margin:var(--p-space-4) 0}
+  .rank .chip[aria-pressed="true"]::before{content:attr(data-n);width:auto;height:auto;border-radius:0;background:none;opacity:1;font-weight:700}
+  .nav{display:flex;justify-content:space-between;align-items:center;margin-top:var(--p-space-6);padding-top:var(--p-space-5);border-top:1.5px solid var(--border)}
+  .check{display:flex;gap:12px;align-items:flex-start;padding:var(--p-space-4);background:var(--surface);border:1.5px solid var(--border);border-radius:var(--p-radius-md);margin-bottom:var(--p-space-3)}
+  .check input{margin-top:5px;width:18px;height:18px;accent-color:var(--primary);flex:none}
+  .exp{margin-bottom:var(--p-space-4)}
+  .exp-head{display:flex;justify-content:space-between;align-items:center;gap:var(--p-space-3);margin-bottom:var(--p-space-3)}
+  .exp-head h3{margin:0;font-size:1rem}
+  .promise{list-style:none;margin:0 0 var(--p-space-5);padding:0;display:grid;gap:var(--p-space-2)}
+  .promise li{display:flex;gap:10px;align-items:flex-start}
+  .promise li::before{content:"";width:.55em;height:.55em;border-radius:50%;background:var(--success);margin-top:.55em;flex:none}
+  .meter{height:10px;border-radius:var(--p-radius-pill);background:var(--surface-sunk);overflow:hidden;margin:var(--p-space-3) 0}
+  .meter>i{display:block;height:100%;width:0;background:var(--success);transition:width .3s var(--p-ease)}
+  .todo{list-style:none;margin:var(--p-space-3) 0 var(--p-space-5);padding:0;display:flex;flex-wrap:wrap;gap:var(--p-space-2)}
+  .actions{display:flex;flex-wrap:wrap;gap:var(--p-space-3);margin:var(--p-space-4) 0}
+  @media(max-width:860px){
+    .layout{grid-template-columns:1fr;gap:var(--p-space-5)}
+    .steps{position:static;grid-auto-flow:column;overflow-x:auto}
+    .steps .t{display:none}
+    .two,.three{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<header class="bar" id="bar"></header>
+<main class="wrap layout">
+  <ol class="steps" id="steps" aria-label="Questionnaire steps"></ol>
+
+  <div class="stage" id="stage">
+
+    <!-- 0 About you -->
+    <section data-step="0">
+      <h1>Who are we filling these out as?</h1>
+      <p class="muted">Almost every application asks for the same things. Answer them once and you never retype them. Anything not marked optional is a question the forms will ask.</p>
+      <div class="panel small" style="margin-bottom:var(--p-space-5)"><strong>This is how you get started.</strong> Fill this out once and every application is prepared from it, so nothing gets sent with a wrong answer. It takes about ten minutes, and you can leave and come back. <strong>Draft:</strong> your answers stay in this browser for now, and nothing is sent anywhere.</div>
+      <div class="two">
+        <div class="field"><label for="name">Legal name</label><input id="name" data-k="name" type="text" autocomplete="name" placeholder="Jordan Alexis Sample"><span class="hint">Exactly as it appears on your school records.</span></div>
+        <div class="field"><label for="preferredName">Preferred name <span class="muted">(optional)</span></label><input id="preferredName" data-k="preferredName" type="text" autocomplete="nickname" placeholder="Jordan"></div>
+      </div>
+      <div class="two">
+        <div class="field"><label for="email">Email for applications</label><input id="email" data-k="email" type="email" autocomplete="email" placeholder="you@school.edu"><span class="hint">Employers reply here. Use one you check every day.</span></div>
+        <div class="field"><label for="phone">Phone</label><input id="phone" data-k="phone" type="tel" autocomplete="tel" placeholder="(555) 010-2233"></div>
+      </div>
+      <h2>Mailing address for forms</h2>
+      <div class="field"><label for="address-street">Street address <span class="muted">(optional)</span></label><input id="address-street" data-k="address.street" type="text" autocomplete="street-address" placeholder="12 Elm St, Apt 4B"></div>
+      <div class="three">
+        <div class="field"><label for="address-city">City</label><input id="address-city" data-k="address.city" type="text" autocomplete="address-level2"></div>
+        <div class="field"><label for="address-state">State</label><input id="address-state" data-k="address.state" type="text" autocomplete="address-level1" placeholder="OH"></div>
+        <div class="field"><label for="address-zip">ZIP code</label><input id="address-zip" data-k="address.zip" type="text" autocomplete="postal-code" inputmode="numeric"></div>
+      </div>
+      <div class="field"><label for="address-country">Country</label><input id="address-country" data-k="address.country" type="text" autocomplete="country-name"></div>
+      <h2>Links</h2>
+      <div class="two">
+        <div class="field"><label for="li">LinkedIn <span class="muted">(optional)</span></label><input id="li" data-k="li" type="url" placeholder="linkedin.com/in/you"></div>
+        <div class="field"><label for="site">Portfolio or website <span class="muted">(optional)</span></label><input id="site" data-k="site" type="url" placeholder="yourname.com"></div>
+      </div>
+      <div class="field"><label for="github">GitHub or other work samples <span class="muted">(optional)</span></label><input id="github" data-k="github" type="url" placeholder="github.com/you"></div>
+    </section>
+
+    <!-- 1 School -->
+    <section data-step="1">
+      <h1>School and grades.</h1>
+      <p class="muted">Employers filter on these. We use them to skip openings you aren't eligible for, like roles with a GPA cutoff, before anything is drafted.</p>
+      <div class="two">
+        <div class="field"><label for="school">School</label><input id="school" data-k="school" type="text" list="schools" placeholder="Start typing your school"><datalist id="schools"></datalist></div>
+        <div class="field"><label for="college">College or division <span class="muted">(optional)</span></label><input id="college" data-k="college" type="text" placeholder="College of Engineering"></div>
+      </div>
+      <div class="two">
+        <div class="field"><label for="degree">Degree you're working toward</label>
+          <select id="degree" data-k="degree"><option value="">Choose one</option><option>Bachelor's</option><option>Associate</option><option>Master's</option><option>Doctorate</option><option>Other</option></select></div>
+        <div class="field"><label for="major">Major</label><input id="major" data-k="major" type="text" list="majors" placeholder="Start typing your major"><datalist id="majors"></datalist></div>
+      </div>
+      <div class="field"><label for="minor">Minor <span class="muted">(optional)</span></label><input id="minor" data-k="minor" type="text"></div>
+      <div class="field" role="group" aria-labelledby="l-classYear"><span class="label" id="l-classYear">Class year</span>
+        <div class="seg" id="classYear" data-k="classYear">
+          <label><input type="radio" name="classYear" value="freshman"><span>Freshman</span></label>
+          <label><input type="radio" name="classYear" value="sophomore"><span>Sophomore</span></label>
+          <label><input type="radio" name="classYear" value="junior"><span>Junior</span></label>
+          <label><input type="radio" name="classYear" value="senior"><span>Senior</span></label>
+          <label><input type="radio" name="classYear" value="grad"><span>Graduate</span></label>
+        </div>
+      </div>
+      <div class="two">
+        <div class="field"><label for="grad">Graduation date</label><input id="grad" data-k="grad" type="text" placeholder="May 2028"></div>
+        <div class="field"><label for="officeYears">Excel and Microsoft Office experience <span class="muted">(optional)</span></label>
+          <select id="officeYears" data-k="officeYears"><option value="">Skip</option><option>None yet</option><option>Under 1 year</option><option>1 to 2 years</option><option>3 or more years</option></select></div>
+      </div>
+      <div class="two">
+        <div class="field"><label for="gpa">Overall GPA <span class="muted">(optional)</span></label><input id="gpa" data-k="gpa" type="text" inputmode="decimal" placeholder="3.6"><span class="hint">Used only to skip roles with a cutoff you don't meet, and to fill forms that ask.</span></div>
+        <div class="field"><label for="gpaMajor">Major GPA <span class="muted">(optional)</span></label><input id="gpaMajor" data-k="gpaMajor" type="text" inputmode="decimal" placeholder="3.8"></div>
+      </div>
+      <div class="check"><input id="testScores" data-k="testScores" type="checkbox"><label for="testScores"><strong>Use my test scores on applications</strong><br><span class="muted small">Leave this off and no form gets your SAT or ACT scores. Turn it on only if they help you.</span></label></div>
+      <div class="two" data-when="testScores">
+        <div class="field"><label for="sat">SAT total <span class="muted">(optional)</span></label><input id="sat" data-k="sat" type="text" inputmode="numeric" placeholder="1420"></div>
+        <div class="field"><label for="act">ACT composite <span class="muted">(optional)</span></label><input id="act" data-k="act" type="text" inputmode="numeric" placeholder="32"></div>
+      </div>
+      <div class="field"><label for="coursework">Relevant coursework <span class="muted">(optional)</span></label><textarea id="coursework" data-k="coursework" placeholder="Intro to Statistics, Organic Chemistry II, Public Speaking"></textarea><span class="hint">Separate classes with commas. Helpful if you don't have much work experience yet.</span></div>
+      <div class="field"><label for="honors">Honors, awards, scholarships <span class="muted">(optional)</span></label><textarea id="honors" data-k="honors" placeholder="Dean's list, fall 2026"></textarea></div>
+    </section>
+
+    <!-- 2 Eligibility -->
+    <section data-step="2">
+      <h1>Work rules and logistics.</h1>
+      <p class="muted">The yes-or-no questions near the end of almost every form. Getting these right up front means an application never stalls on one.</p>
+      <div class="field"><label for="auth">Work authorization</label>
+        <select id="auth" data-k="auth"><option value="">Choose one</option><option>Authorized to work in the US, no sponsorship needed</option><option>Authorized now, will need sponsorship later</option><option>Need sponsorship</option><option>Not applying in the US</option></select>
+        <span class="hint">Forms ask this in several different ways. One true answer here keeps them all consistent.</span></div>
+      <div class="two">
+        <div class="field"><label for="citizenship">Citizenship <span class="muted">(optional)</span></label>
+          <select id="citizenship" data-k="citizenship"><option value="">Ask me when a form needs it</option><option>U.S. citizen</option><option>Permanent resident</option><option>Visa holder</option><option>Other</option></select>
+          <span class="hint">Some federal and defense roles require citizenship. We flag those instead of hiding them.</span></div>
+        <div class="field"><label for="clearance">Security clearance <span class="muted">(optional)</span></label>
+          <select id="clearance" data-k="clearance"><option value="">None</option><option>I hold a clearance</option><option>I'm eligible but don't hold one</option></select></div>
+      </div>
+      <div class="field" role="group" aria-labelledby="l-adult"><span class="label" id="l-adult">Are you 18 or older?</span>
+        <div class="seg" id="adult" data-k="adult">
+          <label><input type="radio" name="adult" value="yes"><span>Yes</span></label>
+          <label><input type="radio" name="adult" value="no"><span>No</span></label>
+        </div>
+      </div>
+      <div class="field" role="group" aria-labelledby="l-background"><span class="label" id="l-background">Background check or drug screen after an offer</span>
+        <div class="seg" id="background" data-k="background">
+          <label><input type="radio" name="background" value="ask"><span>Ask me each time</span></label>
+          <label><input type="radio" name="background" value="ok"><span>I'm fine with them</span></label>
+        </div>
+      </div>
+      <h2>Dates and hours</h2>
+      <div class="two">
+        <div class="field"><label for="startDate">Earliest start date</label><input id="startDate" data-k="startDate" type="text" placeholder="May 26, 2027"></div>
+        <div class="field"><label for="endDate">Latest end date <span class="muted">(optional)</span></label><input id="endDate" data-k="endDate" type="text" placeholder="August 13, 2027"><span class="hint">Because of classes or a move-out date.</span></div>
+      </div>
+      <div class="two">
+        <div class="field"><label for="hours">Hours per week you can work <span class="muted">(optional)</span></label>
+          <select id="hours" data-k="hours"><option value="">No limit</option><option>Up to 10</option><option>Up to 20</option><option>Up to 30</option><option>Full time (40)</option></select></div>
+        <div class="field" role="group" aria-labelledby="l-license"><span class="label" id="l-license">Valid driver's license <span class="muted">(optional)</span></span>
+          <div class="seg" id="license" data-k="license">
+            <label><input type="radio" name="license" value="yes"><span>Yes</span></label>
+            <label><input type="radio" name="license" value="no"><span>No</span></label>
+          </div>
+        </div>
+      </div>
+      <h2>Location</h2>
+      <div class="field" role="group" aria-labelledby="l-relocate"><span class="label" id="l-relocate">Willing to relocate for the right role?</span>
+        <div class="seg" id="relocate" data-k="relocate">
+          <label><input type="radio" name="relocate" value="yes"><span>Yes</span></label>
+          <label><input type="radio" name="relocate" value="depends"><span>Depends on the place</span></label>
+          <label><input type="radio" name="relocate" value="no"><span>No</span></label>
+        </div>
+      </div>
+      <div class="two">
+        <div class="field"><label for="commute">Longest commute you'd do <span class="muted">(optional)</span></label><input id="commute" data-k="commute" type="text" placeholder="45 minutes, or 30 miles"></div>
+        <div class="field"><label for="secondOffice">Second office choice <span class="muted">(optional)</span></label><input id="secondOffice" data-k="secondOffice" type="text" placeholder="Chicago"><span class="hint">Some forms make you rank two locations.</span></div>
+      </div>
+      <h2>Questions every form asks</h2>
+      <div class="field" role="group" aria-labelledby="l-relatives"><span class="label" id="l-relatives">Relatives who work at the company you're applying to</span>
+        <div class="seg" id="relatives" data-k="relatives">
+          <label><input type="radio" name="relatives" value="ask"><span>Ask me for each company</span></label>
+          <label><input type="radio" name="relatives" value="none"><span>None that I know of</span></label>
+        </div>
+      </div>
+      <div class="field"><label for="heard">How did you hear about the role? <span class="muted">(optional)</span></label>
+        <select id="heard" data-k="heard"><option value="">Ask me when a form needs it</option><option>Online job board</option><option>Company website</option><option>Career fair</option><option>Campus career center</option><option>Professor or advisor</option><option>Friend or referral</option></select>
+        <span class="hint">If a form needs a person's name for a referral, we'll always ask you.</span></div>
+    </section>
+
+    <!-- 3 Targets -->
+    <section data-step="3">
+      <h1>What are you looking for?</h1>
+      <p class="muted">This is how we pick which openings to prepare. Nothing here is permanent.</p>
+      <div class="field" role="group" aria-labelledby="l-types"><span class="label" id="l-types">Type</span>
+        <div class="seg" id="types" data-k="types" data-multi>
+          <label><input type="checkbox" value="Internship"><span>Internship</span></label>
+          <label><input type="checkbox" value="Co-op"><span>Co-op</span></label>
+          <label><input type="checkbox" value="Research"><span>Research program</span></label>
+          <label><input type="checkbox" value="Fellowship"><span>Fellowship</span></label>
+          <label><input type="checkbox" value="Externship"><span>Externship</span></label>
+          <label><input type="checkbox" value="Summer program"><span>Summer program</span></label>
+        </div>
+      </div>
+      <div class="two">
+        <div class="field"><label for="term">When</label>
+          <select id="term" data-k="term"><option>Summer 2027</option><option>Fall 2027</option><option>Spring 2027</option><option>Winter 2027</option><option>Any term</option></select></div>
+        <div class="field" role="group" aria-labelledby="l-modes"><span class="label" id="l-modes">Work style</span>
+          <div class="seg" id="modes" data-k="modes" data-multi>
+            <label><input type="checkbox" value="remote"><span>Remote</span></label>
+            <label><input type="checkbox" value="hybrid"><span>Hybrid</span></label>
+            <label><input type="checkbox" value="onsite"><span>On-site</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="field"><label for="where">Places you'd work</label><input id="where" data-k="where" type="text" placeholder="Boston, Chicago, anywhere in Texas"><span class="hint">Separate places with commas.</span></div>
+      <div class="field"><label for="avoidWhere">Places to skip <span class="muted">(optional)</span></label><input id="avoidWhere" data-k="avoidWhere" type="text" placeholder="New York"></div>
+      <div class="two">
+        <div class="field" role="group" aria-labelledby="l-pay"><span class="label" id="l-pay">Pay</span>
+          <div class="seg" id="pay" data-k="pay">
+            <label><input type="radio" name="pay" value="any"><span>Show everything</span></label>
+            <label><input type="radio" name="pay" value="paid"><span>Paid only</span></label>
+            <label><input type="radio" name="pay" value="paid-stipend"><span>Paid or stipend</span></label>
+          </div>
+        </div>
+        <div class="field" data-when="pay!=any"><label for="payFloor">Lowest hourly pay you'd take <span class="muted">(optional)</span></label><input id="payFloor" data-k="payFloor" type="text" inputmode="decimal" placeholder="18"></div>
+      </div>
+
+      <h2>Your fields, in order</h2>
+      <p class="muted small">Pick up to five. The order you pick them in is the order we try them. Select a field again to take it off.</p>
+      <div class="wall rank" id="wall" role="group" aria-label="Fields"></div>
+      <p class="small muted" id="rankSum" aria-live="polite"></p>
+
+      <div class="field" role="group" aria-labelledby="l-tiers" style="margin-top:var(--p-space-5)"><span class="label" id="l-tiers">Company size</span>
+        <div class="seg" id="tiers" data-k="tiers" data-multi>
+          <label><input type="checkbox" value="big"><span>Big, well-known</span></label>
+          <label><input type="checkbox" value="mid"><span>Mid-size</span></label>
+          <label><input type="checkbox" value="small"><span>Small or startup</span></label>
+          <label><input type="checkbox" value="public"><span>Nonprofit or government</span></label>
+        </div>
+        <span class="hint">Pick none if you have no preference.</span>
+      </div>
+      <div class="field"><label for="exclusions">Companies, industries, or roles to skip <span class="muted">(optional)</span></label><textarea id="exclusions" data-k="exclusions" placeholder="No tobacco companies. No commission-only sales."></textarea></div>
+      <div class="field" role="group" aria-labelledby="l-pace"><span class="label" id="l-pace">How many applications can you review in a week?</span>
+        <div class="seg" id="pace" data-k="pace">
+          <label><input type="radio" name="pace" value="1-3"><span>1 to 3</span></label>
+          <label><input type="radio" name="pace" value="4-7"><span>4 to 7</span></label>
+          <label><input type="radio" name="pace" value="8-12"><span>8 to 12</span></label>
+          <label><input type="radio" name="pace" value="decide"><span>I'll decide each week</span></label>
+        </div>
+        <span class="hint">You approve every one, so pick a pace you can keep up with.</span>
+      </div>
+      <div class="field" role="group" aria-labelledby="l-accounts"><span class="label" id="l-accounts">Sign-in sites where you already have an account</span>
+        <div class="seg" id="accounts" data-k="accounts" data-multi>
+          <label><input type="checkbox" value="LinkedIn"><span>LinkedIn</span></label>
+          <label><input type="checkbox" value="Handshake"><span>Handshake</span></label>
+          <label><input type="checkbox" value="Workday"><span>Workday</span></label>
+          <label><input type="checkbox" value="iCIMS"><span>iCIMS</span></label>
+          <label><input type="checkbox" value="Other portals"><span>Other portals</span></label>
+        </div>
+        <span class="hint">We don't log in for you. Applications on sign-in sites are handed to you to finish, with the answers and cover letter ready.</span>
+      </div>
+    </section>
+
+    <!-- 4 Experience -->
+    <section data-step="4">
+      <h1>What have you actually done?</h1>
+      <p class="muted">Jobs, projects, clubs, research, volunteering, even a big class project. Applications are written only from what you put here and on your resume, so add what you're proud of. Leave out anything untrue and it never shows up.</p>
+      <div id="exps"></div>
+      <p><button type="button" class="btn secondary" id="addExp">Add another</button> <span class="small muted" id="expNote"></span></p>
+      <h2>Skills and credentials</h2>
+      <div class="field"><label for="skills">Skills and tools <span class="muted">(optional)</span></label><textarea id="skills" data-k="skills" placeholder="Excel, Python, Figma, patient intake, Spanish"></textarea><span class="hint">Separate with commas. Only list things you could talk about in an interview.</span></div>
+      <div class="field"><label for="languages">Languages you speak <span class="muted">(optional)</span></label><input id="languages" data-k="languages" type="text" placeholder="English (native), Spanish (conversational)"></div>
+      <div class="field"><label for="certs">Certifications and licenses <span class="muted">(optional)</span></label><input id="certs" data-k="certs" type="text" placeholder="CPR and First Aid, Google Analytics"></div>
+    </section>
+
+    <!-- 5 In your words -->
+    <section data-step="5">
+      <h1>Say it in your words.</h1>
+      <p class="muted">Forms keep asking the same open questions. Whatever you write here is the source for those answers. Keep it true and keep it yours. Short is fine.</p>
+      <div class="field"><label for="hook">Describe yourself in one sentence</label><textarea id="hook" data-k="hook" style="min-height:64px" placeholder="A sophomore in public health who has spent two summers running a food pantry's intake desk."></textarea></div>
+      <div class="field"><label for="aboutMe">Tell me about yourself <span class="muted">(optional)</span></label><textarea id="aboutMe" data-k="aboutMe" placeholder="Two or three sentences: where you are in school, what you've done, what you want next."></textarea></div>
+      <div class="field"><label for="whyField">Why this kind of work? <span class="muted">(optional)</span></label><textarea id="whyField" data-k="whyField" placeholder="What pulled you toward it? A class, a person, a problem you want to solve."></textarea></div>
+      <div class="field"><label for="teamStory">A time you worked on a team or led one <span class="muted">(optional)</span></label><textarea id="teamStory" data-k="teamStory" placeholder="What was the goal, what did you do, how did it turn out?"></textarea></div>
+      <div class="field"><label for="challengeStory">A time something went wrong and you handled it <span class="muted">(optional)</span></label><textarea id="challengeStory" data-k="challengeStory"></textarea></div>
+      <div class="field"><label for="gaps">Anything you want explained honestly <span class="muted">(optional)</span></label><textarea id="gaps" data-k="gaps" placeholder="A low semester, a gap, a changed major. Say what happened plainly."></textarea><span class="hint">We frame it truthfully if a form or letter needs it. We don't hide it or dress it up.</span></div>
+      <h2>How your letters should sound</h2>
+      <div class="two">
+        <div class="field" role="group" aria-labelledby="l-tone"><span class="label" id="l-tone">Tone</span>
+          <div class="seg" id="tone" data-k="tone">
+            <label><input type="radio" name="tone" value="plain"><span>Plain</span></label>
+            <label><input type="radio" name="tone" value="warm"><span>Warm</span></label>
+            <label><input type="radio" name="tone" value="formal"><span>Formal</span></label>
+          </div>
+        </div>
+        <div class="field" role="group" aria-labelledby="l-length"><span class="label" id="l-length">Cover letter length</span>
+          <div class="seg" id="length" data-k="length">
+            <label><input type="radio" name="length" value="short"><span>Short</span></label>
+            <label><input type="radio" name="length" value="one-page"><span>One page</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="field"><label for="neverSay">Never mention <span class="muted">(optional)</span></label><textarea id="neverSay" data-k="neverSay" style="min-height:64px" placeholder="My ex-boss's name. The class I withdrew from."></textarea></div>
+    </section>
+
+    <!-- 6 Demographics -->
+    <section data-step="6">
+      <h1>Demographic questions.</h1>
+      <p class="muted">Employers often ask about gender, race, ethnicity, veteran status, and disability. They're voluntary and they're kept separate from hiring decisions. Your call on every one.</p>
+      <div class="check"><input id="eeoDecline" data-k="eeoDecline" type="checkbox"><label for="eeoDecline"><strong>Decline all demographic questions</strong><br><span class="muted small">We answer "decline to answer" wherever the form offers that choice. If a form requires an answer, we stop and ask you. Turn this off only if you want to enter answers yourself.</span></label></div>
+      <div data-when="eeoDecline=false">
+        <p class="muted small">Leave any box blank to decline that one. Write the answer exactly as you'd pick it on a form.</p>
+        <div class="two">
+          <div class="field"><label for="eeoGender">Gender</label><input id="eeoGender" data-k="eeoGender" type="text"></div>
+          <div class="field"><label for="eeoRace">Race or ethnicity</label><input id="eeoRace" data-k="eeoRace" type="text"></div>
+        </div>
+        <div class="two">
+          <div class="field"><label for="eeoHispanic">Hispanic or Latino</label><input id="eeoHispanic" data-k="eeoHispanic" type="text" placeholder="Yes, No, or leave blank"></div>
+          <div class="field"><label for="eeoVeteran">Veteran status</label><input id="eeoVeteran" data-k="eeoVeteran" type="text"></div>
+        </div>
+        <div class="field"><label for="eeoDisability">Disability</label><input id="eeoDisability" data-k="eeoDisability" type="text"></div>
+      </div>
+    </section>
+
+    <!-- 7 Review -->
+    <section data-step="7">
+      <h1>Check it, then hand it over.</h1>
+      <p class="muted">Here is how this works with you. These rules are the plan, and they hold no matter what you answer above.</p>
+      <ul class="promise">
+        <li>Nothing is sent until you approve that application.</li>
+        <li>You create accounts and type passwords and verification codes. We never do.</li>
+        <li>CAPTCHAs and bot checks are yours. We stop and hand it back.</li>
+        <li>Sites that forbid automation get handed back to you, not worked around.</li>
+        <li>Answers come only from this questionnaire and your resume.</li>
+      </ul>
+
+      <div class="field" role="group" aria-labelledby="l-attest"><span class="label" id="l-attest">If an employer asks you to confirm you wrote your answers without AI help</span>
+        <div class="seg" id="attestation" data-k="attestation">
+          <label><input type="radio" name="attestation" value="ask"><span>Stop and ask me</span></label>
+          <label><input type="radio" name="attestation" value="skip"><span>Skip that employer</span></label>
+        </div>
+        <span class="hint">Some employers restrict AI tools. We'll never answer that one for you.</span>
+      </div>
+      <div class="check"><input id="confirmTrue" data-k="confirmTrue" type="checkbox"><label for="confirmTrue"><strong>Everything I entered is true.</strong><br><span class="muted small">Applications are only as honest as what goes in.</span></label></div>
+      <div class="check"><input id="confirmAccounts" data-k="confirmAccounts" type="checkbox"><label for="confirmAccounts"><strong>I understand I handle sign-ins myself.</strong><br><span class="muted small">That means accounts, passwords, verification codes, and CAPTCHAs.</span></label></div>
+
+      <h2 id="readyTitle">Ready check</h2>
+      <div class="meter" aria-hidden="true"><i id="meterFill"></i></div>
+      <p id="readyText" aria-live="polite"></p>
+      <ul class="todo" id="todo"></ul>
+
+      <div class="actions">
+        <a class="btn lg" id="finish" href="login.html?mode=signup&amp;next=app.html" aria-disabled="true">Create my account</a>
+        <a class="btn secondary" id="haveAcct" href="login.html?next=app.html">I already have an account</a>
+      </div>
+      <p class="small" id="finishNote" role="status"></p>
+      <h2>Keep a copy</h2>
+      <div class="actions">
+        <button type="button" class="btn secondary" id="dlMd">Download profile (.md)</button>
+        <button type="button" class="btn ghost" id="dlJson">Download as data (.json)</button>
+      </div>
+      <p class="small muted">The .md file follows the layout of <code>templates/student-profile.template.md</code>, so it drops straight into an application agent's profile. You add your resume on your dashboard.</p>
+      <p class="small"><button type="button" class="btn ghost sm" id="reset">Clear my answers</button></p>
+    </section>
+
+    <div class="nav" id="nav">
+      <button class="btn ghost" id="back" type="button">Back</button>
+      <p class="small muted" id="saveStatus" role="status" style="margin:0"></p>
+      <button class="btn" id="next" type="button">Continue</button>
+    </div>
+  </div>
+</main>
+
+<script src="js/data.js"></script>
+<script src="js/common.js"></script>
+<script>
+  // Opened from "Get started" it is a public first step (no account yet). Opened from the app it keeps the app's bar.
+  const fromApp = new URLSearchParams(location.search).get("from") === "app";
+  renderBar("questionnaire", fromApp ? "app" : "site").catch(() => {});
+  const STEPS = ["About you", "School", "Work rules", "What you want", "Experience", "In your words", "Demographics", "Review"];
+  const LAST = STEPS.length - 1;
+  const KEY = "autointerns.questionnaire.v1";
+  const MAX_EXP = 6, MAX_RANK = 5;
+  const EXP_KINDS = ["Job", "Internship", "Project", "Club or leadership", "Volunteer", "Research", "Coursework"];
+  const DEFAULTS = {
+    "address.country": "United States", types: ["Internship"], modes: ["remote", "hybrid", "onsite"], term: "Summer 2027", pay: "any",
+    background: "ask", relocate: "depends", relatives: "ask", pace: "decide", tone: "plain", length: "one-page",
+    eeoDecline: true, attestation: "ask",
+  };
+  const $ = id => document.getElementById(id);
+  const stage = $("stage");
+  const idOf = k => k.replace(".", "-");
+  const blankExp = () => ({ kind: "Job", title: "", org: "", dates: "", did: "", results: "" });
+
+  // ---- what an application cannot go without (same date and GPA rules as backend/server/src/profile.js)
+  const isEmail = v => /^\S+@\S+\.\S+$/.test(v || "");
+  const isGrad = v => /^[a-z]{3,9}\.?\s+\d{4}$/i.test(v) || /^\d{1,2}\s*[/-]\s*\d{4}$/.test(v) || /^\d{4}(-\d{1,2})?$/.test(v);
+  const isGpa = v => !v || (Number.isFinite(+v) && +v >= 0 && +v <= 5);
+  const filled = v => Array.isArray(v) ? v.length > 0 : Boolean(v);
+  const REQUIRED = [
+    { k: "name", step: 0, label: "Legal name" },
+    { k: "email", step: 0, label: "Application email", ok: isEmail, bad: "Application email looks off" },
+    { k: "phone", step: 0, label: "Phone" },
+    { k: "address.city", step: 0, label: "City" }, { k: "address.state", step: 0, label: "State" }, { k: "address.zip", step: 0, label: "ZIP code" },
+    { k: "school", step: 1, label: "School" }, { k: "degree", step: 1, label: "Degree" }, { k: "major", step: 1, label: "Major" },
+    { k: "classYear", step: 1, label: "Class year" },
+    { k: "grad", step: 1, label: "Graduation date", ok: isGrad, bad: 'Graduation date, like "May 2028"' },
+    { k: "auth", step: 2, label: "Work authorization" }, { k: "adult", step: 2, label: "18 or older" },
+    { k: "startDate", step: 2, label: "Earliest start date" },
+    { k: "types", step: 3, label: "Type of opportunity" }, { k: "modes", step: 3, label: "Work style" }, { k: "where", step: 3, label: "Places you'd work" },
+    { k: "hook", step: 5, label: "One-sentence description" },
+    { k: "confirmTrue", step: 7, label: "Confirm your answers are true" }, { k: "confirmAccounts", step: 7, label: "Confirm you handle sign-ins" },
+  ];
+  const OPTIONAL_CHECKS = [{ k: "gpa", ok: isGpa, step: 1, bad: "Overall GPA should be a number, like 3.6" }, { k: "gpaMajor", ok: isGpa, step: 1, bad: "Major GPA should be a number, like 3.8" }];
+
+  // ---- state, kept in this browser only
+  const state = { step: 0, a: { ...DEFAULTS }, experiences: [blankExp()], ranked: [] };
+  const visited = new Set([0]);
+  try {
+    const saved = JSON.parse(localStorage.getItem(KEY) || "null");
+    if (saved) {
+      Object.assign(state.a, saved.a);
+      if (Array.isArray(saved.experiences) && saved.experiences.length) state.experiences = saved.experiences;
+      if (Array.isArray(saved.ranked)) state.ranked = saved.ranked.filter(id => LAN.categories.some(c => c.id === id));
+      state.step = Math.min(Math.max(+saved.step || 0, 0), LAST);
+      for (let i = 0; i <= state.step; i++) visited.add(i);
+    }
+  } catch {}
+
+  // The rest of the site waits for this flag (see questionnaireDone in js/common.js).
+  function markDone() { try { localStorage.setItem(QUESTIONNAIRE_DONE, missing().length ? "" : "1"); } catch {} }
+
+  let timer = null;
+  function persist() {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      try { localStorage.setItem(KEY, JSON.stringify(state)); say($("saveStatus"), "Saved on this device", ""); }
+      catch { say($("saveStatus"), "Can't save in this browser. Download your answers before you close the tab.", "err"); }
+    }, 400);
+  }
+
+  // ---- reading and writing the form
+  function readEl(el) {
+    if (el.classList.contains("seg")) {
+      const picked = [...el.querySelectorAll("input:checked")].map(i => i.value);
+      return el.hasAttribute("data-multi") ? picked : (picked[0] || "");
+    }
+    return el.type === "checkbox" ? el.checked : el.value.trim();
+  }
+  function writeEl(el, val) {
+    if (el.classList.contains("seg")) {
+      const vals = [].concat(val ?? []);
+      el.querySelectorAll("input").forEach(i => { i.checked = vals.includes(i.value); });
+    } else if (el.type === "checkbox") el.checked = Boolean(val);
+    else if (el.tagName === "SELECT") { el.value = val || ""; if (el.selectedIndex < 0) el.selectedIndex = 0; }
+    else el.value = val ?? "";
+  }
+  const collect = () => stage.querySelectorAll("[data-k]").forEach(el => { state.a[el.dataset.k] = readEl(el); });
+  const restore = () => stage.querySelectorAll("[data-k]").forEach(el => writeEl(el, state.a[el.dataset.k]));
+
+  // data-when="key" shows when truthy; "key=value" or "key!=value" compare as text
+  function applyWhen() {
+    stage.querySelectorAll("[data-when]").forEach(el => {
+      const [, k, op, v] = el.dataset.when.match(/^([\w.]+)(!?=)?(.*)$/);
+      const cur = state.a[k];
+      el.hidden = !op ? !cur : op === "=" ? String(cur) !== v : String(cur) === v;
+    });
+  }
+
+  // ---- completeness
+  const missing = () => [
+    ...REQUIRED.filter(r => !filled(state.a[r.k])).map(r => ({ ...r })),
+    ...REQUIRED.filter(r => r.ok && filled(state.a[r.k]) && !r.ok(state.a[r.k])).map(r => ({ ...r, label: r.bad })),
+    ...OPTIONAL_CHECKS.filter(r => !r.ok(state.a[r.k])).map(r => ({ ...r, label: r.bad })),
+  ];
+
+  function renderSteps() {
+    const miss = missing();
+    $("steps").innerHTML = STEPS.map((s, i) => {
+      const left = miss.filter(m => m.step === i).length;
+      const done = visited.has(i) && i !== state.step && left === 0;
+      return `<li ${i === state.step ? 'aria-current="step"' : ""} class="${done ? "done" : ""}"><button type="button" data-go="${i}"><span class="n">${done ? "&#10003;" : i + 1}</span><span class="t">${s}${left ? ` <span class="small">(${left} left)</span>` : ""}</span></button></li>`;
+    }).join("");
+  }
+  $("steps").addEventListener("click", e => { const b = e.target.closest("[data-go]"); if (b) go(+b.dataset.go); });
+
+  function renderReady() {
+    const miss = missing(), total = REQUIRED.length;
+    const done = total - REQUIRED.filter(r => !filled(state.a[r.k]) || (r.ok && !r.ok(state.a[r.k]))).length;
+    $("meterFill").style.width = Math.round(100 * done / total) + "%";
+    $("readyText").textContent = miss.length ? `${done} of ${total} required answers done. These still need you:` : `All ${total} required answers are in. You're ready to hand this over.`;
+    const ready = !miss.length;
+    $("finish").setAttribute("aria-disabled", !ready);
+    $("finishNote").textContent = ready ? "" : "Finish the required answers above to continue.";
+    $("todo").innerHTML = miss.map(m => `<li><button type="button" class="btn secondary sm" data-fix="${esc(m.k)}" data-step="${m.step}">${esc(m.label)}</button></li>`).join("");
+  }
+  $("todo").addEventListener("click", e => {
+    const b = e.target.closest("[data-fix]"); if (!b) return;
+    go(+b.dataset.step);
+    const el = $(idOf(b.dataset.fix)); if (el) el.focus({ preventScroll: false });
+  });
+
+  // ---- field ranking: the order you pick is the order we try
+  function renderWall() {
+    $("wall").innerHTML = LAN.categories.map(c => {
+      const n = state.ranked.indexOf(c.id) + 1;
+      return `<button type="button" class="chip" data-hue="${c.hue}" data-id="${c.id}" data-n="${n}" aria-pressed="${n > 0}">${esc(c.name)}</button>`;
+    }).join("");
+    const names = state.ranked.map(id => LAN.categories.find(c => c.id === id).name);
+    $("rankSum").textContent = names.length ? `Your order: ${names.map((n, i) => `${i + 1}. ${n}`).join(", ")}.` : "No fields picked yet. Skip this and we'll ask again before preparing anything.";
+  }
+  $("wall").addEventListener("click", e => {
+    const b = e.target.closest(".chip"); if (!b) return;
+    const id = b.dataset.id, i = state.ranked.indexOf(id);
+    if (i >= 0) state.ranked.splice(i, 1);
+    else if (state.ranked.length >= MAX_RANK) { $("rankSum").textContent = `You can rank up to ${MAX_RANK}. Take one off to add another.`; return; }
+    else state.ranked.push(id);
+    renderWall(); persist();
+    document.querySelector(`#wall [data-id="${id}"]`).focus();
+  });
+
+  // ---- experience blocks
+  function renderExps(focusLast) {
+    $("exps").innerHTML = state.experiences.map((x, i) => `<div class="exp panel" role="group" aria-label="Experience ${i + 1}">
+      <div class="exp-head"><h3>Experience ${i + 1}</h3>${state.experiences.length > 1 ? `<button type="button" class="btn ghost sm" data-del="${i}">Remove</button>` : ""}</div>
+      <div class="two">
+        <div class="field"><label for="exp-${i}-kind">What kind</label><select id="exp-${i}-kind" data-exp="${i}.kind">${EXP_KINDS.map(k => `<option ${k === x.kind ? "selected" : ""}>${k}</option>`).join("")}</select></div>
+        <div class="field"><label for="exp-${i}-title">Your role or title</label><input id="exp-${i}-title" data-exp="${i}.title" type="text" value="${esc(x.title)}" placeholder="Intake volunteer"></div>
+      </div>
+      <div class="two">
+        <div class="field"><label for="exp-${i}-org">Where</label><input id="exp-${i}-org" data-exp="${i}.org" type="text" value="${esc(x.org)}" placeholder="Campus Food Pantry"></div>
+        <div class="field"><label for="exp-${i}-dates">When</label><input id="exp-${i}-dates" data-exp="${i}.dates" type="text" value="${esc(x.dates)}" placeholder="Jun 2026 to Aug 2026"></div>
+      </div>
+      <div class="field"><label for="exp-${i}-did">What you did</label><textarea id="exp-${i}-did" data-exp="${i}.did" placeholder="Checked in about 40 families a shift and kept the sign-in sheet.">${esc(x.did)}</textarea></div>
+      <div class="field"><label for="exp-${i}-results">What came of it <span class="muted">(optional)</span></label><textarea id="exp-${i}-results" data-exp="${i}.results" style="min-height:64px">${esc(x.results)}</textarea><span class="hint">Real numbers only. We never add or round up.</span></div>
+    </div>`).join("");
+    $("addExp").disabled = state.experiences.length >= MAX_EXP;
+    $("expNote").textContent = state.experiences.length >= MAX_EXP ? `That's the most we can use (${MAX_EXP}). Keep your strongest.` : "";
+    if (focusLast) $(`exp-${state.experiences.length - 1}-title`).focus();
+  }
+  $("addExp").addEventListener("click", () => { if (state.experiences.length < MAX_EXP) { state.experiences.push(blankExp()); renderExps(true); persist(); } });
+  $("exps").addEventListener("click", e => {
+    const b = e.target.closest("[data-del]"); if (!b) return;
+    state.experiences.splice(+b.dataset.del, 1); renderExps(); persist(); $("addExp").focus();
+  });
+
+  // ---- export
+  const needsSponsor = a => /need sponsorship|will need/i.test(a || "");
+  const fieldNames = () => state.ranked.map(id => LAN.categories.find(c => c.id === id).name);
+  const usedExps = () => state.experiences.filter(x => x.title || x.org || x.did);
+
+  function toJson() {
+    const a = state.a, out = {};
+    Object.entries(a).forEach(([k, v]) => { if (!k.startsWith("address.")) out[k] = v; });
+    out.address = Object.fromEntries(["street", "city", "state", "zip", "country"].map(k => [k, a["address." + k] || ""]));
+    out.needsSponsorship = a.auth ? needsSponsor(a.auth) : null;
+    out.fields = fieldNames();
+    out.experiences = usedExps();
+    return { version: 1, savedAt: new Date().toISOString(), ...out };
+  }
+
+  function toMarkdown() {
+    const a = state.a, none = "not provided", L = (label, v) => `- ${label}: ${(Array.isArray(v) ? v.join(", ") : v) || none}`;
+    const addr = ["street", "city", "state", "zip"].map(k => a["address." + k]).filter(Boolean).join(", ");
+    const decline = a.eeoDecline;
+    const eeo = v => (decline || !v) ? "decline to answer" : v;
+    const yes = v => v === "yes" ? "yes" : v === "no" ? "no" : none;
+    const lines = [
+      `# Student Internship Profile (${a.term || "Summer 2027"})`,
+      `Filled in from the application questionnaire on ${new Date().toISOString().slice(0, 10)}. Every application reads from this file. Never invent anything that isn't here or on the resume. Where a line says "not provided" or "ask", stop and ask the student first.`,
+      "", "## Contact & standard form answers",
+      L("Legal name", a.name), L("Preferred name", a.preferredName), L("Application email", a.email), L("Phone", a.phone),
+      L("Mailing address (for forms)", addr && `${addr}, ${a["address.country"] || "United States"}`),
+      L("LinkedIn", a.li), L("Portfolio or website", a.site), L("GitHub or work samples", a.github),
+      `- Work authorization: ${a.auth || none} · Sponsorship needed now or later: ${a.auth ? (needsSponsor(a.auth) ? "yes" : "no") : none}`,
+      L("Citizenship", a.citizenship || "ask when a form needs it"), L("Security clearance", a.clearance || "none"),
+      L("18 or older", yes(a.adult)), L("Background check or drug screen", a.background === "ok" ? "fine with them" : "ask each time"),
+      L("School · College", [a.school, a.college].filter(Boolean).join(" · ")),
+      L("Degree · Major · Minor", [a.degree, a.major, a.minor].filter(Boolean).join(" · ")),
+      L("Expected graduation", a.grad), L("Class year", a.classYear),
+      L("GPA (overall / major)", [a.gpa, a.gpaMajor].some(Boolean) ? `${a.gpa || "n/a"} / ${a.gpaMajor || "n/a"}` : ""),
+      L("Test scores", a.testScores ? [a.sat && `SAT ${a.sat}`, a.act && `ACT ${a.act}`].filter(Boolean) : "do not use"),
+      L("Years of experience with Excel / Microsoft Office", a.officeYears), L("Relevant coursework", a.coursework), L("Honors and awards", a.honors),
+      L("Relatives at target firms", a.relatives === "none" ? "none that the student knows of" : "ask per company"),
+      L("How did you hear about the role", a.heard || "ask when a form needs it"),
+      L("Earliest start · latest end", [a.startDate, a.endDate].filter(Boolean).join(" · ")), L("Hours per week", a.hours || "no limit"),
+      L("Valid driver's license", yes(a.license)),
+      L("Office preference when a form requires a second choice", a.secondOffice),
+      L("Willing to relocate / commute radius", `${{ yes: "yes", no: "no", depends: "depends on the place" }[a.relocate] || none}${a.commute ? ` · ${a.commute}` : ""}`),
+      "", "## EEO / demographics",
+      "Default: decline wherever a decline option exists. Fill these only if the student chose to answer:",
+      L("Gender", eeo(a.eeoGender)), L("Race/ethnicity", eeo(a.eeoRace)), L("Hispanic or Latino", eeo(a.eeoHispanic)),
+      L("Veteran status", eeo(a.eeoVeteran)), L("Disability", eeo(a.eeoDisability)),
+      "", "## Targets",
+      L("Program types", a.types), L("Term", a.term), L("Industries / functions in priority order", fieldNames().map((n, i) => `${i + 1}. ${n}`)),
+      L("Firm tiers", (a.tiers || []).map(t => ({ big: "big names", mid: "mid-size", small: "small or startup", public: "nonprofit or government" }[t]))),
+      L("Locations to include", a.where), L("Locations to skip", a.avoidWhere), L("Remote / hybrid / on-site OK", a.modes),
+      L("Pay", `${{ any: "show everything", paid: "paid only", "paid-stipend": "paid or stipend" }[a.pay] || "show everything"}${a.payFloor ? `, floor $${a.payFloor}/hr` : ""}`),
+      L("Exclusions", a.exclusions), L("Applications the student can review per week", a.pace === "decide" ? "decides each week" : a.pace),
+      L("Sign-in sites the student has an account on (hand back, never log in)", a.accounts),
+      "", "## Rules",
+      "- Approval: ask one application at a time before any submit or send.",
+      "- The student creates accounts, enters passwords and codes, and solves CAPTCHAs.",
+      "- Sites that forbid automation are handed back to the student, not worked around.",
+      "- Networking messages are drafts only, approved one by one.",
+      "- Mention only what is on the resume or in this file.",
+      `- Employer asks for an AI-free attestation: ${a.attestation === "skip" ? "skip that employer" : "stop and ask the student"}.`,
+      "", "## Experience",
+      ...(usedExps().length ? usedExps().flatMap(x => [`- ${[x.kind, x.title, x.org, x.dates].filter(Boolean).join(" · ")}`, ...(x.did ? [`  - Did: ${x.did}`] : []), ...(x.results ? [`  - Result: ${x.results}`] : [])]) : [`- ${none}`]),
+      L("Skills and tools", a.skills), L("Languages", a.languages), L("Certifications", a.certs),
+      "", "## Positioning",
+      L("Hook (one sentence)", a.hook), L("Tell me about yourself", a.aboutMe), L("Why this field", a.whyField),
+      L("Team or leadership story", a.teamStory), L("Challenge story", a.challengeStory),
+      L("Gaps to frame honestly", a.gaps),
+      "", "## Style",
+      L("Tone", a.tone), L("Cover letter length", a.length === "short" ? "short" : "one page"), L("Never mention", a.neverSay), "",
+    ];
+    return lines.join("\n");
+  }
+
+  function download(name, text, type) {
+    const url = URL.createObjectURL(new Blob([text], { type }));
+    const link = Object.assign(document.createElement("a"), { href: url, download: name });
+    document.body.appendChild(link); link.click(); link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+  $("dlMd").addEventListener("click", () => download("autointerns-profile.md", toMarkdown(), "text/markdown"));
+  $("dlJson").addEventListener("click", () => download("autointerns-profile.json", JSON.stringify(toJson(), null, 2), "application/json"));
+  $("reset").addEventListener("click", () => {
+    if (!confirm("Clear every answer on this device? This can't be undone.")) return;
+    try { localStorage.removeItem(KEY); } catch {}
+    location.reload();
+  });
+
+  // ---- navigation
+  function go(n) {
+    collect();
+    state.step = n; visited.add(n);
+    stage.querySelectorAll(":scope > section").forEach(s => s.classList.toggle("on", +s.dataset.step === n));
+    $("back").style.visibility = n === 0 ? "hidden" : "visible";
+    $("next").hidden = n === LAST;
+    markDone();
+    if (n === LAST) renderReady();
+    applyWhen(); renderSteps(); persist();
+    window.scrollTo({ top: 0 });
+  }
+  $("next").addEventListener("click", () => go(Math.min(state.step + 1, LAST)));
+  $("back").addEventListener("click", () => go(Math.max(state.step - 1, 0)));
+
+  function onEdit(e) {
+    const t = e.target;
+    if (t.dataset.exp) { const [i, key] = t.dataset.exp.split("."); state.experiences[+i][key] = t.value; persist(); return; }
+    if (!t.closest("[data-k]")) return;
+    collect(); markDone(); applyWhen(); renderSteps(); if (state.step === LAST) renderReady(); persist();
+  }
+  stage.addEventListener("input", onEdit);
+  stage.addEventListener("change", onEdit);
+
+  // The last step's main button: create an account, or head back to the dashboard when opened from the app.
+  $("finish").addEventListener("click", e => { if (e.currentTarget.getAttribute("aria-disabled") === "true") { e.preventDefault(); $("finishNote").textContent = "Finish the required answers above to continue."; } });
+  if (fromApp) { $("finish").textContent = "Back to my applications"; $("finish").href = "app.html"; $("haveAcct").hidden = true; }
+
+  // ---- start
+  $("schools").innerHTML = LAN.schools.map(s => `<option value="${esc(s)}">`).join("");
+  $("majors").innerHTML = LAN.majors.map(s => `<option value="${esc(s)}">`).join("");
+  restore(); renderWall(); renderExps();
+  go(state.step);
+</script>
+</body>
+</html>
