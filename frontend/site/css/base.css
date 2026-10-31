@@ -34,7 +34,7 @@ a{color:var(--primary);text-underline-offset:3px}
 .field{display:grid;gap:var(--p-space-2);margin-bottom:var(--p-space-4)}
 .field>label,.field>.label{font-weight:600;font-size:.92rem}
 .field .hint{font-size:var(--p-step--1);color:var(--text-muted)}
-input[type=text],input[type=email],input[type=url],select,textarea{
+input:not([type]),input[type=text],input[type=email],input[type=url],input[type=password],input[type=tel],select,textarea{
   width:100%;font:inherit;color:var(--text);background:var(--input-bg);border:1.5px solid var(--input-border);
   border-radius:var(--input-radius);padding:11px 13px}
 textarea{min-height:96px;resize:vertical}
@@ -86,3 +86,9 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px soli
 .bar .right{margin-left:auto;display:flex;gap:var(--p-space-2);align-items:center}
 .avatar{width:36px;height:36px;border-radius:50%;background:var(--highlight);color:var(--on-highlight);display:grid;place-items:center;font-weight:700;font-size:.85rem}
 @media(max-width:720px){.bar nav{display:none}}
+
+/* Status messages from the API (role="status") */
+[role="status"].err{color:var(--danger)}
+[role="status"].ok{color:var(--success)}
+a.k{display:block}
+[hidden]{display:none !important}

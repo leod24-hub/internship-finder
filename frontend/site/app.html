@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dashboard | Lanyard</title>
+<title>My applications | Lanyard</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='5' y='6' width='14' height='16' rx='3' fill='%23ffd84d' stroke='%2312152a' stroke-width='1.5'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="css/base.css">
 <style>
@@ -51,7 +51,7 @@
 <main class="wrap">
   <div class="top">
     <div>
-      <h1 id="hello">Your dashboard</h1>
+      <h1 id="hello">Here's where things stand.</h1>
       <p class="muted" id="sub" style="margin:6px 0 0"></p>
     </div>
     <div class="figures" id="figures"></div>
@@ -63,17 +63,18 @@
       <div class="queue" id="queue"></div>
 
       <h2 class="s" style="margin-top:var(--p-space-8)">New matches</h2>
+      <p class="small" id="pasteStatus" role="status" style="margin:0 0 8px"></p>
       <form class="paste" id="paste"><label class="sr" for="link">Posting link</label><input id="link" type="url" placeholder="Paste a link to any internship posting"><button class="btn" type="submit">Add posting</button></form>
       <div class="filters" id="filters" role="group" aria-label="Filter matches by field"></div>
       <div id="matches" aria-live="polite"></div>
     </div>
 
     <aside class="side">
-      <div class="panel">
+      <div class="panel" id="usagePanel">
         <h3>This month</h3>
-        <p class="muted small" style="margin-bottom:6px">Assisted applications on the Free plan</p>
-        <div class="meter" role="img" aria-label="2 of 3 used"><i></i></div>
-        <p class="small" style="margin:0">2 of 3 used. Resets Dec 1.</p>
+        <p class="muted small" style="margin-bottom:6px">Applications we handled on the Free plan</p>
+        <div class="meter" role="img" id="meter" aria-label=""><i id="meterFill"></i></div>
+        <p class="small" style="margin:0" id="usageText"></p>
         <p style="margin:var(--p-space-3) 0 0"><a class="btn sm" href="index.html#pricing">See plans</a></p>
       </div>
       <div class="panel">
@@ -81,9 +82,9 @@
         <div class="filters" id="myFields" style="margin-bottom:var(--p-space-3)"></div>
         <a href="onboarding.html" class="small">Change fields and preferences</a>
       </div>
-      <div class="panel">
+      <div class="panel" id="headsUp" hidden>
         <h3>Heads up</h3>
-        <p class="small muted" style="margin-bottom:8px">Two sites in your list need you to sign in or confirm a code before Lanyard can continue. You'll get a prompt when you open them.</p>
+        <p class="small muted" style="margin-bottom:8px" id="headsUpText"></p>
       </div>
     </aside>
   </div>
@@ -97,72 +98,106 @@
 <script src="js/data.js"></script>
 <script src="js/common.js"></script>
 <script>
-  renderBar("app", "app");
-  const profile = store.get("profile", {});
-  const myCats = LAN.categories.filter(c => profile.cats && profile.cats[c.id]);
-  const first = (profile.name || "").split(" ")[0];
-  document.getElementById("hello").textContent = first ? `Hi ${first}, here's where things stand.` : "Here's where things stand.";
-  document.getElementById("sub").textContent = myCats.length ? `Showing matches in ${myCats.length} ${myCats.length === 1 ? "field" : "fields"}.` : "You haven't picked fields yet, so everything is shown.";
+  const $ = id => document.getElementById(id);
+  const hue = cat => (LAN.byName[cat] || {}).hue || "slate";
+  const WORKING = ["queued", "filling", "submitting"];
+  const STAGES = [["found", "Saved"], ["awaiting", "Waiting on you"], ["submitted", "Submitted"], ["interview", "Interview"], ["offer", "Offer"], ["closed", "Closed"]];
+  let apps = [], matches = [], profile = null, active = new Set(), poll = null;
 
-  const posts = store.get("posts", null) || LAN.postings;
-  const save = () => store.set("posts", posts);
-  const STAGES = [["found", "Found"], ["drafted", "Drafted"], ["awaiting", "Awaiting approval"], ["submitted", "Submitted"], ["interview", "Interview"], ["rejected", "Closed"]];
+  renderBar("app", "app").then(me => {
+    if (!me) return;
+    if (me.usage.limit == null) { $("usagePanel").hidden = true; return; }
+    const used = Math.min(me.usage.used, me.usage.limit);
+    $("meterFill").style.width = `${(used / me.usage.limit) * 100}%`;
+    $("meter").setAttribute("aria-label", `${used} of ${me.usage.limit} used`);
+    const next = new Date(); next.setMonth(next.getMonth() + 1, 1);
+    $("usageText").textContent = `${used} of ${me.usage.limit} used. Resets ${next.toLocaleDateString(undefined, { month: "short", day: "numeric" })}.`;
+  });
 
-  // figures
-  const cnt = s => posts.filter(p => p.status === s).length;
-  document.getElementById("figures").innerHTML =
-    `<div><b>${cnt("submitted") + cnt("interview")}</b><span>Applied</span></div><div><b>${cnt("interview")}</b><span>Interviews</span></div><div><b>${cnt("awaiting")}</b><span>Waiting on you</span></div>`;
-
-  // needs you
-  const need = posts.filter(p => p.status === "awaiting" || (p.status === "drafted" && p.deadlineIn <= 7) || p.status === "interview")
-    .sort((a, b) => a.deadlineIn - b.deadlineIn);
-  document.getElementById("needCount").textContent = need.length;
-  const nextAction = p => p.status === "awaiting" ? "Review your answers and approve." : p.status === "interview" ? "Interview invite received. Pick a time." : "Finish the cover letter before the deadline.";
-  document.getElementById("queue").innerHTML = need.length ? need.map(p => `
-    <div class="q" data-hue="${p.hue}"><span class="bar-d"></span>
-      <div><b>${esc(p.role)}</b> <span class="muted">at ${esc(p.company)}</span><div class="act">${nextAction(p)}</div></div>
-      <div style="display:flex;gap:10px;align-items:center">${p.status === "awaiting" ? dueLabel(p.deadlineIn) : ""}<a class="btn sm" href="review.html?id=${p.id}">${p.status === "awaiting" ? "Review" : p.status === "interview" ? "Open" : "Continue"}</a></div></div>`).join("")
-    : `<div class="empty">Nothing is waiting on you. New matches are below.</div>`;
-
-  // matches
-  let active = new Set();
-  const filterEl = document.getElementById("filters");
-  const fieldList = myCats.length ? myCats : LAN.categories.filter(c => posts.some(p => p.category === c.name));
-  filterEl.innerHTML = fieldList.map(c => chipButton(c, false)).join("");
-  document.getElementById("myFields").innerHTML = myCats.length ? myCats.map(c => `<span class="chip sub" data-hue="${c.hue}" aria-pressed="true" style="cursor:default">${esc(c.name)}</span>`).join("") : '<span class="muted small">None yet</span>';
-  filterEl.addEventListener("click", e => { const b = e.target.closest(".chip"); if (!b) return; const id = b.dataset.id; active.has(id) ? active.delete(id) : active.add(id); b.setAttribute("aria-pressed", active.has(id)); paintMatches(); });
-
-  function paintMatches() {
-    const allowed = myCats.length ? new Set(myCats.map(c => c.name)) : null;
-    let list = posts.filter(p => p.status === "found" && (!allowed || allowed.has(p.category) || p.manual));
-    if (active.size) list = list.filter(p => active.has(LAN.byName[p.category]?.id));
-    document.getElementById("matches").innerHTML = list.length ? list.map(p => `
-      <article class="m" data-hue="${p.hue || "slate"}"><div class="l1"><div><b>${esc(p.role)}</b><div class="muted small">${esc(p.company)}, ${esc(p.location)}</div></div>${dueLabel(p.deadlineIn)}</div>
-        <div class="meta"><span class="tag">${esc(p.type)}</span><span class="tag">${esc(p.pay)}</span><span class="tag">${esc(p.mode)}</span><span>${esc(p.ats)}</span></div>
-        <div class="acts"><button class="btn sm" data-prep="${p.id}" type="button">Prepare application</button><button class="btn sm ghost" data-skip="${p.id}" type="button">Not interested</button></div></article>`).join("")
-      : `<div class="empty">No matches with these filters. Remove a filter, or add a field from "Change fields and preferences."</div>`;
+  async function load() {
+    [apps, matches, profile] = await Promise.all([api("GET", "/applications"), api("GET", "/postings/matches"), profile || api("GET", "/profile")]);
+    paint();
+    clearTimeout(poll);
+    if (apps.some(a => WORKING.includes(a.fill_state))) poll = setTimeout(load, 3000);
   }
-  document.getElementById("matches").addEventListener("click", e => {
-    const prep = e.target.closest("[data-prep]"), skip = e.target.closest("[data-skip]");
-    const id = (prep || skip || {}).dataset?.prep || (skip || {}).dataset?.skip; if (!id) return;
-    const p = posts.find(x => x.id === id); if (!p) return;
-    p.status = prep ? "drafted" : "rejected"; save(); location.reload();
+
+  function nextStep(a) {
+    if (a.fill_state === "queued" || a.fill_state === "filling") return ["We're filling out the application.", null];
+    if (a.fill_state === "submitting") return ["We're submitting it now.", null];
+    if (a.fill_state === "ready") return ["Ready for your OK. Review your answers and approve.", `<a class="btn sm" href="review.html?id=${a.id}">Review</a>`];
+    if (a.fill_state === "needs_you") return [a.fill_note || "This one needs you to finish on the employer's site.", `<a class="btn sm" href="review.html?id=${a.id}">Open</a>`];
+    if (a.fill_state === "failed") return [a.fill_note, `<button class="btn sm" data-prep="${a.id}" type="button">Try again</button>`];
+    if (a.status === "interview") return ["Interview stage. Keep an eye on your email.", `<a class="btn sm secondary" href="${esc(a.link || "#")}" target="_blank" rel="noopener">Posting</a>`];
+    if (a.status === "found") return ["Saved. We haven't started this one.", `<button class="btn sm" data-prep="${a.id}" type="button">Prepare application</button>`];
+    return null;
+  }
+
+  function paint() {
+    const first = (profile.name || "").split(" ")[0];
+    $("hello").textContent = first ? `Hi ${first}, here's where things stand.` : "Here's where things stand.";
+    const myFields = profile.fields || [];
+    $("sub").textContent = myFields.length ? `Showing matches in ${myFields.length} ${myFields.length === 1 ? "field" : "fields"}.` : "You haven't picked fields yet, so every opening is shown.";
+    $("myFields").innerHTML = myFields.length ? myFields.map(f => `<span class="chip sub" data-hue="${hue(f.name)}" aria-pressed="true" style="cursor:default">${esc(f.name)}</span>`).join("") : '<span class="muted small">None yet</span>';
+    if (!profile.resumeName) { $("headsUp").hidden = false; $("headsUpText").innerHTML = 'Add your resume before we can prepare applications. <a href="onboarding.html">Add it now</a>.'; }
+
+    const cnt = f => apps.filter(f).length;
+    $("figures").innerHTML = `<div><b>${cnt(a => ["submitted", "interview", "offer"].includes(a.status))}</b><span>Applied</span></div><div><b>${cnt(a => a.status === "interview")}</b><span>Interviews</span></div><div><b>${cnt(a => ["ready", "needs_you"].includes(a.fill_state))}</b><span>Waiting on you</span></div>`;
+
+    const open = apps.filter(a => !["rejected", "skipped", "submitted", "offer"].includes(a.status) || WORKING.includes(a.fill_state));
+    const queue = open.map(a => [a, nextStep(a)]).filter(([, n]) => n).sort(([a], [b]) => (a.deadline_in ?? 999) - (b.deadline_in ?? 999));
+    const waiting = queue.filter(([a]) => ["ready", "needs_you", "failed"].includes(a.fill_state)).length;
+    $("needCount").textContent = waiting;
+    $("needCount").hidden = !waiting;
+    $("queue").innerHTML = queue.length ? queue.map(([a, [text, action]]) => `
+      <div class="q" data-hue="${hue(a.category)}"><span class="bar-d"></span>
+        <div><b>${esc(a.role)}</b> <span class="muted">at ${esc(a.company)}</span><div class="act">${esc(text)}</div></div>
+        <div style="display:flex;gap:10px;align-items:center">${WORKING.includes(a.fill_state) ? '<span class="tag">Working on it</span>' : dueLabel(a.deadline_in)}${action || ""}</div></div>`).join("")
+      : `<div class="empty">Nothing is waiting on you. Pick an opening below and we'll get started.</div>`;
+
+    const fieldList = LAN.categories.filter(c => matches.some(m => m.category === c.name));
+    $("filters").innerHTML = fieldList.map(c => chipButton(c, active.has(c.id))).join("");
+    let list = matches;
+    if (active.size) list = list.filter(m => active.has((LAN.byName[m.category] || {}).id));
+    $("matches").innerHTML = list.length ? list.map(m => `
+      <article class="m" data-hue="${hue(m.category)}"><div class="l1"><div><b>${esc(m.role)}</b><div class="muted small">${esc(m.company)}${m.location ? ", " + esc(m.location) : ""}</div></div>${dueLabel(m.deadline_in)}</div>
+        <div class="meta">${m.category ? `<span class="tag">${esc(m.category)}</span>` : ""}<span class="tag">${m.opportunity_type === "co_op" ? "Co-op" : "Internship"}</span><span class="tag">${m.paid === "no" ? "Unpaid" : m.paid === "yes" ? "Paid" : "Pay not listed"}</span>${m.mode ? `<span class="tag">${esc(m.mode)}</span>` : ""}</div>
+        <div class="acts"><button class="btn sm" data-new="${esc(m.id)}" type="button">Prepare application</button><button class="btn sm ghost" data-save="${esc(m.id)}" type="button">Save for later</button><button class="btn sm ghost" data-skip="${esc(m.id)}" type="button">Not interested</button></div></article>`).join("")
+      : `<div class="empty">${matches.length ? "No openings with these filters. Remove a filter to see more." : "No new openings in your fields right now. Paste a link above to any posting you find, or add fields from \"Change fields and preferences.\""}</div>`;
+
+    $("cols").innerHTML = STAGES.map(([k, label]) => {
+      const items = apps.filter(a => (k === "closed" ? ["rejected", "skipped"].includes(a.status) : k === "found" ? ["found", "drafted"].includes(a.status) : a.status === k));
+      return `<div class="col"><h3>${label}<span>${items.length}</span></h3>${items.map(a => `<a class="k" data-hue="${hue(a.category)}" href="review.html?id=${a.id}" style="text-decoration:none;color:inherit"><b>${esc(a.role)}</b><span class="muted">${esc(a.company)}</span></a>`).join("") || '<div class="muted small">Empty</div>'}</div>`;
+    }).join("");
+  }
+
+  $("filters").addEventListener("click", e => { const b = e.target.closest(".chip"); if (!b) return; const id = b.dataset.id; active.has(id) ? active.delete(id) : active.add(id); paint(); });
+
+  async function act(btn, fn) {
+    btn.disabled = true;
+    try { await fn(); await load(); } catch (e) { say($("pasteStatus"), e.message, "err"); btn.disabled = false; }
+  }
+  document.addEventListener("click", e => {
+    const b = e.target.closest("[data-prep], [data-new], [data-save], [data-skip]");
+    if (!b) return;
+    if (b.dataset.prep) act(b, () => api("POST", `/applications/${b.dataset.prep}/prepare`));
+    else if (b.dataset.new) act(b, async () => { const a = await api("POST", "/applications", { posting_id: b.dataset.new }); await api("POST", `/applications/${a.id}/prepare`); });
+    else if (b.dataset.save) act(b, () => api("POST", "/applications", { posting_id: b.dataset.save }));
+    else if (b.dataset.skip) act(b, async () => { const a = await api("POST", "/applications", { posting_id: b.dataset.skip }); await api("PATCH", `/applications/${a.id}`, { status: "skipped" }); });
   });
 
-  document.getElementById("paste").addEventListener("submit", e => {
+  $("paste").addEventListener("submit", async e => {
     e.preventDefault();
-    const v = document.getElementById("link").value.trim(); if (!v) return;
-    let host = v; try { host = new URL(v.startsWith("http") ? v : "https://" + v).hostname.replace(/^www\./, ""); } catch (x) {}
-    posts.unshift({ id: "u" + Date.now(), company: host, role: "Posting added from link", location: "To be read from the page", mode: "remote", category: "Business & Management", hue: "slate", type: "Internship", pay: "Unknown", deadlineIn: 30, status: "found", ats: "Detecting", manual: true });
-    save(); location.reload();
+    const url = $("link").value.trim(); if (!url) return;
+    say($("pasteStatus"), "Reading the posting...");
+    try {
+      await api("POST", "/postings/from-link", { url });
+      $("link").value = "";
+      say($("pasteStatus"), "Added. Choose \"Prepare application\" when you're ready.", "ok");
+      await load();
+    } catch (err) { say($("pasteStatus"), err.message, "err"); }
   });
 
-  // pipeline
-  document.getElementById("cols").innerHTML = STAGES.map(([k, label]) => {
-    const items = posts.filter(p => p.status === k);
-    return `<div class="col"><h3>${label}<span>${items.length}</span></h3>${items.map(p => `<div class="k" data-hue="${p.hue || "slate"}"><b>${esc(p.role)}</b><span class="muted">${esc(p.company)}</span></div>`).join("") || '<div class="muted small">Empty</div>'}</div>`;
-  }).join("");
-  paintMatches();
+  load();
 </script>
 </body>
 </html>

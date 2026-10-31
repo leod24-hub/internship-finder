@@ -25,33 +25,40 @@
   .todo label{display:flex;gap:10px;align-items:flex-start;font-size:.93rem}
   .todo input{margin-top:4px;width:18px;height:18px;accent-color:var(--primary);flex:none}
   .decision{display:grid;gap:10px}
-  .shot{border:1.5px solid var(--border);border-radius:var(--p-radius-sm);background:var(--surface-sunk);height:120px;display:grid;place-items:center;color:var(--text-muted);font-size:.85rem}
+  .shot{border:1.5px solid var(--border);border-radius:var(--p-radius-sm);background:var(--surface-sunk);height:160px;display:grid;place-items:center;color:var(--text-muted);font-size:.85rem;overflow:hidden;text-decoration:none}
+  .shot img{width:100%;height:100%;object-fit:cover;object-position:top}
+  .note-banner{background:color-mix(in srgb,var(--highlight) 30%,var(--bg));border-radius:var(--p-radius-sm);padding:12px 14px;margin:0 0 var(--p-space-5)}
+  .a select.v{appearance:auto;border-color:var(--border)}
+  .a .file{color:var(--text-muted);font-size:.93rem}
   .done{display:none;text-align:center;padding:var(--p-space-7) 0}
-  body.finished .done{display:block} body.finished .cols,body.finished .head{display:none}
+  body.finished .done{display:block} body.finished .cols,body.finished .head,body.finished .note-banner{display:none}
+  .done p{margin-inline:auto}
   @media(max-width:900px){.cols{grid-template-columns:1fr}.sticky{position:static}}
 </style>
 </head>
 <body>
 <header class="bar" id="bar"></header>
 <main class="wrap">
-  <p class="crumbs"><a href="app.html">Dashboard</a> / Review</p>
+  <p class="crumbs"><a href="app.html">My applications</a> / Review</p>
 
   <div class="head">
     <div>
-      <h1 id="role">Clinical Research Intern</h1>
-      <p class="muted" id="co" style="margin:0">Northwind Health, Boston, MA</p>
+      <h1 id="role">Loading...</h1>
+      <p class="muted" id="co" style="margin:0"></p>
     </div>
-    <div id="due"></div>
+    <div style="display:flex;gap:10px;align-items:center"><span id="due"></span><a class="btn sm secondary" id="postingLink" target="_blank" rel="noopener" hidden>Open the posting</a></div>
   </div>
+  <p class="note-banner" id="banner" role="status" hidden></p>
 
   <div class="cols">
     <div>
-      <h2 style="font-size:1.35rem">Answers Lanyard filled in</h2>
-      <p class="muted small">Select any answer to edit it. Items marked "Check this" are ones where a wrong answer causes real problems.</p>
+      <h2 style="font-size:1.35rem">Answers we prepared</h2>
+      <p class="muted small">Select any answer to edit it. Changes save on their own. Items marked "Check this" are ones where a wrong answer causes real problems.</p>
       <div class="ans" id="ans"></div>
 
       <h2 style="font-size:1.35rem;margin-top:var(--p-space-7)">Cover letter</h2>
       <article class="letter" id="letter" contenteditable="true" aria-label="Cover letter, editable"></article>
+      <p class="small muted" id="saveStatus" role="status"></p>
     </div>
 
     <aside class="sticky">
@@ -65,18 +72,21 @@
         </ul>
       </div>
       <div class="panel decision">
-        <div class="shot" role="img" aria-label="Screenshot of the filled form (placeholder)">Screenshot of the filled form</div>
-        <button class="btn lg" id="approve" type="button" disabled>Approve application</button>
-        <p class="small muted" style="margin:0" id="why">Tick all four boxes to approve. After you approve, you submit it on the employer's page.</p>
+        <a class="shot" id="shot" target="_blank" rel="noopener">No screenshot for this one</a>
+        <button class="btn lg" id="approve" type="button" disabled>Approve and submit</button>
+        <a class="btn lg" id="openSite" target="_blank" rel="noopener" hidden>Open the employer's site</a>
+        <button class="btn secondary" id="markDone" type="button" hidden>I submitted it</button>
+        <p class="small muted" style="margin:0" id="why"></p>
         <button class="btn secondary" id="reject" type="button">Don't apply</button>
       </div>
     </aside>
   </div>
 
   <div class="done" id="done" role="status">
-    <h1 style="font-size:var(--p-step-3)">Approved.</h1>
-    <p class="muted" style="margin-inline:auto">Open the employer's page to press the final submit button. We've saved your answers and added a reminder to mark it submitted.</p>
-    <p><a class="btn lg" href="app.html">Back to dashboard</a></p>
+    <h1 style="font-size:var(--p-step-3)" id="doneTitle">Approved.</h1>
+    <p class="muted" style="margin-inline:auto" id="doneText">We're submitting it on the employer's site now. This takes about a minute.</p>
+    <p><a id="confirmShot" target="_blank" rel="noopener" hidden>See the employer's confirmation page</a></p>
+    <p><a class="btn lg" href="app.html">Back to my applications</a></p>
   </div>
 </main>
 
@@ -84,46 +94,125 @@
 <script src="js/common.js"></script>
 <script>
   renderBar("review", "app");
-  const posts = store.get("posts", null) || LAN.postings;
-  const id = new URLSearchParams(location.search).get("id");
-  const p = posts.find(x => x.id === id) || posts.find(x => x.status === "awaiting") || posts[0];
-  const profile = store.get("profile", {});
-  const name = profile.name || "Jordan Sample";
-  document.title = `Review ${p.role} | Lanyard`;
-  document.getElementById("role").textContent = p.role;
-  document.getElementById("co").textContent = `${p.company}, ${p.location}`;
-  document.getElementById("due").innerHTML = dueLabel(p.deadlineIn);
+  const $ = id => document.getElementById(id);
+  let app = null;
+  const TAGS = {
+    profile: '<span class="tag">From your profile</span>', drafted: '<span class="tag info">Written from your resume</span>',
+    decline: '<span class="tag">Declined (your default)</span>', you: '<span class="tag due">Needs you</span>',
+    file: '<span class="tag">We attach it</span>', cover_letter: '<span class="tag">We attach it</span>',
+  };
 
-  const A = [
-    ["Full name", name], ["School", profile.school || "State University"], ["Major", profile.major || "Biology"], ["Expected graduation", profile.grad || "May 2028"],
-    ["GPA", profile.gpa || "3.6", "Check this", "The posting asks for 3.2 or higher."],
-    ["Are you legally authorized to work in the US?", "Yes", "Check this", "Taken from your profile."],
-    ["Will you now or later need sponsorship?", "No", "Check this", "Taken from your profile."],
-    ["How did you hear about this role?", "Lanyard match (job board)"],
-    ["Gender, race, and veteran status", "Decline to answer", "", "Your default. Change it in your profile."],
-    ["Why are you interested in this role?", "I want hands-on research experience, and the group's work on sample handling lines up with what I did last year as a lab assistant: 120 hours of sample preparation and recordkeeping in a cell biology lab."],
-  ];
-  document.getElementById("ans").innerHTML = A.map(([q, v, flag, note]) => `
-    <div class="a ${flag ? "flag" : ""}"><div class="q"><span>${esc(q)}</span>${flag ? '<span class="tag due">Check this</span>' : (q.startsWith("Why") ? '<span class="tag info">Drafted from your resume</span>' : '<span class="tag">From your profile</span>')}</div>
-    <textarea class="v" rows="${v.length > 70 ? 3 : 1}" aria-label="${esc(q)}">${esc(v)}</textarea>${note ? `<div class="small muted">${esc(note)}</div>` : ""}</div>`).join("");
-  document.querySelectorAll(".v").forEach(t => { const fit = () => { t.style.height = "auto"; t.style.height = t.scrollHeight + 4 + "px"; }; t.addEventListener("input", fit); fit(); });
+  async function start() {
+    let id = new URLSearchParams(location.search).get("id");
+    if (!id) {
+      const waiting = (await api("GET", "/applications")).find(a => ["ready", "needs_you"].includes(a.fill_state));
+      if (!waiting) { $("role").textContent = "Nothing is waiting for your OK"; $("co").innerHTML = 'When we finish filling out an application, it shows up here. <a href="app.html">Back to my applications</a>'; document.querySelector(".cols").hidden = true; return; }
+      id = waiting.id; history.replaceState(null, "", `?id=${id}`);
+    }
+    app = await api("GET", `/applications/${id}`);
+    render();
+  }
 
-  document.getElementById("letter").innerHTML = `
-    <p><strong>${esc(name)}</strong></p>
-    <p>October 30, 2026</p>
-    <p>${esc(p.company)}<br>${esc(p.role)}<br>${esc(p.location)}</p>
-    <p>Dear ${esc(p.company)} Recruiting Team,</p>
-    <p>I am a junior at ${esc(profile.school || "State University")} majoring in ${esc(profile.major || "Biology")}, and I am applying for the ${esc(p.role)} position. Over the past year I logged 120 hours as a lab assistant in a cell biology group, where I prepared samples and kept the records the team relied on each week.</p>
-    <p>The posting describes supporting data collection and following study protocols closely. That is the work I did most, and I would like to do it at a larger scale. One area I'm still building is statistical analysis, and I'm taking a course on it this term.</p>
-    <p>Thank you for your consideration.</p>
-    <p>Sincerely,<br>${esc(name)}</p>`;
+  function render() {
+    document.title = `Review ${app.role} | Lanyard`;
+    $("role").textContent = app.role;
+    $("co").textContent = [app.company, app.location].filter(Boolean).join(", ");
+    $("due").innerHTML = dueLabel(app.deadline_in);
+    if (app.link) { $("postingLink").href = app.link; $("postingLink").hidden = false; }
+    const ap = app.approval;
+    if (app.fill_state === "submitted" || app.fill_state === "submitting" || (ap && ap.decision === "approved")) return showDone();
+    if (!ap) {
+      $("banner").hidden = false;
+      $("banner").textContent = ["queued", "filling"].includes(app.fill_state) ? "We're filling out this application. This page updates when it's ready." : app.fill_note || "We haven't prepared this application yet. Go back and choose Prepare application.";
+      document.querySelector(".cols").hidden = true;
+      if (["queued", "filling"].includes(app.fill_state)) setTimeout(() => api("GET", `/applications/${app.id}`).then(a => { app = a; document.querySelector(".cols").hidden = false; render(); }), 3000);
+      return;
+    }
+    document.querySelector(".cols").hidden = false;
+    $("banner").hidden = !app.fill_note;
+    $("banner").textContent = app.fill_note;
 
-  const boxes = [...document.querySelectorAll("#todo input")], approve = document.getElementById("approve");
-  const sync = () => { const n = boxes.filter(b => b.checked).length; approve.disabled = n < boxes.length; document.getElementById("why").textContent = n < boxes.length ? `Tick all four boxes to approve (${n} of 4). After you approve, you submit it on the employer's page.` : "Ready. After you approve, you submit it on the employer's page."; };
-  boxes.forEach(b => b.addEventListener("change", sync)); sync();
-  const setStatus = s => { p.status = s; store.set("posts", posts); };
-  approve.addEventListener("click", () => { setStatus("submitted"); document.body.classList.add("finished"); });
-  document.getElementById("reject").addEventListener("click", () => { setStatus("rejected"); location.href = "app.html"; });
+    $("ans").innerHTML = ap.answers.map(a => {
+      const tag = a.flag ? '<span class="tag due">Check this</span>' : TAGS[a.source] || "";
+      let input;
+      if (a.type === "file") input = `<div class="file">${a.source === "cover_letter" ? "Your cover letter below, as a PDF" : a.source === "file" ? "Your resume" : "Nothing attached"}</div>`;
+      else if (a.source === "cover_letter") input = '<div class="file">Your cover letter below</div>';
+      else if (a.options && a.options.length) input = `<select class="v" data-key="${esc(a.key)}" aria-label="${esc(a.label)}"><option value="">Choose...</option>${a.options.map(o => `<option ${o === a.value ? "selected" : ""}>${esc(o)}</option>`).join("")}</select>`;
+      else input = `<textarea class="v" data-key="${esc(a.key)}" rows="${(a.value || "").length > 70 || a.type === "textarea" ? 3 : 1}" aria-label="${esc(a.label)}" placeholder="${a.required ? "Required. " : ""}Type your answer">${esc(a.value || "")}</textarea>`;
+      return `<div class="a ${a.flag || (!a.value && a.required && a.type !== "file") ? "flag" : ""}"><div class="q"><span>${esc(a.label)}${a.required ? " *" : ""}</span>${tag}</div>${input}${a.note ? `<div class="small muted">${esc(a.note)}</div>` : ""}</div>`;
+    }).join("");
+    document.querySelectorAll("textarea.v").forEach(t => { const fit = () => { t.style.height = "auto"; t.style.height = t.scrollHeight + 4 + "px"; }; t.addEventListener("input", fit); fit(); });
+    $("letter").innerHTML = (ap.cover_letter || "").split(/\n{2,}/).map(p => `<p>${esc(p).replace(/\n/g, "<br>")}</p>`).join("");
+
+    if (ap.has_screenshot) { const src = `/api/applications/${app.id}/screenshot`; $("shot").href = src; $("shot").innerHTML = `<img src="${src}" alt="The employer's form, filled out with your answers">`; }
+    const handOff = app.fill_state === "needs_you";
+    $("approve").hidden = handOff;
+    $("openSite").hidden = !handOff; $("markDone").hidden = !handOff;
+    if (app.link) $("openSite").href = app.link;
+    sync();
+  }
+
+  // Edits save shortly after you stop typing.
+  let timer = null;
+  function queueSave() {
+    clearTimeout(timer);
+    say($("saveStatus"), "Saving...");
+    timer = setTimeout(async () => {
+      const answers = [...document.querySelectorAll(".v[data-key]")].map(el => ({ key: el.dataset.key, value: el.value }));
+      try {
+        await api("PUT", `/applications/${app.id}/answers`, { answers, cover_letter: $("letter").innerText.trim() });
+        answers.forEach(x => { const a = app.approval.answers.find(y => y.key === x.key); if (a) a.value = x.value; });
+        say($("saveStatus"), "Saved");
+        sync();
+      } catch (e) { say($("saveStatus"), e.message, "err"); }
+    }, 700);
+  }
+  $("ans").addEventListener("input", queueSave);
+  $("ans").addEventListener("change", queueSave);
+  $("letter").addEventListener("input", queueSave);
+
+  const boxes = [...document.querySelectorAll("#todo input")];
+  function sync() {
+    if (!app || !app.approval) return;
+    const blanks = app.approval.answers.filter(a => a.required && a.type !== "file" && a.source !== "cover_letter" && !String(a.value || "").trim());
+    const n = boxes.filter(b => b.checked).length;
+    $("approve").disabled = n < boxes.length || blanks.length > 0;
+    $("why").textContent = app.fill_state === "needs_you"
+      ? "This employer's site needs you to finish. Open it, copy your answers from this page, and submit. Then mark it submitted here."
+      : blanks.length ? `Answer the required ${blanks.length === 1 ? "question" : "questions"} marked "Needs you" first.`
+      : n < boxes.length ? `Tick all four boxes to approve (${n} of 4). When you approve, we submit it for you on the employer's site.`
+      : "Ready. When you approve, we submit it for you on the employer's site.";
+  }
+  boxes.forEach(b => b.addEventListener("change", sync));
+
+  $("approve").addEventListener("click", async () => {
+    $("approve").disabled = true;
+    clearTimeout(timer);
+    try {
+      const answers = [...document.querySelectorAll(".v[data-key]")].map(el => ({ key: el.dataset.key, value: el.value }));
+      await api("PUT", `/applications/${app.id}/answers`, { answers, cover_letter: $("letter").innerText.trim() });
+      await api("POST", `/applications/${app.id}/approve`);
+      showDone();
+    } catch (e) { say($("why"), e.message, "err"); $("approve").disabled = false; }
+  });
+  $("markDone").addEventListener("click", async () => { await api("PATCH", `/applications/${app.id}`, { status: "submitted" }); location.href = "app.html"; });
+  $("reject").addEventListener("click", async () => { await api("POST", `/applications/${app.id}/decline`); location.href = "app.html"; });
+
+  async function showDone() {
+    document.body.classList.add("finished");
+    const a = await api("GET", `/applications/${app.id}`);
+    if (a.fill_state === "submitted") {
+      $("doneTitle").textContent = "Submitted.";
+      $("doneText").textContent = `Your application to ${a.company} went in on ${new Date(a.applied).toLocaleDateString(undefined, { month: "long", day: "numeric" })}. We'll watch for next steps.`;
+      if (a.approval?.has_confirmation) { $("confirmShot").href = `/api/applications/${a.id}/screenshot?kind=confirmation`; $("confirmShot").hidden = false; }
+    } else if (a.fill_state === "needs_you" || a.fill_state === "failed") {
+      $("doneTitle").textContent = "This one needs you.";
+      $("doneText").textContent = a.fill_note;
+      if (a.approval?.has_confirmation) { $("confirmShot").href = `/api/applications/${a.id}/screenshot?kind=confirmation`; $("confirmShot").textContent = "See what the employer's site showed"; $("confirmShot").hidden = false; }
+    } else setTimeout(showDone, 2000);
+  }
+
+  start().catch(e => { $("role").textContent = "We couldn't load this application"; $("co").textContent = e.message; });
 </script>
 </body>
 </html>

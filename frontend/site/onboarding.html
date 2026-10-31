@@ -27,7 +27,7 @@
   .subs{display:flex;flex-wrap:wrap;gap:8px}
   .selected-bar{position:sticky;bottom:0;margin-top:var(--p-space-6);padding:var(--p-space-4) 0;background:linear-gradient(transparent,var(--bg) 24%)}
   .nav{display:flex;justify-content:space-between;align-items:center;margin-top:var(--p-space-6);padding-top:var(--p-space-5);border-top:1.5px solid var(--border)}
-  .drop{border:2px dashed var(--border-strong);border-radius:var(--p-radius-lg);padding:var(--p-space-6);text-align:center;background:var(--surface);cursor:pointer}
+  .drop{display:block;border:2px dashed var(--border-strong);border-radius:var(--p-radius-lg);padding:var(--p-space-6);text-align:center;background:var(--surface);cursor:pointer}
   .drop:hover,.drop.over{background:var(--surface-sunk)}
   .module{border-left:4px solid var(--hue);padding:var(--p-space-2) 0 var(--p-space-2) var(--p-space-4);margin:var(--p-space-5) 0}
   .module h3{font-size:1.05rem;display:flex;gap:8px;align-items:center}
@@ -69,6 +69,19 @@
         <div class="field"><label for="grad">Graduation date</label><input id="grad" type="text" placeholder="May 2028"></div>
         <div class="field"><label for="gpa">GPA <span class="muted">(optional)</span></label><input id="gpa" type="text" inputmode="decimal" placeholder="3.6"><span class="hint">Used only to skip roles with a cutoff you don't meet.</span></div>
       </div>
+      <h2 style="font-size:1.2rem;margin-top:var(--p-space-5)">How employers reach you</h2>
+      <p class="muted small">Almost every application asks for these. We keep your phone and address encrypted.</p>
+      <div class="two">
+        <div class="field"><label for="phone">Phone</label><input id="phone" type="tel" autocomplete="tel" placeholder="(555) 010-2233"></div>
+        <div class="field"><label for="street">Street address <span class="muted">(optional)</span></label><input id="street" autocomplete="street-address" placeholder="12 Elm St, Apt 4B"></div>
+      </div>
+      <div class="two">
+        <div class="field"><label for="city">City</label><input id="city" autocomplete="address-level2"></div>
+        <div class="two" style="gap:var(--p-space-3)">
+          <div class="field"><label for="state">State</label><input id="state" autocomplete="address-level1" placeholder="OH"></div>
+          <div class="field"><label for="zip">ZIP code</label><input id="zip" autocomplete="postal-code" inputmode="numeric"></div>
+        </div>
+      </div>
     </section>
 
     <!-- 2 -->
@@ -78,7 +91,7 @@
       <div class="field" style="margin-bottom:0"><label class="sr" for="find">Search fields</label><input id="find" type="text" placeholder="Search fields, like nursing, policy, or design"></div>
       <div class="legend" aria-hidden="true"><span>Select once to add a field.</span><span>Select again to mark it a top choice.</span><span>A third time removes it.</span></div>
       <div class="wall" id="wall" role="group" aria-label="Fields"></div>
-      <p class="muted" id="none" hidden>No field matches that search. Try a broader word, or paste a link to any posting from your dashboard later.</p>
+      <p class="muted" id="none" hidden>No field matches that search. Try a broader word, or send us a link to any posting later.</p>
       <div class="narrow" id="narrow"></div>
       <div class="selected-bar"><span id="sum" aria-live="polite" class="muted"></span></div>
     </section>
@@ -124,14 +137,14 @@
     <!-- 4 -->
     <section data-step="3">
       <h1>Add your resume and links.</h1>
-      <p class="muted">Lanyard drafts answers only from what you give it here. It never makes up experience.</p>
+      <p class="muted">We write your answers only from what you give us here. We never make up experience.</p>
       <label class="drop" id="drop" for="resume"><strong id="dropTitle">Choose your resume</strong><br><span class="muted small" id="dropSub">PDF, up to 5 MB. You can drag it in.</span><input class="sr" id="resume" type="file" accept=".pdf"></label>
       <div class="two" style="margin-top:var(--p-space-5)">
         <div class="field"><label for="li">LinkedIn <span class="muted">(optional)</span></label><input id="li" type="url" placeholder="linkedin.com/in/you"></div>
         <div class="field"><label for="site">Portfolio or website <span class="muted">(optional)</span></label><input id="site" type="url" placeholder="yourname.com"></div>
       </div>
       <div id="modules"></div>
-      <div class="check"><input id="eeo" type="checkbox" checked><label for="eeo"><strong>Decline demographic questions</strong><br><span class="muted small">Employers often ask about race, gender, disability, or veteran status. Leave this on and Lanyard answers "decline to answer" wherever that option exists. Turn it off only if you want to enter answers yourself.</span></label></div>
+      <div class="check"><input id="eeo" type="checkbox" checked><label for="eeo"><strong>Decline demographic questions</strong><br><span class="muted small">Employers often ask about race, gender, disability, or veteran status. Leave this on and we answer "decline to answer" wherever that option exists. Turn it off only if you want to enter answers yourself.</span></label></div>
     </section>
 
     <!-- 5 -->
@@ -139,11 +152,12 @@
       <h1 id="doneTitle">You're set.</h1>
       <p class="muted" id="doneText"></p>
       <div id="doneChips" class="wall"></div>
-      <p><a class="btn lg" href="app.html">Go to my dashboard</a></p>
+      <p><a class="btn lg" href="app.html">See my applications</a></p>
     </section>
 
     <div class="nav" id="nav">
       <button class="btn ghost" id="back" type="button">Back</button>
+      <p class="small muted" id="saveStatus" role="status" style="margin:0"></p>
       <button class="btn" id="next" type="button">Continue</button>
     </div>
   </div>
@@ -154,29 +168,55 @@
 <script>
   renderBar("profile", "app");
   const STEPS = ["About you", "Fields", "Preferences", "Resume and links", "Done"];
-  const state = Object.assign({ step: 0, name: "", school: "", major: "", classYear: "", grad: "", gpa: "", cats: {}, subs: {}, types: ["Internship"], modes: ["remote", "hybrid", "onsite"], where: "", term: "Summer 2027", pay: "any", auth: "", li: "", site: "", resumeName: "", eeoDecline: true }, store.get("profile", {}));
+  const state = { step: 0, name: "", school: "", major: "", classYear: "", grad: "", gpa: "", phone: "", address: {}, cats: {}, subs: {}, types: ["Internship"], modes: ["remote", "hybrid", "onsite"], where: "", term: "Summer 2027", pay: "any", auth: "", li: "", site: "", resumeName: "", eeoDecline: true, fieldDetails: {} };
   const $ = id => document.getElementById(id);
   $("schools").innerHTML = LAN.schools.map(s => `<option value="${esc(s)}">`).join("");
   $("majors").innerHTML = LAN.majors.map(s => `<option value="${esc(s)}">`).join("");
+  const ADDR = ["street", "city", "state", "zip"];
 
-  // restore simple fields
-  ["name", "school", "major", "grad", "gpa", "where", "term", "auth", "li", "site"].forEach(k => { if (state[k]) $(k).value = state[k]; });
-  if (state.classYear) { const r = document.querySelector(`input[name=cy][value=${state.classYear}]`); if (r) r.checked = true; }
-  document.querySelectorAll("#types input").forEach(i => i.checked = state.types.includes(i.value));
-  document.querySelectorAll("#modes input").forEach(i => i.checked = state.modes.includes(i.value));
-  const pr = document.querySelector(`input[name=pay][value="${state.pay}"]`); if (pr) pr.checked = true;
-  $("eeo").checked = state.eeoDecline;
-  if (state.resumeName) { $("dropTitle").textContent = state.resumeName; $("dropSub").textContent = "Select to replace it."; }
+  function restore() {
+    ["name", "school", "major", "grad", "gpa", "phone", "where", "term", "auth", "li", "site"].forEach(k => { if (state[k]) $(k).value = state[k]; });
+    ADDR.forEach(k => { if (state.address[k]) $(k).value = state.address[k]; });
+    if (state.classYear) { const r = document.querySelector(`input[name=cy][value=${state.classYear}]`); if (r) r.checked = true; }
+    document.querySelectorAll("#types input").forEach(i => i.checked = state.types.includes(i.value));
+    document.querySelectorAll("#modes input").forEach(i => i.checked = state.modes.includes(i.value));
+    const pr = document.querySelector(`input[name=pay][value="${state.pay}"]`); if (pr) pr.checked = true;
+    $("eeo").checked = state.eeoDecline;
+    if (state.resumeName) { $("dropTitle").textContent = state.resumeName; $("dropSub").textContent = "Select to replace it."; }
+  }
 
-  function save() {
+  function collect() {
     state.name = $("name").value; state.school = $("school").value; state.major = $("major").value; state.grad = $("grad").value; state.gpa = $("gpa").value;
+    state.phone = $("phone").value; state.address = Object.fromEntries(ADDR.map(k => [k, $(k).value]));
     state.classYear = (document.querySelector("input[name=cy]:checked") || {}).value || "";
     state.types = [...document.querySelectorAll("#types input:checked")].map(i => i.value);
     state.modes = [...document.querySelectorAll("#modes input:checked")].map(i => i.value);
     state.where = $("where").value; state.term = $("term").value; state.auth = $("auth").value;
     state.pay = (document.querySelector("input[name=pay]:checked") || {}).value || "any";
     state.li = $("li").value; state.site = $("site").value; state.eeoDecline = $("eeo").checked;
-    store.set("profile", state);
+    document.querySelectorAll("#modules input[data-detail]").forEach(i => { state.fieldDetails[i.dataset.detail] = i.value; });
+  }
+
+  // Saves to the server shortly after the last change, and right away when changing steps.
+  let timer = null, saving = Promise.resolve(true);
+  function save(now) {
+    collect();
+    clearTimeout(timer);
+    const run = () => (saving = saving.then(async () => {
+      try {
+        const fields = LAN.categories.filter(c => state.cats[c.id]).map(c => ({ name: c.name, top: state.cats[c.id] === 2 }));
+        const subfields = LAN.categories.flatMap(c => c.subs.filter(s => state.subs[s.id]).map(s => ({ parent: c.name, name: s.name })));
+        await Promise.all([api("PUT", "/profile", state), api("PUT", "/interests", { fields, subfields })]);
+        say($("saveStatus"), "Saved", "");
+        return true;
+      } catch (e) {
+        say($("saveStatus"), e.message, "err");
+        return false;
+      }
+    }));
+    if (now) return run();
+    timer = setTimeout(run, 600);
+    return saving;
   }
 
   // steps rail
@@ -228,34 +268,55 @@
   function renderModules() {
     const picked = LAN.categories.filter(c => state.cats[c.id] && MODULES[c.id]);
     $("modules").innerHTML = picked.length ? `<h2 style="font-size:1.2rem;margin-top:var(--p-space-6)">Extra details for your fields</h2><p class="muted small">Many employers in these fields ask for the following. Add what you have. Skip what you don't.</p>` +
-      picked.map(c => `<div class="module" data-hue="${c.hue}"><h3><span class="dot"></span>${esc(c.name)}</h3>${MODULES[c.id].map(f => `<div class="field"><label>${esc(f)}</label><input type="text"></div>`).join("")}</div>`).join("") : "";
+      picked.map(c => `<div class="module" data-hue="${c.hue}"><h3><span class="dot"></span>${esc(c.name)}</h3>${MODULES[c.id].map((f, i) => { const k = `${c.name}: ${f}`; return `<div class="field"><label for="m-${c.id}-${i}">${esc(f)}</label><input id="m-${c.id}-${i}" type="text" data-detail="${esc(k)}" value="${esc(state.fieldDetails[k] || "")}"></div>`; }).join("")}</div>`).join("") : "";
   }
 
-  // resume (mock: keeps only the file name)
-  $("resume").addEventListener("change", e => { const f = e.target.files[0]; if (f) { state.resumeName = f.name; $("dropTitle").textContent = f.name; $("dropSub").textContent = "Select to replace it."; save(); } });
-  ["dragover", "dragleave", "drop"].forEach(ev => $("drop").addEventListener(ev, e => { if (ev === "drop") { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) { state.resumeName = f.name; $("dropTitle").textContent = f.name; $("dropSub").textContent = "Select to replace it."; save(); } } else { e.preventDefault(); $("drop").classList.toggle("over", ev === "dragover"); } }));
+  // resume: uploaded to the server, which reads its text for drafting
+  async function uploadResume(f) {
+    if (!f) return;
+    $("dropTitle").textContent = `Uploading ${f.name}...`;
+    const form = new FormData(); form.append("resume", f);
+    try {
+      const r = await api("POST", "/profile/resume", form);
+      state.resumeName = r.resumeName;
+      $("dropTitle").textContent = r.resumeName;
+      $("dropSub").textContent = r.note || "Saved. Select to replace it.";
+    } catch (e) {
+      $("dropTitle").textContent = state.resumeName || "Choose your resume";
+      $("dropSub").textContent = e.message;
+    }
+  }
+  $("resume").addEventListener("change", e => uploadResume(e.target.files[0]));
+  ["dragover", "dragleave", "drop"].forEach(ev => $("drop").addEventListener(ev, e => { e.preventDefault(); if (ev === "drop") { $("drop").classList.remove("over"); uploadResume(e.dataTransfer.files[0]); } else $("drop").classList.toggle("over", ev === "dragover"); }));
 
-  function go(n) {
-    save(); state.step = n;
+  async function go(n) {
+    if (n > state.step && !(await save(true))) return;
+    state.step = n;
     document.querySelectorAll("#stage > section").forEach(s => s.classList.toggle("on", +s.dataset.step === n));
     if (n === 3) renderModules();
     if (n === 4) {
       const picked = LAN.categories.filter(c => state.cats[c.id]);
       $("doneTitle").textContent = state.name ? `You're set, ${state.name.split(" ")[0]}.` : "You're set.";
-      $("doneText").textContent = picked.length ? "We'll match openings in these fields. Your first matches are on your dashboard." : "You haven't picked any fields yet. You can add them from your dashboard, or paste a link to any posting.";
+      $("doneText").textContent = picked.length ? "We'll match openings in these fields. We'll start with the first matches and show them on your applications page." : "You haven't picked any fields yet. You can add them later, or send us a link to any posting.";
       $("doneChips").innerHTML = picked.map(c => chipButton(c, true)).join("");
       $("nav").hidden = true;
     } else $("nav").hidden = false;
     $("back").style.visibility = n === 0 ? "hidden" : "visible";
     $("next").textContent = n === 3 ? "Finish setup" : "Continue";
     renderSteps(); window.scrollTo({ top: 0 });
-    store.set("profile", state);
   }
   $("next").addEventListener("click", () => go(Math.min(state.step + 1, 4)));
   $("back").addEventListener("click", () => go(Math.max(state.step - 1, 0)));
-  document.querySelectorAll("#stage input, #stage select").forEach(el => el.addEventListener("change", save));
+  $("stage").addEventListener("input", e => { if (e.target.matches("input:not([type=file]), select")) save(); });
+  $("stage").addEventListener("change", e => { if (e.target.matches("input:not([type=file]), select")) save(); });
 
-  renderWall(); renderNarrow(); go(Math.min(state.step, 3));
+  // Load the saved profile, mapping saved field names back to the picker's ids.
+  api("GET", "/profile").then(p => {
+    Object.assign(state, p, { cats: {}, subs: {}, address: p.address || {}, fieldDetails: p.fieldDetails || {} });
+    for (const f of p.fields) { const c = LAN.byName[f.name]; if (c) state.cats[c.id] = f.top ? 2 : 1; }
+    for (const s of p.subfields) { const c = LAN.byName[s.parent]; const sub = c && c.subs.find(x => x.name === s.name); if (sub) state.subs[sub.id] = true; }
+    restore(); renderWall(); renderNarrow(); go(0);
+  }).catch(() => {});
 </script>
 </body>
 </html>

@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AutoInterns</title>
+<meta name="description" content="We apply to internships for you, in any major at any college: the applications, the cover letters and the deadlines. You give the final OK on each one.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='3' y='2' width='18' height='20' rx='1.5' fill='%23e3ece7' stroke='%2313233a' stroke-width='1.6'/%3E%3Cpath d='M7.5 12.5l3 3 6-7' fill='none' stroke='%231f6b4f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --paper:#eef1ee;      /* ledger paper */
+  --sheet:#f8faf8;
+  --ink:#13233a;        /* navy ink */
+  --ink-soft:#4a5a6e;
+  --rule:#c9d1cd;
+  --ledger:#1f6b4f;     /* ledger green: actions, approvals */
+  --ledger-soft:#dcebe3;
+  --amber:#a86e0c;      /* deadlines and things to check */
+  --amber-soft:#f6e7c8;
+  --wrong:#a3342f;
+  --lucite-a:rgba(255,255,255,.72);
+  --lucite-b:rgba(214,229,236,.55);
+  --serif:"Libre Caslon Text",Georgia,serif;
+  --display:"Libre Caslon Display","Libre Caslon Text",Georgia,serif;
+  --sans:"Schibsted Grotesk",system-ui,sans-serif;
+  --wrap:72rem;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0f1824;--sheet:#152131;--ink:#e4ebf2;--ink-soft:#9fb0c2;--rule:#2b3a4d;
+  --ledger:#6cc39b;--ledger-soft:#173327;--amber:#e7b45a;--amber-soft:#3a2c12;--wrong:#ef8a84;
+  --lucite-a:rgba(60,82,108,.55);--lucite-b:rgba(26,40,58,.6);
+}}
+:root[data-theme="dark"]{
+  --paper:#0f1824;--sheet:#152131;--ink:#e4ebf2;--ink-soft:#9fb0c2;--rule:#2b3a4d;
+  --ledger:#6cc39b;--ledger-soft:#173327;--amber:#e7b45a;--amber-soft:#3a2c12;--wrong:#ef8a84;
+  --lucite-a:rgba(60,82,108,.55);--lucite-b:rgba(26,40,58,.6);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 1.0625rem/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.08;margin:0 0 .5em;letter-spacing:-.01em}
+h1{font-size:clamp(2.6rem,6vw,4.6rem)}
+h2{font-size:clamp(2rem,4vw,3rem)}
+h3{font-family:var(--serif);font-size:1.25rem;font-weight:700;letter-spacing:0}
+p{margin:0 0 1em;max-width:62ch}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 clamp(16px,4vw,40px)}
+:focus-visible{outline:3px solid var(--ledger);outline-offset:3px;border-radius:2px}
+.muted{color:var(--ink-soft)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5em;font:600 1rem/1 var(--sans);padding:.95em 1.4em;border-radius:6px;border:1.5px solid var(--ink);background:var(--ink);color:var(--paper);text-decoration:none;cursor:pointer}
+.btn:hover{background:var(--ledger);border-color:var(--ledger)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:var(--paper)}
+
+/* nav */
+.nav{display:flex;align-items:center;gap:1.75rem;padding-block:1.1rem}
+.mark{display:flex;align-items:center;gap:.55rem;font:400 1.45rem/1 var(--display);text-decoration:none;margin-right:auto}
+.mark svg{width:26px;height:26px}
+.nav .l{text-decoration:none;font-weight:500;color:var(--ink-soft)}
+.nav .l:hover{color:var(--ink)}
+.nav .btn{padding:.7em 1.1em;font-size:.95rem}
+
+/* hero */
+.hero{padding:clamp(2.5rem,7vw,5.5rem) 0 clamp(3rem,7vw,6rem)}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(2rem,5vw,4.5rem);align-items:center}
+.hero h1{max-width:14ch}
+.lead{font-size:1.25rem;color:var(--ink-soft);max-width:38ch}
+.hero .ctas{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.75rem}
+.hero .small{margin-top:1rem;font-size:.92rem;color:var(--ink-soft)}
+
+/* the tombstone */
+.desk{perspective:1100px}
+.tomb{position:relative;margin:0 auto;max-width:25rem;aspect-ratio:4/5;padding:2rem 1.75rem;text-align:center;
+  background:linear-gradient(155deg,var(--lucite-a),var(--lucite-b));
+  border:1px solid rgba(255,255,255,.9);border-radius:10px;
+  box-shadow:inset 0 0 0 1px rgba(19,35,58,.08),inset 0 1px 0 rgba(255,255,255,.95),0 30px 50px -28px rgba(19,35,58,.55),0 2px 0 var(--rule);
+  backdrop-filter:blur(6px);transform:rotateY(-9deg) rotateX(3deg);transform-style:preserve-3d;
+  display:flex;flex-direction:column;justify-content:center}
+.tomb::after{content:"";position:absolute;inset:0;border-radius:10px;pointer-events:none;
+  background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.55) 45%,transparent 58%);opacity:.6}
+.tomb .frame{border:3px double var(--ink);padding:1.6rem 1rem;display:grid;gap:.55rem;font-family:var(--serif)}
+.tomb .name{font:400 clamp(1.5rem,3.4vw,2rem)/1.1 var(--display);font-variant:small-caps;letter-spacing:.04em;overflow-wrap:anywhere}
+.tomb .verb{font-style:italic;color:var(--ink-soft);font-size:.95rem}
+.tomb .role{font-weight:700;font-size:1.1rem}
+.tomb .track{font-variant:small-caps;letter-spacing:.06em;font-size:1.05rem}
+.tomb .yr{font-size:.95rem}
+.tomb hr{width:40%;border:0;border-top:1px solid var(--ink);margin:.6rem auto}
+.tomb .foot{font-size:.78rem;color:var(--ink-soft)}
+.tomb.set .frame>*{animation:set .45s ease-out}
+@keyframes set{from{opacity:.25;filter:blur(2px)}to{opacity:1;filter:none}}
+.compose{max-width:25rem;margin:1.75rem auto 0;display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.compose label{display:grid;gap:.3rem;font-size:.85rem;font-weight:600;color:var(--ink-soft)}
+.compose label.full{grid-column:1/-1}
+input,select{font:inherit;font-size:1rem;color:var(--ink);background:var(--sheet);border:1.5px solid var(--rule);border-radius:6px;padding:.65em .75em;width:100%}
+input:focus,select:focus{border-color:var(--ledger);outline:none;box-shadow:0 0 0 3px var(--ledger-soft)}
+.compose .hint{grid-column:1/-1;font-size:.85rem;color:var(--ink-soft);margin:0}
+
+/* sections */
+section.band{padding:clamp(3.5rem,8vw,6.5rem) 0;border-top:1px solid var(--rule)}
+section.band.sheet{background:var(--sheet)}
+.intro{max-width:44rem;margin-bottom:2.5rem}
+.intro p{font-size:1.15rem;color:var(--ink-soft)}
+
+/* parser table */
+.ledger{width:100%;border-collapse:collapse;font-size:1rem;background:var(--sheet)}
+.ledger caption{text-align:left;font-size:.9rem;color:var(--ink-soft);padding-bottom:.75rem}
+.ledger th{text-align:left;font-weight:600;font-size:.9rem;color:var(--ink-soft);padding:.7rem .9rem;border-bottom:2px solid var(--ink)}
+.ledger td{padding:.85rem .9rem;border-bottom:1px solid var(--rule);vertical-align:top}
+.ledger td:first-child{font-weight:600}
+.ledger .bad{color:var(--wrong);text-decoration:line-through;text-decoration-thickness:1px}
+.ledger .good{color:var(--ledger);font-weight:600}
+.portals{margin-top:1.5rem;font-size:.95rem;color:var(--ink-soft)}
+.portals b{color:var(--ink);font-weight:600}
+
+/* steps */
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:0;counter-reset:s;border-top:2px solid var(--ink)}
+.steps li{counter-increment:s;padding:1.25rem 1.25rem 0 0}
+.steps li+li{padding-left:1.25rem;border-left:1px solid var(--rule)}
+.steps li::before{content:counter(s);display:block;font:400 2.2rem/1 var(--display);color:var(--ledger);margin-bottom:.75rem}
+.steps h3{font-size:1.08rem}
+.steps p{font-size:.97rem;color:var(--ink-soft);margin:0}
+.steps li.you h3::after{content:"You";margin-left:.5rem;font:600 .72rem/1 var(--sans);background:var(--amber-soft);color:var(--amber);padding:.25em .5em;border-radius:4px;vertical-align:middle}
+
+/* calendar */
+.cal{display:grid;grid-template-columns:repeat(4,1fr);border:1.5px solid var(--ink);border-radius:6px;overflow:hidden;background:var(--sheet)}
+.cal>div{padding:1.4rem 1.25rem}
+.cal>div+div{border-left:1px solid var(--rule)}
+.cal h3{margin-bottom:.35rem}
+.cal .when{font-size:.88rem;color:var(--amber);font-weight:600;margin-bottom:.6rem}
+.cal ul{margin:0;padding-left:1.1rem;font-size:.97rem;color:var(--ink-soft)}
+.cal li+li{margin-top:.35rem}
+.footnote{margin-top:1rem;font-size:.88rem;color:var(--ink-soft)}
+
+/* rules */
+.rules{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem 4rem}
+.rules ul{list-style:none;margin:0;padding:0;border-top:2px solid var(--ink)}
+.rules h3{font-family:var(--display);font-weight:400;font-size:1.6rem;margin-bottom:.6rem}
+.rules li{padding:.9rem 0;border-bottom:1px solid var(--rule)}
+.rules li b{display:block;font-family:var(--serif);font-size:1.08rem}
+.rules li span{color:var(--ink-soft);font-size:.97rem}
+
+/* pricing */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;align-items:stretch}
+.plan{background:var(--sheet);border:1.5px solid var(--rule);border-radius:8px;padding:1.75rem;display:flex;flex-direction:column}
+.plan.main{border:2px solid var(--ink);box-shadow:6px 6px 0 var(--ledger)}
+.plan h3{font-size:1.3rem;margin-bottom:.25rem}
+.plan .price{font:400 2.8rem/1 var(--display);margin:.9rem 0 .2rem}
+.plan .per{font-size:.92rem;color:var(--ink-soft);margin-bottom:1.25rem}
+.plan ul{margin:0 0 1.5rem;padding-left:1.1rem;font-size:.97rem;flex:1}
+.plan li+li{margin-top:.45rem}
+.plan .btn{width:100%}
+.parent{margin-top:1.75rem;padding:1.25rem 1.5rem;border-left:4px solid var(--ledger);background:var(--ledger-soft);border-radius:0 6px 6px 0;max-width:48rem}
+.parent p{margin:0}
+
+/* faq */
+.faq{max-width:48rem;border-top:2px solid var(--ink)}
+.faq details{border-bottom:1px solid var(--rule)}
+.faq summary{cursor:pointer;list-style:none;padding:1.1rem 2rem 1.1rem 0;font:700 1.1rem/1.4 var(--serif);position:relative}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";position:absolute;right:.25rem;top:.9rem;font:400 1.6rem/1 var(--sans);color:var(--ledger)}
+.faq details[open] summary::after{content:"\2212"}
+.faq details p{color:var(--ink-soft);padding-bottom:1rem;margin:0}
+
+/* join */
+.join .wrap{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
+form.waitlist{display:grid;gap:1rem;background:var(--sheet);border:2px solid var(--ink);border-radius:8px;padding:1.75rem}
+form.waitlist label{display:grid;gap:.35rem;font-size:.9rem;font-weight:600}
+form.waitlist .two{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.status{margin:0;font-size:.95rem;min-height:1.5em}
+.status.ok{color:var(--ledger);font-weight:600}
+.status.err{color:var(--wrong)}
+
+footer{padding:2.5rem 0 3rem;border-top:1px solid var(--rule);font-size:.9rem;color:var(--ink-soft)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:1rem 2rem;justify-content:space-between}
+
+@media (max-width:960px){
+  .hero .wrap,.join .wrap{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr 1fr;border-top:0}
+  .steps li,.steps li+li{padding:1.25rem 0;border-left:0;border-top:2px solid var(--ink)}
+  .steps li:nth-child(even){padding-left:1.25rem}
+  .cal{grid-template-columns:1fr 1fr}
+  .cal>div:nth-child(3){border-left:0}
+  .cal>div:nth-child(n+3){border-top:1px solid var(--rule)}
+  .plans{grid-template-columns:1fr}
+  .plan.main{order:-1}
+}
+@media (max-width:640px){
+  .nav .l{display:none}
+  .steps{grid-template-columns:1fr}
+  .steps li:nth-child(even){padding-left:0}
+  .cal{grid-template-columns:1fr}
+  .cal>div+div{border-left:0;border-top:1px solid var(--rule)}
+  .rules{grid-template-columns:1fr}
+  .tomb{transform:none}
+  .ledger thead{display:none}
+  .ledger,.ledger caption,.ledger tbody,.ledger tr,.ledger td{display:block;width:100%}
+  .ledger tr{border-bottom:1px solid var(--rule);padding:.6rem 0}
+  .ledger td{border:0;padding:.2rem .9rem}
+  .ledger td[data-h]::before{content:attr(data-h) ": ";color:var(--ink-soft);font-weight:400}
+  form.waitlist .two{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .tomb.set .frame>*{animation:none}
+}
+</style>
+</head>
+<body>
+
+<header class="wrap nav">
+  <a class="mark" href="#top" aria-label="AutoInterns home">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="2" width="18" height="20" rx="1.5" fill="var(--ledger-soft)" stroke="currentColor" stroke-width="1.6"/><path d="M7.5 12.5l3 3 6-7" fill="none" stroke="var(--ledger)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    AutoInterns
+  </a>
+  <a class="l" href="#handle">What we handle</a>
+  <a class="l" href="#how">How it works</a>
+  <a class="l" href="#pricing">Pricing</a>
+  <a class="btn" href="#join">Get started</a>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <h1>We apply to your internships for you.</h1>
+        <p class="lead">A single internship application can take an hour or more. Tell us what you study and where you want to work, and we'll fill out the applications, write your cover letters and keep track of every deadline. You read each one and give the OK before it goes in.</p>
+        <div class="ctas">
+          <a class="btn" href="#join">Get started</a>
+          <a class="btn ghost" href="#handle">See what we handle</a>
+        </div>
+        <p class="small">For every major at every college, from nursing, engineering and education to art, policy, research and business.</p>
+      </div>
+
+      <div class="desk">
+        <figure class="tomb" id="tomb" aria-live="polite" style="margin:0 auto">
+          <div class="frame">
+            <div class="name" id="t-name">Your Name</div>
+            <div class="verb">has accepted an offer as</div>
+            <div class="role" id="t-role">Summer Intern</div>
+            <div class="track" id="t-track">Your Field</div>
+            <div class="yr" id="t-yr">Summer 2027</div>
+            <hr>
+            <div class="foot">Applications handled by AutoInterns</div>
+          </div>
+        </figure>
+        <form class="compose" id="compose" onsubmit="return false">
+          <label class="full">Your name <input id="in-name" autocomplete="name" placeholder="Your Name" maxlength="40"></label>
+          <label>Your field
+            <select id="in-track"><option value="">Pick your field</option></select>
+          </label>
+          <label>Summer
+            <select id="in-yr"><option>2027</option><option>2028</option><option>2029</option></select>
+          </label>
+          <p class="hint">Type your name and pick your field. This is what we're working toward with you.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="band sheet" id="handle">
+    <div class="wrap">
+      <div class="intro">
+        <h2>What we take off your plate</h2>
+        <p>Recruiting season is a second job on top of classes. We do the paperwork so you can spend your time on networking, interview prep and your GPA.</p>
+      </div>
+      <div class="rules">
+        <div>
+        <h3>We handle</h3>
+        <ul>
+          <li><b>Finding the right roles</b><span>We keep a list of the employers you're targeting and the programs that fit your major, year, GPA and cities.</span></li>
+          <li><b>Filling out every application</b><span>All of it, including the questions that change from employer to employer.</span></li>
+          <li><b>Writing your cover letters</b><span>One page each, written from things you've actually done.</span></li>
+          <li><b>Watching your deadlines and inbox</b><span>When an interview invite or online test comes in, we tell you what to do and by when.</span></li>
+          <li><b>Keeping you posted</b><span>One list that shows where every application stands.</span></li>
+        </ul>
+        </div>
+        <div>
+        <h3>You keep</h3>
+        <ul>
+          <li><b>The final yes</b><span>Nothing is sent with your name on it until you've read it and approved it.</span></li>
+          <li><b>Your passwords and codes</b><span>You set up your own accounts on employer sites. We never ask for your passwords.</span></li>
+          <li><b>Interviews and networking</b><span>The conversations are yours. We get you to them.</span></li>
+          <li><b>Your LinkedIn</b><span>We don't message anyone or apply through LinkedIn for you.</span></li>
+        </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="how">
+    <div class="wrap">
+      <div class="intro">
+        <h2>How working with us goes</h2>
+        <p>About 20 minutes from you up front. Then a quick read each time an application is ready.</p>
+      </div>
+      <ol class="steps">
+        <li><h3>Tell us your goals</h3><p>Send your resume and fill out a short intake: your major, the kinds of roles you want and where.</p></li>
+        <li><h3>We get to work</h3><p>We find the openings that fit and prepare each application, cover letter included.</p></li>
+        <li class="you"><h3>Give the OK</h3><p>We send you each application to look over. Approve it, or tell us what to change.</p></li>
+        <li><h3>We keep you on track</h3><p>Tests, interview invites and deadlines all come to us too, so you always know what's next.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="band sheet" id="details">
+    <div class="wrap">
+      <div class="intro">
+        <h2>We sweat the details recruiters notice</h2>
+        <p>Most companies, hospitals, labs and agencies make you apply through their own sites, and those sites often mangle your resume when you upload it. A wrong GPA or graduation date can get you screened out before anyone reads your application. We check every field and fix it before you see it.</p>
+      </div>
+      <table class="ledger">
+        <caption>The kind of mistakes we catch</caption>
+        <thead><tr><th>Field</th><th>On your resume</th><th>What the employer's site read</th><th>What we send</th></tr></thead>
+        <tbody>
+          <tr><td>GPA</td><td data-h="Resume">3.82 / 4.00</td><td data-h="Site read"><span class="bad">382</span></td><td data-h="We send" class="good">3.82</td></tr>
+          <tr><td>Graduation</td><td data-h="Resume">May 2028</td><td data-h="Site read"><span class="bad">05/2008</span></td><td data-h="We send" class="good">05/2028</td></tr>
+          <tr><td>School</td><td data-h="Resume">State University, School of Business</td><td data-h="Site read"><span class="bad">Listed as a past job</span></td><td data-h="We send" class="good">Listed as your school</td></tr>
+          <tr><td>Address</td><td data-h="Resume">12 Elm St, Apt 4B</td><td data-h="Site read"><span class="bad">Apt 4B as the city</span></td><td data-h="We send" class="good">Fixed</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="band" id="calendar">
+    <div class="wrap">
+      <div class="intro">
+        <h2>Some fields hire early. We make sure you're ready.</h2>
+        <p>Some employers open summer applications almost a year ahead. Others post a few weeks before. We keep an eye on when each employer on your list opens, so you're never late.</p>
+      </div>
+      <div class="cal">
+        <div><div class="when">Freshman year</div><h3>Try things out</h3><ul><li>Exploratory and early programs</li><li>Research, volunteer and campus roles</li></ul></div>
+        <div><div class="when">Sophomore year</div><h3>Your first real internship</h3><ul><li>Programs built for sophomores</li><li>Research and summer programs</li></ul></div>
+        <div><div class="when">Junior year</div><h3>The summer that counts</h3><ul><li>The main internship cycle in most fields</li><li>Interviews, tests and offers</li></ul></div>
+        <div><div class="when">Senior year</div><h3>What comes next</h3><ul><li>Full-time jobs and return offers</li><li>Fellowships, co-ops and grad programs</li></ul></div>
+      </div>
+      <p class="footnote">Timing varies by field, employer and year. We'll give you the dates for the employers on your list.</p>
+    </div>
+  </section>
+
+  <section class="band sheet" id="pricing">
+    <div class="wrap">
+      <div class="intro">
+        <h2>Pick how much you want us to handle</h2>
+        <p>You pay once for the season, not every month. Recruiting happens in bursts, and your bill should too.</p>
+      </div>
+      <div class="plans">
+        <div class="plan">
+          <h3>Try us</h3>
+          <div class="price">$0</div>
+          <div class="per">Free</div>
+          <ul><li>We handle 3 applications a month</li><li>Deadline and interview tracking</li><li>Updates when tests and invites arrive</li></ul>
+          <a class="btn ghost" href="#join">Get started</a>
+        </div>
+        <div class="plan main">
+          <h3>Full season</h3>
+          <div class="price">$179</div>
+          <div class="per">One recruiting season, paid once</div>
+          <ul><li>We handle up to 60 applications</li><li>A cover letter written for each one</li><li>A heads-up when employers on your list open applications</li><li>Everything in Try us</li></ul>
+          <a class="btn" href="#join">Get started</a>
+        </div>
+        <div class="plan">
+          <h3>Full season + personal review</h3>
+          <div class="price">$449</div>
+          <div class="per">One recruiting season, paid once</div>
+          <ul><li>A person reads every application before you do</li><li>We handle up to 100 applications</li><li>Everything in Full season</li></ul>
+          <a class="btn ghost" href="#join">Get started</a>
+        </div>
+      </div>
+      <div class="parent">
+        <p><b>Paying for your student?</b> With any season plan, we can send you a weekly update: applications sent, tests due and interviews scheduled. Your student decides what you see.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="faq">
+    <div class="wrap">
+      <div class="intro"><h2>Questions</h2></div>
+      <div class="faq">
+        <details><summary>Do you actually apply for me?</summary><p>Yes. We find the roles, fill out the applications and write the cover letters. The one thing we ask of you is a final OK on each application before it's sent, so nothing goes out with your name on it that you haven't seen.</p></details>
+        <details><summary>Does this work for my major?</summary><p>Yes. We work with every major at any college: nursing, engineering, education, art, biology, policy, business and everything in between. If you're undecided, tell us what you're curious about and we'll start there.</p></details>
+        <details><summary>Will you send hundreds of applications?</summary><p>No, and that's on purpose. Recruiters can spot a mass blast. We'd rather send 40 good applications than 400 sloppy ones.</p></details>
+        <details><summary>Do you use AI?</summary><p>Yes, behind the scenes, to fill in forms and draft letters faster. Everything is checked against your real resume, and you see all of it before anything is sent.</p></details>
+        <details><summary>Is this allowed?</summary><p>You approve every application, and everything in it comes from your real experience. Some employers ask you to confirm you won't use AI tools during interviews. We don't help with interviews, and you should answer those questions honestly.</p></details>
+        <details><summary>What happens to my information?</summary><p>It's yours. We use it only for your applications, keep sensitive details encrypted and never share it with other students. Demographic questions are left as "decline to answer" unless you tell us otherwise. Ask us to delete everything at any time and we will.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="band sheet join" id="join">
+    <div class="wrap">
+      <div>
+        <h2>Tell us where you want to work</h2>
+        <p class="muted">We take on students in small groups, starting with whoever's recruiting cycle opens first. Leave your details and we'll be in touch.</p>
+      </div>
+      <form class="waitlist" id="waitlist" novalidate>
+        <label>School email <input type="email" name="email" required autocomplete="email" placeholder="you@school.edu"></label>
+        <div class="two">
+          <label>School <input name="school" autocomplete="organization" placeholder="Any college or university"></label>
+          <label>Major <input name="major" list="majors" placeholder="Start typing your major"></label>
+        </div>
+        <datalist id="majors"></datalist>
+        <div class="two">
+          <label>Class year
+            <select name="class_year" required>
+              <option value="">Choose</option><option>Freshman</option><option>Sophomore</option><option>Junior</option><option>Senior</option><option>Graduate student</option>
+            </select>
+          </label>
+          <label>Field you're most interested in
+            <select name="field" id="join-field"><option>Not sure yet</option></select>
+          </label>
+        </div>
+        <button class="btn" type="submit">Request a spot</button>
+        <p class="status" id="status" role="status"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>AutoInterns</span>
+    <span>Not affiliated with any employer, school or application platform.</span>
+  </div>
+</footer>
+
+<script src="../site/js/data.js"></script>
+<script>
+// Sign-ups: set this to your form backend (e.g. a Formspree or Supabase endpoint) before launch.
+const WAITLIST_ENDPOINT = "";
+
+// Fields and majors come from the shared list in ../site/js/data.js.
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const fieldGroups = LAN.categories.map(c =>
+  `<optgroup label="${esc(c.name)}">${c.subs.map(s => `<option>${esc(s.name)}</option>`).join("")}</optgroup>`).join("");
+document.getElementById("in-track").insertAdjacentHTML("beforeend", fieldGroups);
+document.getElementById("join-field").insertAdjacentHTML("beforeend", LAN.categories.map(c => `<option>${esc(c.name)}</option>`).join(""));
+document.getElementById("majors").innerHTML = LAN.majors.map(m => `<option value="${esc(m)}">`).join("");
+const tomb = document.getElementById("tomb");
+const els = { name: t("t-name"), role: t("t-role"), track: t("t-track"), yr: t("t-yr") };
+function t(id) { return document.getElementById(id); }
+let settle;
+function render() {
+  const name = t("in-name").value.trim() || "Your Name";
+  els.name.textContent = name;
+  els.track.textContent = t("in-track").value || "Your Field";
+  els.yr.textContent = "Summer " + t("in-yr").value;
+  clearTimeout(settle);
+  settle = setTimeout(() => { tomb.classList.remove("set"); void tomb.offsetWidth; tomb.classList.add("set"); }, 250);
+}
+["in-name", "in-track", "in-yr"].forEach(id => t(id).addEventListener("input", render));
+
+// Tilt the lucite slightly toward the pointer
+const desk = document.querySelector(".desk");
+if (!matchMedia("(prefers-reduced-motion: reduce)").matches && matchMedia("(pointer: fine)").matches) {
+  desk.addEventListener("pointermove", e => {
+    const r = tomb.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+    tomb.style.transform = `rotateY(${-9 + x * 10}deg) rotateX(${3 - y * 8}deg)`;
+  });
+  desk.addEventListener("pointerleave", () => { tomb.style.transform = ""; });
+}
+
+const form = t("waitlist"), status = t("status");
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+  status.className = "status";
+  const data = Object.fromEntries(new FormData(form));
+  if (!form.email.checkValidity()) { status.textContent = "Enter your email address, like you@school.edu."; status.classList.add("err"); return; }
+  if (!data.class_year) { status.textContent = "Choose your class year."; status.classList.add("err"); return; }
+  if (!WAITLIST_ENDPOINT) { status.textContent = "We're not taking requests through this form yet. Check back soon."; status.classList.add("err"); return; }
+  try {
+    const res = await fetch(WAITLIST_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(data) });
+    if (!res.ok) throw new Error(res.status);
+    form.reset();
+    status.textContent = "Thanks. We'll email you before your recruiting cycle opens.";
+    status.classList.add("ok");
+  } catch {
+    status.textContent = "Your request didn't go through. Check your connection and try again.";
+    status.classList.add("err");
+  }
+});
+</script>
+</body>
+</html>

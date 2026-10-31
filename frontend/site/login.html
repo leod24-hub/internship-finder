@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Log in | Lanyard</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='5' y='6' width='14' height='16' rx='3' fill='%23ffd84d' stroke='%2312152a' stroke-width='1.5'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/base.css">
+<style>
+  main{padding:var(--p-space-8) 0 var(--p-space-9)}
+  .card{max-width:440px;margin:0 auto;background:var(--surface);border:2px solid var(--border-strong);border-radius:var(--p-radius-lg);padding:var(--p-space-6);box-shadow:6px 6px 0 var(--border-strong)}
+  .card h1{font-size:var(--p-step-3);margin-bottom:6px}
+  .switch{margin-top:var(--p-space-5);font-size:.95rem;color:var(--text-muted)}
+  .switch button{background:none;border:0;padding:0;font:inherit;color:var(--text);text-decoration:underline;cursor:pointer}
+  .status{min-height:1.5em;margin:0;font-size:.95rem}
+  .status.err{color:var(--danger)} .status.ok{color:var(--success)}
+  form .btn{width:100%;margin-top:var(--p-space-2)}
+</style>
+</head>
+<body>
+<header class="bar" id="bar"></header>
+<main class="wrap">
+  <div class="card">
+    <h1 id="title">Log in</h1>
+    <p class="muted" id="lead">Pick up where you left off.</p>
+    <form id="form" novalidate>
+      <div class="field" id="nameField" hidden><label for="name">Full name</label><input id="name" autocomplete="name" placeholder="Jordan Sample"></div>
+      <div class="field"><label for="email">Email</label><input id="email" type="email" autocomplete="email" placeholder="you@school.edu" required></div>
+      <div class="field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required><span class="hint" id="pwHint" hidden>At least 8 characters.</span></div>
+      <button class="btn lg" id="submit" type="submit">Log in</button>
+      <p class="status" id="status" role="status"></p>
+    </form>
+    <p class="switch" id="switch"></p>
+  </div>
+</main>
+<script src="js/data.js"></script>
+<script src="js/common.js"></script>
+<script>
+  renderBar("", "site");
+  const $ = id => document.getElementById(id);
+  const params = new URLSearchParams(location.search);
+  const next = (params.get("next") || "").replace(/[^\w.\-?=&%]/g, "");
+  let signup = params.get("mode") === "signup";
+
+  function render() {
+    $("title").textContent = signup ? "Create your account" : "Log in";
+    $("lead").textContent = signup ? "Free to start. We handle your first 3 applications each month." : "Pick up where you left off.";
+    $("submit").textContent = signup ? "Create account" : "Log in";
+    $("nameField").hidden = !signup;
+    $("pwHint").hidden = !signup;
+    $("password").autocomplete = signup ? "new-password" : "current-password";
+    $("switch").innerHTML = signup ? 'Already have an account? <button type="button">Log in</button>' : 'New here? <button type="button">Create an account</button>';
+    say($("status"), "");
+  }
+  $("switch").addEventListener("click", e => { if (e.target.closest("button")) { signup = !signup; render(); } });
+
+  $("form").addEventListener("submit", async e => {
+    e.preventDefault();
+    const email = $("email").value.trim(), password = $("password").value;
+    if (!email || !$("email").checkValidity()) return say($("status"), "Enter your email address, like you@school.edu.", "err");
+    if (signup && password.length < 8) return say($("status"), "Use at least 8 characters for your password.", "err");
+    $("submit").disabled = true;
+    try {
+      await api("POST", signup ? "/auth/signup" : "/auth/login", { email, password, name: $("name").value.trim() });
+      const me = await api("GET", "/me");
+      location.href = next || (me.onboarded ? "app.html" : "onboarding.html");
+    } catch (err) {
+      say($("status"), err.message, "err");
+      $("submit").disabled = false;
+    }
+  });
+  render();
+</script>
+</body>
+</html>

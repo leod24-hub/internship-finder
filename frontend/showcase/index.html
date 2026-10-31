@@ -4,34 +4,66 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lanyard</title>
-<meta name="description" content="Pick your fields. Lanyard finds internships, fills in the applications, and waits for your OK before anything is sent.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='5' y='6' width='14' height='16' rx='3' fill='%23ffe14d' stroke='%2314121f' stroke-width='1.5'/%3E%3C/svg%3E">
-<script>document.documentElement.className="js"</script>
+<meta name="description" content="Lanyard fills out internship applications for you, in any major, then waits for your OK before anything is sent.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='5' y='6' width='14' height='16' rx='3' fill='%23e9b872' stroke='%2310131d' stroke-width='1.5'/%3E%3C/svg%3E">
+<script>
+  var t = null; try { t = localStorage.getItem("lanyard.theme"); } catch (e) {}
+  document.documentElement.dataset.theme = t === "dark" ? "dark" : "light";
+  document.documentElement.className = "js";
+</script>
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
 </head>
 <body>
 <div id="progress" aria-hidden="true"></div>
 <div class="cursor" id="cursor" aria-hidden="true"></div>
 
 <header class="nav">
-  <a class="wordmark" href="#top" aria-label="Lanyard home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2l4 7 4-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="5.5" y="9" width="13" height="13" rx="3" fill="#ffe14d" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="14" r="1.7" fill="#14121f"/></svg>Lanyard</a>
-  <a class="l" href="#fields">Fields</a><a class="l" href="#demo">How it works</a><a class="l" href="#price">Pricing</a>
+  <a class="wordmark" href="#top" aria-label="Lanyard home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2l4 7 4-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="5.5" y="9" width="13" height="13" rx="3" fill="#e9b872" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="14" r="1.7" fill="#10131d"/></svg>Lanyard</a>
+  <a class="l" href="#pain">The problem</a><a class="l" href="#demo">How it works</a><a class="l" href="#price">Pricing</a>
+  <button class="tgl" id="themeToggle" type="button" role="switch" aria-checked="false" aria-label="Dark mode">
+    <span class="k">
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5.3 5.3l1.7 1.7M17 17l1.7 1.7M5.3 18.7L7 17M17 7l1.7-1.7"/></svg>
+      <svg class="moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg>
+    </span>
+  </button>
   <a class="btn sm nv" href="#join">Get early access</a>
 </header>
 
 <main id="top">
   <!-- HERO -->
-  <section class="hero" aria-labelledby="h1">
-    <svg class="deco star" viewBox="0 0 100 100" aria-hidden="true"><path fill="currentColor" d="M50 0l11 33 34-8-24 26 24 26-34-8-11 33-11-33-34 8 24-26L5 25l34 8z"/></svg>
-    <svg class="deco blob" viewBox="0 0 200 200" aria-hidden="true"><path fill="currentColor" d="M44 24c30-24 90-20 120 14s26 90-8 118-96 30-124-4S14 48 44 24z"/></svg>
+  <section class="sheet hero" aria-labelledby="h1" style="margin-top:0">
     <div class="copy">
-      <h1 id="h1" data-split>Your field.<br>Your forms.<br>Done.</h1>
-      <p class="lead" data-rise>Lanyard finds internships in whatever you study, fills out the applications, and stops for your OK before anything is sent.</p>
+      <h1 id="h1" data-split>Stop retyping your GPA into 40 different forms.</h1>
+      <p class="lead" data-rise>Lanyard fills out internship applications for you, in any major, then waits for your OK before anything is sent.</p>
       <div class="row" data-rise>
         <a class="btn big lemon magnet" href="#join">Get early access</a>
-        <a class="btn big ghost magnet" href="#demo">Watch a form fill itself</a>
+        <a class="btn big ghost magnet" href="#pain">See why</a>
       </div>
+      <p class="foot" data-rise>Free to start. You approve every application. Lanyard never makes accounts for you or gets around bot checks.</p>
     </div>
+
+    <div class="stage">
+      <div class="win hwin" aria-label="Animated example: an internship application filling itself in">
+        <div class="top"><i></i><i></i><i></i><span class="url">northwindhealth.example/apply</span></div>
+        <div class="hbody">
+          <h4>Apply: Clinical Research Intern</h4>
+          <div class="form" id="hform">
+            <div><label>Full name</label><div class="fd" data-t="Jordan Sample"></div></div>
+            <div><label>School</label><div class="fd" data-t="State University"></div></div>
+            <div><label>Major</label><div class="fd" data-t="Biology"></div></div>
+            <div><label>GPA</label><div class="fd" data-t="3.6"></div></div>
+            <div class="span2"><label>Work authorization</label><div class="fd" data-t="Authorized to work in the US, no sponsorship needed"></div></div>
+            <div class="span2"><label>Why this role</label><div class="fd ta" data-t="I want hands-on research experience. Last year I logged 120 hours as a lab assistant preparing samples and keeping records."></div></div>
+            <div class="span2 att"><span id="hatt1" style="opacity:0">Resume.pdf</span><span id="hatt2" style="opacity:0">Cover letter.pdf</span></div>
+            <svg class="cur" id="hcur" viewBox="0 0 24 28" aria-hidden="true"><path d="M2 1l18 14-8 1.4 4.4 9-3.6 1.8-4.4-9L2 24z" fill="#10131d" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="ready" id="ready" style="opacity:0"><span class="ok"><svg width="13" height="13" viewBox="0 0 14 14"><path d="M2 7.5l3.2 3L12 3" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Ready for your OK<span class="appr">Review</span></div>
+        </div>
+      </div>
+      <p class="cap">That form filled itself. Nothing is sent until you approve it.</p>
+    </div>
+
     <div class="zone" aria-label="Interactive name badge. Drag to swing it, click to flip it.">
       <div class="hang" id="hang">
         <div class="strap"></div><div class="clip"></div>
@@ -46,14 +78,13 @@
             </div>
             <div class="face back">
               <span class="hole"></span>
-              <div class="b1" style="margin-top:34px">Application<br>pass</div>
+              <div class="b1" style="margin-top:1.5em">Application<br>pass</div>
               <p>Good for every field. Nothing gets sent without your OK.</p>
               <div class="codes" style="position:static" aria-hidden="true"></div>
             </div>
           </div>
         </div>
       </div>
-      <p class="hint" aria-hidden="true">Grab the badge. Give it a swing.</p>
     </div>
   </section>
 
@@ -61,6 +92,124 @@
   <section class="sheet ribbons" aria-label="Fields Lanyard covers" style="padding-top:calc(var(--sheet-radius) + 56px)">
     <div class="rib r1" id="r1"></div>
     <div class="rib r2" id="r2" aria-hidden="true"></div>
+  </section>
+
+  <!-- THE BEFORE -->
+  <section class="sheet pain" id="pain" aria-labelledby="ph">
+    <div class="pain-wrap" id="painwrap">
+      <div class="pain-stick">
+        <div class="pain-head">
+          <h2 id="ph" data-split>Same questions. Forty portals.</h2>
+          <p id="ptext">Every employer asks for your name, school, GPA, and work authorization again. Each one wants it typed into its own form.</p>
+        </div>
+        <div class="pain-count" id="pcount"><div class="num" id="pnum">0</div><div class="lbl" id="plbl">times you've typed your GPA</div></div>
+        <div class="pain-stage" id="pstage" aria-hidden="true"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEMO -->
+  <section class="sheet demo" id="demo" aria-labelledby="dh">
+    <div class="pin" id="pin">
+      <div>
+        <h2 id="dh" data-split>Type it once. Lanyard does the rest.</h2>
+        <ol class="steps" id="steps">
+          <li class="on"><span class="n">1</span><div><h3>Pick your fields</h3><p>Choose what you want to explore, plus where and when.</p></div></li>
+          <li><span class="n">2</span><div><h3>Get matches</h3><p>Fitting openings land on your dashboard. Paste a link to add any posting yourself.</p></div></li>
+          <li><span class="n">3</span><div><h3>Forms fill themselves</h3><p>Your details and a letter drafted from your real resume go into the employer's form.</p></div></li>
+          <li><span class="n">4</span><div><h3>You approve</h3><p>Check every answer, fix what's off, then approve. Or say no.</p></div></li>
+        </ol>
+      </div>
+      <div class="win dwin" aria-label="Animated example of an application being filled in">
+        <div class="top"><i></i><i></i><i></i><span class="url" id="url">lanyard.example/matches</span></div>
+        <div class="body" id="wbody">
+          <div class="scene" id="sa">
+            <h4>Your fields</h4>
+            <div class="mini"><span style="background:var(--p-h-teal)">Healthcare</span><span style="background:var(--p-h-purple)">Design</span><span style="background:var(--p-h-yellow)">Education</span></div>
+            <h4>New matches</h4>
+            <div class="mrow"><div><b>Clinical Research Intern</b><small>Northwind Health, Boston</small></div><span class="pill">Due in 4 days</span></div>
+            <div class="mrow"><div><b>Product Design Intern</b><small>Studio Kite, Remote</small></div><span class="pill">Due in 21 days</span></div>
+            <div class="mrow"><div><b>Education Programs Intern</b><small>Brightpath Schools, Austin</small></div><span class="pill">Due in 15 days</span></div>
+          </div>
+          <div class="scene" id="sb" style="opacity:0">
+            <h4>Apply: Clinical Research Intern</h4>
+            <div class="form" id="form">
+              <div><label>Full name</label><div class="fd" data-t="Jordan Sample"></div></div>
+              <div><label>School</label><div class="fd" data-t="State University"></div></div>
+              <div><label>Major</label><div class="fd" data-t="Biology"></div></div>
+              <div><label>Graduation</label><div class="fd" data-t="May 2028"></div></div>
+              <div class="span2"><label>Why this role</label><div class="fd ta" data-t="I want hands-on research experience. Last year I logged 120 hours as a lab assistant preparing samples and keeping records, and I'd like to do that at a larger scale."></div></div>
+              <div class="span2 att"><span id="att1" style="opacity:0">Resume.pdf</span><span id="att2" style="opacity:0">Cover letter.pdf</span></div>
+            </div>
+            <svg class="cur" id="cur" viewBox="0 0 24 28" aria-hidden="true"><path d="M2 1l18 14-8 1.4 4.4 9-3.6 1.8-4.4-9L2 24z" fill="#10131d" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="review" id="rv" style="opacity:0">
+            <h4 style="font:800 1.3rem var(--p-display);margin:0 0 14px">Review before it goes</h4>
+            <ul class="chk" id="chk">
+              <li><span class="bx"><svg viewBox="0 0 14 14"><path d="M2 7.5l3.2 3L12 3" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>GPA and graduation date are correct</li>
+              <li><span class="bx"><svg viewBox="0 0 14 14"><path d="M2 7.5l3.2 3L12 3" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Work authorization is correct</li>
+              <li><span class="bx"><svg viewBox="0 0 14 14"><path d="M2 7.5l3.2 3L12 3" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Every dropdown says what I meant</li>
+              <li><span class="bx"><svg viewBox="0 0 14 14"><path d="M2 7.5l3.2 3L12 3" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>The cover letter is all true</li>
+            </ul>
+            <span class="appr" id="appr">Approve application</span>
+          </div>
+          <div class="stampx" id="stampx">Approved</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE PRODUCT: the one contrast section -->
+  <section class="sheet light" id="dash" aria-labelledby="lh">
+    <div class="lhead">
+      <div>
+        <h2 id="lh" data-split>Everything in one place. Nothing slips.</h2>
+        <p class="sub" data-rise>Deadlines, drafts, and what needs your approval, on one screen. Try the Review buttons below.</p>
+      </div>
+    </div>
+    <div class="laptop" id="laptop">
+      <div class="lid"><div class="screen">
+        <div class="scr-top">
+          <h3>Hi Jordan, here's where things stand.</h3>
+          <div class="figs">
+            <div><b id="fApplied">4</b><span>Applied</span></div>
+            <div><b id="fInt">1</b><span>Interviews</span></div>
+            <div class="w"><b id="fWait">3</b><span>Waiting on you</span></div>
+          </div>
+        </div>
+        <div class="scr-grid">
+          <div>
+            <h4>Needs you</h4>
+            <div id="queue">
+              <div class="q2"><span class="bar"></span><div><b>Clinical Research Intern</b><small>Northwind Health</small></div><div class="act"><span class="pill">Due in 4 days</span><button type="button">Review</button></div></div>
+              <div class="q2"><span class="bar"></span><div><b>Architecture Intern</b><small>Keystone Architects</small></div><div class="act"><span class="pill">Due in 6 days</span><button type="button">Review</button></div></div>
+              <div class="q2"><span class="bar"></span><div><b>Policy Research Intern</b><small>Civic Forward</small></div><div class="act"><span class="pill">Due in 2 days</span><button type="button">Review</button></div></div>
+            </div>
+          </div>
+          <div>
+            <h4>New matches</h4>
+            <div class="mt"><span class="dot" style="background:var(--p-h-purple)"></span><div><b>Product Design Intern</b><small>Studio Kite, Remote</small></div></div>
+            <div class="mt"><span class="dot" style="background:var(--p-h-yellow)"></span><div><b>Education Programs Intern</b><small>Brightpath Schools, Austin</small></div></div>
+            <div class="mt"><span class="dot" style="background:var(--p-h-teal)"></span><div><b>Lab Research Intern</b><small>Pioneer Biosciences, San Diego</small></div></div>
+          </div>
+        </div>
+      </div></div>
+      <div class="lbase" aria-hidden="true"></div>
+    </div>
+    <p class="lnote">Example screen with made-up postings and numbers. Amber means a deadline or something waiting on you. Green means approved.</p>
+  </section>
+
+  <!-- EXAMPLE WEEK -->
+  <section class="sheet week" id="week" aria-labelledby="wk">
+    <h2 id="wk" data-split>What a busy week could look like.</h2>
+    <p class="eg"><span class="av" aria-hidden="true">M</span>Example student, not a real customer: Maya, a nursing junior.</p>
+    <div class="days" id="days">
+      <div class="rail" aria-hidden="true"><i id="rail"></i></div>
+      <div class="day"><h3>Sunday night</h3><p>She picks Nursing, Public health, and Education, sets summer 2027, and uploads her resume.</p><span class="chip">10 minutes</span></div>
+      <div class="day"><h3>Monday</h3><p>A list of matching openings is waiting. She pastes in two postings she found on her own.</p><span class="chip">Matches ready</span></div>
+      <div class="day"><h3>Wednesday</h3><p>Between classes she reviews the filled applications, fixes one answer, and approves the rest.</p><span class="chip ok">Approved</span></div>
+      <div class="day"><h3>Friday</h3><p>Two interview emails arrive. The dashboard moves them to the top of her list.</p><span class="chip">Needs her</span></div>
+    </div>
   </section>
 
   <!-- FIELDS -->
@@ -73,57 +222,6 @@
     <p class="picked" id="picked" aria-live="polite"></p>
   </section>
 
-  <!-- DEMO -->
-  <section class="sheet demo" id="demo" aria-labelledby="dh">
-    <div class="pin" id="pin">
-      <div>
-        <h2 id="dh" data-split>It fills the form. You make the call.</h2>
-        <ol class="steps" id="steps">
-          <li class="on"><span class="n">1</span><div><h3>Pick your fields</h3><p>Choose what you want to explore, plus where and when.</p></div></li>
-          <li><span class="n">2</span><div><h3>Get matches</h3><p>Fitting openings land on your dashboard. Paste a link to add any posting yourself.</p></div></li>
-          <li><span class="n">3</span><div><h3>Forms fill themselves</h3><p>Your details and a letter drafted from your real resume go into the employer's form.</p></div></li>
-          <li><span class="n">4</span><div><h3>You approve</h3><p>Check every answer, fix what's off, then approve. Or say no.</p></div></li>
-        </ol>
-      </div>
-      <div class="win" aria-label="Animated example of an application being filled in">
-        <div class="top"><i></i><i></i><i></i><span class="url" id="url">lanyard.example/matches</span></div>
-        <div class="body" id="wbody">
-          <div class="scene sa" id="sa">
-            <h4>Your fields</h4>
-            <div class="mini"><span style="background:var(--p-h-teal)">Healthcare</span><span style="background:var(--p-h-purple)">Design</span><span style="background:var(--p-h-yellow)">Education</span></div>
-            <h4>New matches</h4>
-            <div class="mrow"><div><b>Clinical Research Intern</b><small>Northwind Health, Boston</small></div><span class="pill">Due in 4 days</span></div>
-            <div class="mrow"><div><b>Product Design Intern</b><small>Studio Kite, Remote</small></div><span class="pill">Due in 21 days</span></div>
-            <div class="mrow"><div><b>Education Programs Intern</b><small>Brightpath Schools, Austin</small></div><span class="pill">Due in 15 days</span></div>
-          </div>
-          <div class="scene sb" id="sb" style="opacity:0">
-            <h4>Apply: Clinical Research Intern</h4>
-            <div class="form" id="form">
-              <div><label>Full name</label><div class="fd" data-t="Jordan Sample"></div></div>
-              <div><label>School</label><div class="fd" data-t="State University"></div></div>
-              <div><label>Major</label><div class="fd" data-t="Biology"></div></div>
-              <div><label>Graduation</label><div class="fd" data-t="May 2028"></div></div>
-              <div class="span2"><label>Why this role</label><div class="fd ta" data-t="I want hands-on research experience. Last year I logged 120 hours as a lab assistant preparing samples and keeping records, and I'd like to do that at a larger scale."></div></div>
-              <div class="span2 att"><span id="att1" style="opacity:0">Resume.pdf</span><span id="att2" style="opacity:0">Cover letter.pdf</span></div>
-            </div>
-            <svg class="cur" id="cur" viewBox="0 0 24 28" aria-hidden="true"><path d="M2 1l18 14-8 1.4 4.4 9-3.6 1.8-4.4-9L2 24z" fill="#14121f" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>
-          </div>
-          <div class="review" id="rv" style="opacity:0">
-            <h4>Review before it goes</h4>
-            <ul class="chk" id="chk">
-              <li><span class="bx"><svg viewBox="0 0 14 14"><path d="M2 7.5l3.2 3L12 3" fill="none" stroke="#7fe3b5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>GPA and graduation date are correct</li>
-              <li><span class="bx"><svg viewBox="0 0 14 14"><path d="M2 7.5l3.2 3L12 3" fill="none" stroke="#7fe3b5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Work authorization is correct</li>
-              <li><span class="bx"><svg viewBox="0 0 14 14"><path d="M2 7.5l3.2 3L12 3" fill="none" stroke="#7fe3b5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Every dropdown says what I meant</li>
-              <li><span class="bx"><svg viewBox="0 0 14 14"><path d="M2 7.5l3.2 3L12 3" fill="none" stroke="#7fe3b5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>The cover letter is all true</li>
-            </ul>
-            <span class="appr" id="appr">Approve application</span>
-          </div>
-          <div class="stampx" id="stampx">Approved</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- TIME MATH -->
   <section class="sheet math" id="math">
     <h2 data-split>Do the math on your own applications.</h2>
@@ -132,8 +230,8 @@
         <label for="n" style="font-weight:700;font-size:1.2rem;display:block;margin-bottom:6px">I'm applying to <output id="nout" style="font-family:var(--p-display);font-weight:800;font-size:1.6em">40</output> places</label>
         <input class="range" id="n" type="range" min="5" max="150" value="40" aria-describedby="assume">
         <div class="bars">
-          <div class="bar hand"><i id="b1"></i><span>By hand: <b id="hh">0</b> hours</span></div>
-          <div class="bar me"><i id="b2"></i><span>With Lanyard: <b id="ll">0</b> hours</span></div>
+          <div class="bar2"><i id="b1"></i><span>By hand: <b id="hh">0</b> hours</span></div>
+          <div class="bar2 me"><i id="b2"></i><span>With Lanyard: <b id="ll">0</b> hours</span></div>
         </div>
         <p class="fine" id="assume">An estimate. It assumes about 25 minutes per application by hand and 4 minutes to review one that Lanyard filled. Yours will vary with the employer and the form.</p>
       </div>
@@ -142,7 +240,7 @@
   </section>
 
   <!-- WON'T -->
-  <section class="sheet wont dark" aria-labelledby="wh">
+  <section class="sheet wont" aria-labelledby="wh">
     <h2 id="wh" data-split>Things Lanyard will not do.</h2>
     <ul class="nots">
       <li><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"><circle cx="32" cy="32" r="26"/><path class="no" d="M14 50L50 14"/></svg><div>Send anything without your approval<small>Every application waits for you.</small></div></li>
@@ -173,11 +271,12 @@
     <div class="confetti" id="confetti" aria-hidden="true"></div>
   </section>
 </main>
-<footer><p>Lanyard is a working name. This page is a design mock, and nothing you type here is sent anywhere.</p></footer>
+<footer><p>Lanyard is a working name. This page is a design mock with made-up examples, and nothing you type here is sent anywhere.</p></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="../site/js/data.js"></script>
 <script src="js/main.js"></script>
+<script src="js/chat.js"></script>
 </body>
 </html>

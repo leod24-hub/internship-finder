@@ -1,5 +1,7 @@
 # Internship Auto-Apply Kit
 
+> **Collaborators and Claude Code: start with [CLAUDE.md](CLAUDE.md)** for the project briefing, roles, and honesty rules, then [docs/BRAND_AND_VIBE.md](docs/BRAND_AND_VIBE.md). The animated marketing page that sets the vibe is in `frontend/showcase/`.
+
 A working, human-in-the-loop internship application assistant for college students (aimed at sophomores and juniors), packaged so it can be built into a multi-user, paid product.
 Everything here was built and tested on a real Summer 2027 search: about 30 submitted applications across Workday, iCIMS, SmartRecruiters, SuccessFactors, UKG, Oracle, ADP, Eightfold, Greenhouse and LinkedIn Easy Apply. All personal data has been removed.
 
@@ -27,6 +29,7 @@ Everything here was built and tested on a real Summer 2027 search: about 30 subm
 | `sample-data/sample-jobs.json` | Data | 16 fictional demo postings across many fields, for the dashboard demo. `legacy-finance-jobs.json` holds the original 66 real finance and real-estate postings (reference only). |
 | `.claude/settings.local.example.json` | Config | Claude Code permission allowlist for the browser tools. |
 | `backend/schema/schema.sql` | Data | Multi-tenant Postgres schema (users, profiles, postings, applications, outreach, approvals, usage, OAuth connections) with row-level security. |
+| `backend/server/` | Service | **Working backend**: API server, Postgres migrations, accounts, and the worker that fills and (after approval) submits applications. See its README to run it. |
 | `config/tenant.example.json` | Config | Per-student values for the `{{PLACEHOLDERS}}` in the prompts and daily scan. |
 | `users/_template/` | Data | Per-student folder layout for running a small pilot before the hosted DB exists. |
 | `docs/MULTI_USER_ARCHITECTURE.md` | Docs | Product plan: sophomore vs junior use cases, components, tenancy rules, pricing, build order. |
