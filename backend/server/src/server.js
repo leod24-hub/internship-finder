@@ -36,7 +36,7 @@ app.use("/api", (_req, res) => res.status(404).json({ error: "Not found." }));
 if (!isProduction) app.use("/mock-ats", mockAts);
 
 const frontend = path.join(REPO, "frontend");
-app.get("/", (_req, res) => res.redirect("/autointerns/index.html"));
+app.get("/", (_req, res) => res.redirect("/showcase/index.html"));
 app.use(express.static(frontend, { extensions: ["html"] }));
 
 app.use((err, req, res, _next) => {

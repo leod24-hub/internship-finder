@@ -28,3 +28,12 @@ Three layers: primitive (raw values), semantic (`--bg`, `--text`, `--primary`, .
 - FAQ and "never does" copy describe intended behavior. Re-check each claim against what is actually built before launch (data handling, site coverage, employer rules).
 - The field-specific extras on step 4 are examples, not a final list.
 - Screenshot, resume upload, and the browser extension handoff are mocked.
+
+## Mock mode (no server or database)
+Add `?mock=1` to any page's address to run the whole app in the browser: sign up, the questionnaire, picking internships, review and approval. `js/mock-api.js` answers the app's API calls and keeps everything in localStorage, laid out as the Supabase tables will be (`users`, `profiles`, `user_interests`, `applications`, `approvals`). "Your profile" > "How it's stored" shows those rows. A yellow strip marks every page while it's on; `?mock=0` turns it off.
+
+```bash
+cd frontend && python3 -m http.server 8790
+# open http://localhost:8790/site/index.html?mock=1
+```
+Mock postings are made up. "Preparing" an application builds its answers from the questionnaire after a short delay, and approving marks it submitted. Passwords are not checked or stored.

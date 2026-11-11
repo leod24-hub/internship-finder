@@ -48,7 +48,7 @@ function readCookie(req) {
 }
 
 // Attaches req.user when the session is valid. Use requireUser on routes that need it.
-export async function loadUser(req, _res, next) {
+export async function loadUser(req, res, next) {
   try {
     const token = readCookie(req);
     if (token) {
@@ -57,8 +57,22 @@ export async function loadUser(req, _res, next) {
           where s.token_hash = $1 and s.expires_at > now()`, [sha256(token)]);
       if (rows[0]) req.user = rows[0];
     }
+    if (!req.user && config.devAutoLogin && !req.path.startsWith("/auth/")) {
+      req.user = await devUser();
+      await startSession(res, req.user.id);
+    }
     next();
   } catch (e) { next(e); }
+}
+
+// The demo student used by devAutoLogin, created on first use (no password, so it can't be logged into).
+async function devUser() {
+  const email = config.devUserEmail;
+  const found = await admin.query("select id, email, plan from users where email = $1", [email]);
+  if (found.rows[0]) return found.rows[0];
+  const { rows } = await admin.query("insert into users (email) values ($1) returning id, email, plan", [email]);
+  await admin.query("insert into profiles (user_id, legal_name, application_email) values ($1,$2,$3)", [rows[0].id, "Demo Student", email]);
+  return rows[0];
 }
 
 export function requireUser(req, res, next) {

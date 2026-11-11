@@ -2,7 +2,7 @@ import express from "express";
 import crypto from "node:crypto";
 import { admin, asUser } from "../db.js";
 import { requireUser } from "../auth.js";
-import { checkLink, readPosting, detectAts } from "../links.js";
+import { checkLink, readPosting, detectAts, HANDS_OFF } from "../links.js";
 
 export const postings = express.Router();
 
@@ -11,7 +11,7 @@ export const postings = express.Router();
 postings.get("/postings/matches", requireUser, async (req, res) => {
   const { rows } = await asUser(req.user.id, c => c.query(
     `with mine as (select category_id from user_interests where user_id = $1)
-     select p.id, p.company, p.role, p.location, p.mode, p.category, p.deadline, p.ats, p.opportunity_type, p.paid,
+     select p.id, p.company, p.role, p.location, p.mode, p.category, p.deadline, p.ats, p.link, p.opportunity_type, p.paid,
             (p.deadline - current_date) as deadline_in
        from postings p
       where not p.closed
@@ -22,7 +22,8 @@ postings.get("/postings/matches", requireUser, async (req, res) => {
              or exists (select 1 from posting_categories pc join mine m on m.category_id = pc.category_id where pc.posting_id = p.id))
       order by p.deadline nulls last
       limit 100`, [req.user.id]));
-  res.json(rows);
+  // hands_off: sign-in portals and sites that forbid automation, which the student finishes themselves.
+  res.json(rows.map(r => ({ ...r, hands_off: HANDS_OFF.has(r.ats) })));
 });
 
 // A student pastes a posting link: store the posting and put it on their tracker.

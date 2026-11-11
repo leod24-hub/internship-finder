@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Let's get you set up | Lanyard</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='5' y='6' width='14' height='16' rx='3' fill='%23ffd84d' stroke='%2312152a' stroke-width='1.5'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/base.css">
+<style>
+  /* One question per screen, centered, with a progress bar on top. */
+  .guide{max-width:640px;margin:0 auto;padding:var(--p-space-7) var(--p-space-5) var(--p-space-9);min-height:calc(100vh - 72px);display:flex;flex-direction:column}
+  .top{display:flex;align-items:center;gap:var(--p-space-4);margin-bottom:var(--p-space-7)}
+  .track{flex:1;height:8px;border-radius:999px;background:var(--surface-sunk);overflow:hidden}
+  .fill{height:100%;width:0;background:var(--highlight);border-radius:inherit;transition:width .45s var(--p-ease)}
+  .count{font-size:var(--p-step--1);color:var(--text-muted);white-space:nowrap;min-width:6.5em;text-align:right}
+  .card{animation:in .35s var(--p-ease) both}
+  .card.back{animation-name:inback}
+  @keyframes in{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+  @keyframes inback{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.card{animation:none}.fill{transition:none}}
+  .kicker{font:600 .8rem var(--font-body);letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:var(--p-space-3)}
+  .card h1{font-size:var(--p-step-3);margin-bottom:var(--p-space-3)}
+  .why{display:flex;gap:10px;align-items:flex-start;color:var(--text-muted);font-size:.95rem;margin-bottom:var(--p-space-6)}
+  .why svg{flex:none;width:18px;height:18px;margin-top:3px}
+  .card input[type=text],.card input[type=tel],.card select,.card textarea{font-size:1.1rem;padding:14px 16px}
+  .card textarea{min-height:150px;resize:vertical}
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:var(--p-space-4)}
+  .opts{display:grid;gap:var(--p-space-3)}
+  .opts.row{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+  .opt{all:unset;box-sizing:border-box;cursor:pointer;display:flex;gap:14px;align-items:center;padding:16px 18px;border:2px solid var(--border);border-radius:var(--p-radius-lg);background:var(--surface);font-weight:600;transition:border-color .15s,background .15s,transform .15s}
+  .opt:hover{border-color:var(--border-strong)}
+  .opt:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+  .opt small{display:block;font-weight:400;color:var(--text-muted);margin-top:2px}
+  .opt .tick{flex:none;width:24px;height:24px;border-radius:50%;border:2px solid var(--border-strong);display:grid;place-items:center}
+  .opt .tick svg{width:13px;height:13px;opacity:0}
+  .opt[aria-pressed=true]{border-color:var(--highlight);background:color-mix(in srgb,var(--highlight) 12%,var(--surface))}
+  .opt[aria-pressed=true] .tick{background:var(--highlight);border-color:var(--highlight);color:var(--on-highlight)}
+  .opt[aria-pressed=true] .tick svg{opacity:1}
+  .opts.row .opt{justify-content:center;text-align:center}
+  .opts.row .opt .tick{display:none}
+  .wall{display:flex;flex-wrap:wrap;gap:10px}
+  .picked{margin-top:var(--p-space-4);font-size:var(--p-step--1);color:var(--text-muted);min-height:1.6em}
+  .drop{display:grid;place-items:center;gap:6px;text-align:center;border:2px dashed var(--border-strong);border-radius:var(--p-radius-lg);padding:var(--p-space-7) var(--p-space-5);background:var(--surface);cursor:pointer;transition:background .15s,border-color .15s}
+  .drop:hover,.drop.over{background:var(--surface-sunk)}
+  .drop.ok{border-style:solid;border-color:var(--success)}
+  .drop strong{font-size:1.1rem}
+  .actions{display:flex;align-items:center;gap:var(--p-space-3);margin-top:var(--p-space-6);flex-wrap:wrap}
+  .actions .grow{flex:1}
+  .hintkey{font-size:var(--p-step--1);color:var(--text-muted)}
+  .hintkey kbd{font:600 .75rem var(--font-body);border:1.5px solid var(--border);border-bottom-width:3px;border-radius:6px;padding:1px 6px}
+  .err{color:var(--danger);font-weight:600;font-size:.95rem;min-height:1.5em;margin:var(--p-space-3) 0 0}
+  .list{list-style:none;margin:0 0 var(--p-space-5);padding:0;display:grid;gap:var(--p-space-3)}
+  .list li{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--p-radius-md)}
+  .list .ic{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:.85rem;background:var(--surface-sunk)}
+  .list li.ok .ic{background:var(--success);color:var(--bg)}
+  .list li.todo .ic{background:var(--highlight);color:var(--on-highlight)}
+  .list small{display:block;color:var(--text-muted)}
+  .list a{font-weight:600}
+  .time{display:inline-flex;gap:8px;align-items:center;font-size:.9rem;color:var(--text-muted);margin-bottom:var(--p-space-5)}
+  @media(max-width:560px){.pair{grid-template-columns:1fr}.guide{padding-top:var(--p-space-5)}}
+</style>
+</head>
+<body>
+<header class="bar" id="bar"></header>
+<main class="guide">
+  <div class="top" id="top" hidden>
+    <div class="track" role="progressbar" aria-label="Setup progress" aria-valuemin="0" aria-valuemax="100" id="track"><div class="fill" id="fill"></div></div>
+    <span class="count" id="count"></span>
+  </div>
+  <div id="card" class="card" aria-live="polite"></div>
+  <p class="err" id="err" role="alert"></p>
+  <div class="actions" id="actions">
+    <button class="btn ghost" id="back" type="button">Back</button>
+    <span class="grow"></span>
+    <span class="hintkey" id="enterHint">or press <kbd>Enter</kbd></span>
+    <button class="btn secondary" id="skip" type="button">Skip for now</button>
+    <button class="btn lg" id="next" type="button">Continue</button>
+  </div>
+</main>
+
+<script src="js/data.js"></script>
+<script src="js/mock-api.js"></script>
+<script src="js/common.js"></script>
+<script>
+  renderBar("app", "app");
+  const $ = id => document.getElementById(id);
+  const TICK = '<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2 7.5l3.2 3L12 3" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const INFO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 11v6M12 7.5v.01"/></svg>';
+  const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const YEAR = new Date().getFullYear();
+
+  // The whole saved profile. Every save sends all of it, because the server replaces the profile on each save.
+  let profile = null, cats = new Set(), step = 0, dir = 1;
+
+  const opt = (value, label, sub, pressed) =>
+    `<button type="button" class="opt" data-v="${esc(value)}" aria-pressed="${pressed}"><span class="tick">${TICK}</span><span>${esc(label)}${sub ? `<small>${esc(sub)}</small>` : ""}</span></button>`;
+  const why = text => `<p class="why">${INFO}<span>${text}</span></p>`;
+  const pressedValue = sel => (document.querySelector(`${sel} .opt[aria-pressed=true]`) || {}).dataset?.v || "";
+
+  // Each step: what it asks, why, and how to read and check the answer.
+  // `required` steps can't be skipped; the rest show "Skip for now".
+  const STEPS = [
+    {
+      id: "intro", intro: true,
+      html: () => `
+        <p class="kicker">Welcome to Lanyard</p>
+        <h1>Let's get you set up.</h1>
+        <p class="time">About 5 minutes. You can change anything later.</p>
+        <p>Every internship application asks the same things. You tell us once, and we fill in every application for you. Here's what we'll ask:</p>
+        <ul class="list">
+          <li><span class="ic">1</span><span>Your name and school<small>So we only show roles you qualify for.</small></span></li>
+          <li><span class="ic">2</span><span>The fields you're interested in<small>Any major. Pick as many as you like.</small></span></li>
+          <li><span class="ic">3</span><span>When and where you want to work</span></li>
+          <li><span class="ic">4</span><span>Contact info and work authorization<small>Almost every application asks for these.</small></span></li>
+          <li><span class="ic">5</span><span>Your resume and a few words about you<small>We write answers only from what you give us.</small></span></li>
+        </ul>
+        <p class="small muted">Nothing is ever sent to an employer until you approve it.</p>`,
+      next: "Let's go",
+    },
+    {
+      id: "name", required: true, kicker: "About you",
+      html: () => `
+        <h1>First, what's your name?</h1>
+        ${why("Use your full legal name. It goes at the top of every application.")}
+        <div class="field"><label class="sr" for="name">Full legal name</label><input id="name" type="text" autocomplete="name" placeholder="Jordan Sample" value="${esc(profile.name || "")}"></div>
+        <div class="field"><label for="preferredName">Name you go by <span class="muted">(optional)</span></label><input id="preferredName" type="text" autocomplete="nickname" placeholder="Jordy" value="${esc(profile.preferredName || "")}"></div>`,
+      read: () => ({ name: $("name").value.trim(), preferredName: $("preferredName").value.trim() }),
+      check: v => !v.name && "Add your name to keep going.",
+    },
+    {
+      id: "school", required: true, kicker: "About you",
+      html: () => `
+        <h1>Where do you go to school, ${esc(firstName())}?</h1>
+        ${why("We use your school and major to find roles you're eligible for.")}
+        <div class="field"><label for="school">School</label><input id="school" type="text" list="schools" placeholder="Start typing your school" value="${esc(profile.school || "")}"><datalist id="schools">${LAN.schools.map(s => `<option value="${esc(s)}">`).join("")}</datalist></div>
+        <div class="field"><label for="major">Major</label><input id="major" type="text" list="majors" placeholder="Start typing your major" value="${esc(profile.major || "")}"><datalist id="majors">${LAN.majors.map(s => `<option value="${esc(s)}">`).join("")}</datalist><span class="hint">Undecided? Type "Undecided".</span></div>`,
+      read: () => ({ school: $("school").value.trim(), major: $("major").value.trim() }),
+      check: v => (!v.school && "Add your school.") || (!v.major && "Add your major."),
+    },
+    {
+      id: "year", required: true, kicker: "About you",
+      html: () => {
+        const [gm, gy] = String(profile.grad || "").split(" ");
+        return `
+        <h1>What year are you in?</h1>
+        ${why("Some internships are only for certain class years, so this saves you from roles you can't get.")}
+        <div class="opts row" id="cy" data-pick="one">${[["freshman", "Freshman"], ["sophomore", "Sophomore"], ["junior", "Junior"], ["senior", "Senior"], ["grad", "Grad student"]].map(([v, l]) => opt(v, l, "", profile.classYear === v)).join("")}</div>
+        <p class="field" style="margin:var(--p-space-6) 0 var(--p-space-2)"><span class="label">When do you graduate?</span></p>
+        <div class="pair">
+          <div class="field"><label class="sr" for="gm">Month</label><select id="gm"><option value="">Month</option>${MONTHS.map(m => `<option ${m === gm ? "selected" : ""}>${m}</option>`).join("")}</select></div>
+          <div class="field"><label class="sr" for="gy">Year</label><select id="gy"><option value="">Year</option>${Array.from({ length: 8 }, (_, i) => YEAR + i).map(y => `<option ${String(y) === gy ? "selected" : ""}>${y}</option>`).join("")}</select></div>
+        </div>
+        <div class="field"><label for="gpa">GPA <span class="muted">(optional)</span></label><input id="gpa" type="text" inputmode="decimal" placeholder="3.6" value="${esc(profile.gpa ?? "")}" style="max-width:140px"><span class="hint">Only used to skip roles with a GPA cutoff you don't meet.</span></div>`;
+      },
+      read: () => ({ classYear: pressedValue("#cy"), grad: $("gm").value && $("gy").value ? `${$("gm").value} ${$("gy").value}` : "", gpa: $("gpa").value.trim() }),
+      check: v => (!v.classYear && "Pick your class year.") || (!v.grad && "Pick your graduation month and year.") ||
+        (v.gpa && !(Number(v.gpa) >= 0 && Number(v.gpa) <= 5) && "Enter your GPA as a number, like 3.6."),
+    },
+    {
+      id: "fields", kicker: "What you want",
+      html: () => `
+        <h1>What fields interest you?</h1>
+        ${why("Tap every one you'd consider. We'll only bring you openings in these fields. Not sure yet? Skip this and we'll show you everything.")}
+        <div class="wall" id="wall">${LAN.categories.map(c => `<button type="button" class="chip" data-hue="${c.hue}" data-name="${esc(c.name)}" aria-pressed="${cats.has(c.name)}">${esc(c.name)}</button>`).join("")}</div>
+        <p class="picked" id="picked" aria-live="polite"></p>`,
+      mount: () => {
+        const sum = () => { $("picked").textContent = cats.size ? `${cats.size} picked: ${[...cats].join(", ")}` : "Nothing picked yet."; };
+        $("wall").addEventListener("click", e => {
+          const b = e.target.closest(".chip"); if (!b) return;
+          cats.has(b.dataset.name) ? cats.delete(b.dataset.name) : cats.add(b.dataset.name);
+          b.setAttribute("aria-pressed", cats.has(b.dataset.name)); sum();
+        });
+        sum();
+      },
+      read: () => ({}),
+      check: () => !cats.size && "Pick at least one field, or choose \"Skip for now\" to see everything.",
+    },
+    {
+      id: "when", kicker: "What you want",
+      html: () => {
+        const term = profile.targets?.term || profile.term || "Summer 2027", modes = profile.modes?.length ? profile.modes : ["remote", "hybrid", "onsite"];
+        return `
+        <h1>When and where do you want to work?</h1>
+        ${why("This narrows your matches. Nothing here is permanent.")}
+        <p class="field" style="margin-bottom:var(--p-space-2)"><span class="label">When</span></p>
+        <div class="opts row" id="term" data-pick="one">${["Summer 2027", "Fall 2027", "Spring 2027", "Any term"].map(t => opt(t, t, "", t === term)).join("")}</div>
+        <p class="field" style="margin:var(--p-space-6) 0 var(--p-space-2)"><span class="label">How <span class="muted" style="font-weight:400">(pick any)</span></span></p>
+        <div class="opts row" id="modes" data-pick="many">${[["remote", "Remote"], ["hybrid", "Hybrid"], ["onsite", "In person"]].map(([v, l]) => opt(v, l, "", modes.includes(v))).join("")}</div>
+        <div class="field" style="margin-top:var(--p-space-6)"><label for="where">Where <span class="muted">(optional)</span></label><input id="where" type="text" placeholder="Boston, Chicago, anywhere in Texas" value="${esc((profile.where || "").toString())}"><span class="hint">Leave blank for anywhere. Separate places with commas.</span></div>`;
+      },
+      read: () => ({ term: pressedValue("#term") || "Any term", modes: [...document.querySelectorAll("#modes .opt[aria-pressed=true]")].map(o => o.dataset.v), where: $("where").value.trim() }),
+      check: v => !v.modes.length && "Pick at least one: remote, hybrid, or in person.",
+    },
+    {
+      id: "contact", kicker: "Your details",
+      html: () => `
+        <h1>How can employers reach you?</h1>
+        ${why("Almost every application asks for a phone number and city. We keep your phone number and address encrypted.")}
+        <div class="field"><label for="phone">Phone number</label><input id="phone" type="tel" autocomplete="tel" placeholder="(555) 010-2233" value="${esc(profile.phone || "")}"></div>
+        <div class="pair">
+          <div class="field"><label for="city">City</label><input id="city" type="text" autocomplete="address-level2" placeholder="Columbus" value="${esc(profile.address?.city || "")}"></div>
+          <div class="field"><label for="state">State</label><input id="state" type="text" autocomplete="address-level1" placeholder="OH" value="${esc(profile.address?.state || "")}"></div>
+        </div>`,
+      read: () => ({ phone: $("phone").value.trim(), address: { ...(profile.address || {}), city: $("city").value.trim(), state: $("state").value.trim() } }),
+      check: v => !v.phone && "Add a phone number, or choose \"Skip for now\". You'll fill it in on each application instead.",
+    },
+    {
+      id: "auth", kicker: "Your details",
+      html: () => `
+        <h1>Are you authorized to work in the U.S.?</h1>
+        ${why("Nearly every application asks this, and a wrong answer can cost you the role. We'll still flag it for you to double-check each time.")}
+        <div class="opts" id="auth" data-pick="one">
+          ${opt("Authorized to work in the US, no sponsorship needed", "Yes, and I won't need sponsorship", "U.S. citizens, green card holders, and others who can work without a visa", profile.auth === "Authorized to work in the US, no sponsorship needed")}
+          ${opt("Authorized now, will need sponsorship later", "Yes for now, but I'll need sponsorship later", "For example, F-1 students on CPT or OPT", profile.auth === "Authorized now, will need sponsorship later")}
+          ${opt("Need sponsorship", "No, I'll need sponsorship", "", profile.auth === "Need sponsorship")}
+          ${opt("Not applying in the US", "I'm applying outside the U.S.", "", profile.auth === "Not applying in the US")}
+        </div>`,
+      mount: () => $("auth").addEventListener("click", e => { if (e.target.closest(".opt")) setTimeout(() => go(step + 1), 280); }), // one tap answers it
+      read: () => ({ auth: pressedValue("#auth") }),
+      check: v => !v.auth && "Pick the one that fits you, or choose \"Skip for now\".",
+    },
+    {
+      id: "resume", kicker: "Your experience",
+      html: () => `
+        <h1>Add your resume.</h1>
+        ${why("We attach it to your applications and write your cover letters from it. We never make up experience you don't have.")}
+        <label class="drop ${profile.resumeName ? "ok" : ""}" id="drop" for="resume">
+          <strong id="dropTitle">${profile.resumeName ? esc(profile.resumeName) : "Choose your resume"}</strong>
+          <span class="muted small" id="dropSub">${profile.resumeName ? "Saved. Select to replace it." : "PDF, up to 5 MB. Or drag it here."}</span>
+          <input class="sr" id="resume" type="file" accept=".pdf">
+        </label>`,
+      mount: () => {
+        const up = async f => {
+          if (!f) return;
+          $("dropTitle").textContent = `Uploading ${f.name}...`; $("err").textContent = "";
+          const form = new FormData(); form.append("resume", f);
+          try {
+            const r = await api("POST", "/profile/resume", form);
+            profile.resumeName = r.resumeName;
+            $("dropTitle").textContent = r.resumeName; $("dropSub").textContent = r.note || "Saved. Select to replace it.";
+            $("drop").classList.add("ok");
+          } catch (e) { $("dropTitle").textContent = "Choose your resume"; $("dropSub").textContent = e.message; }
+        };
+        $("resume").addEventListener("change", e => up(e.target.files[0]));
+        ["dragover", "dragleave", "drop"].forEach(ev => $("drop").addEventListener(ev, e => {
+          e.preventDefault();
+          if (ev === "drop") { $("drop").classList.remove("over"); up(e.dataTransfer.files[0]); } else $("drop").classList.toggle("over", ev === "dragover");
+        }));
+      },
+      read: () => ({}),
+      check: () => !profile.resumeName && "Add your resume, or choose \"Skip for now\". We can't prepare applications until it's here.",
+    },
+    {
+      id: "about", kicker: "Your experience",
+      html: () => `
+        <h1>In a few sentences, tell us about yourself.</h1>
+        ${why("Applications ask \"Tell us about yourself\" all the time. We'll use your words for that answer and to open your cover letters.")}
+        <div class="field"><label class="sr" for="aboutMe">About you</label><textarea id="aboutMe" placeholder="I'm a junior studying biology. I've spent the last year as a lab assistant, and I want to see how research works outside a university.">${esc(profile.stories?.aboutMe || "")}</textarea><span class="hint">Two to four honest sentences beats anything polished.</span></div>`,
+      read: () => ({ stories: { ...(profile.stories || {}), aboutMe: $("aboutMe").value.trim() } }),
+      check: v => !v.stories.aboutMe && "Write a sentence or two, or choose \"Skip for now\".",
+      next: "Finish",
+    },
+    { id: "done", done: true, html: () => doneHtml() },
+  ];
+  const QUESTIONS = STEPS.filter(s => !s.intro && !s.done).length;
+
+  function firstName() { return (profile.preferredName || profile.name || "").trim().split(/\s+/)[0] || "there"; }
+
+  function doneHtml() {
+    const has = {
+      fields: cats.size > 0, contact: !!profile.phone, auth: !!profile.auth,
+      resume: !!profile.resumeName, about: !!(profile.stories?.aboutMe || "").trim(),
+    };
+    const items = [
+      [true, "Your name, school and class year"],
+      [has.fields, has.fields ? `Fields: ${[...cats].join(", ")}` : "Your fields", "We'll show you everything until you pick some.", "fields"],
+      [true, "When and where you want to work"],
+      [has.contact, "Phone and city", "You'll be asked for these on each application.", "contact"],
+      [has.auth, "Work authorization", "Almost every application asks this.", "auth"],
+      [has.resume, "Your resume", "Needed before we can prepare any application.", "resume"],
+      [has.about, "A few words about you", "Helps us write your answers and cover letters.", "about"],
+    ];
+    const todo = items.filter(i => !i[0]).length;
+    return `
+      <p class="kicker">All set</p>
+      <h1>${todo ? `Almost there, ${esc(firstName())}.` : `You're all set, ${esc(firstName())}.`}</h1>
+      <p>${todo ? `You can start now. Finishing the ${todo === 1 ? "item" : `${todo} items`} below makes your applications stronger.` : "Next, pick the internships you want. We'll fill out each application and bring it back for your OK."}</p>
+      <ul class="list">${items.map(([ok, label, help, jump]) => `
+        <li class="${ok ? "ok" : "todo"}"><span class="ic">${ok ? "&#10003;" : "!"}</span><span>${esc(label)}${ok ? "" : `<small>${esc(help)} <a href="#" data-jump="${jump}">Add it now</a></small>`}</span></li>`).join("")}</ul>
+      <p style="display:flex;gap:var(--p-space-3);flex-wrap:wrap">
+        <a class="btn lg" href="${has.resume ? "browse.html" : "app.html"}">${has.resume ? "Pick internships" : "Go to my dashboard"}</a>
+        <a class="btn lg secondary" href="${has.resume ? "app.html" : "browse.html"}">${has.resume ? "Go to my dashboard" : "Browse internships"}</a>
+      </p>
+      <p class="small muted">Want even stronger applications? <a href="onboarding.html?step=3">Answer the extra questions</a> employers sometimes ask, like start dates and languages.</p>`;
+  }
+
+  async function saveAll() {
+    await Promise.all([
+      api("PUT", "/profile", profile),
+      api("PUT", "/interests", { fields: [...cats].map(name => ({ name, top: false })), subfields: profile.subfields || [] }),
+    ]);
+  }
+
+  async function go(n, opts = {}) {
+    const s = STEPS[step];
+    $("err").textContent = "";
+    // Moving forward: read and check this step's answers, then save. Skipping or going back keeps what's there.
+    if (n > step && s.read && !opts.skip) {
+      const v = s.read();
+      const problem = s.check && s.check(v);
+      if (problem) { $("err").textContent = problem; return; }
+      Object.assign(profile, v);
+    } else if (n < step && s.read) Object.assign(profile, s.read());
+    if (n > step && !s.intro) {
+      $("next").disabled = true;
+      try { await saveAll(); } catch (e) { $("err").textContent = e.message; $("next").disabled = false; return; }
+      $("next").disabled = false;
+    }
+    dir = n >= step ? 1 : -1; step = n; render();
+  }
+
+  function render() {
+    const s = STEPS[step], qIndex = STEPS.slice(0, step + 1).filter(x => !x.intro && !x.done).length;
+    const card = $("card");
+    card.className = "card" + (dir < 0 ? " back" : ""); void card.offsetWidth; // restart the slide-in
+    card.innerHTML = (s.kicker ? `<p class="kicker">${esc(s.kicker)}</p>` : "") + s.html();
+    if (s.mount) s.mount();
+    $("top").hidden = !!(s.intro);
+    const pct = s.done ? 100 : Math.round((qIndex - 1) / QUESTIONS * 100);
+    $("fill").style.width = pct + "%"; $("track").setAttribute("aria-valuenow", pct);
+    $("count").textContent = s.done ? "Done" : `Step ${qIndex} of ${QUESTIONS}`;
+    $("actions").hidden = !!s.done;
+    $("back").style.visibility = step === 0 ? "hidden" : "visible";
+    $("skip").hidden = !!(s.required || s.intro);
+    $("next").textContent = s.next || "Continue";
+    $("enterHint").hidden = !card.querySelector("input[type=text],input[type=tel]");
+    const first = card.querySelector("input[type=text],input[type=tel],textarea");
+    if (first && matchMedia("(pointer:fine)").matches) first.focus(); else card.querySelector("h1")?.focus?.();
+    window.scrollTo({ top: 0 });
+  }
+
+  $("next").addEventListener("click", () => go(step + 1));
+  $("skip").addEventListener("click", () => go(step + 1, { skip: true }));
+  $("back").addEventListener("click", () => go(step - 1));
+  $("card").addEventListener("keydown", e => {
+    if (e.key === "Enter" && e.target.matches("input[type=text],input[type=tel]")) { e.preventDefault(); go(step + 1); }
+  });
+  $("card").addEventListener("click", e => {
+    // Option groups: data-pick="one" works like radio buttons, "many" like checkboxes.
+    const o = e.target.closest(".opt"), group = o && o.closest("[data-pick]");
+    if (group) {
+      if (group.dataset.pick === "one") group.querySelectorAll(".opt").forEach(x => x.setAttribute("aria-pressed", x === o));
+      else o.setAttribute("aria-pressed", o.getAttribute("aria-pressed") !== "true");
+    }
+    const a = e.target.closest("[data-jump]"); if (!a) return;
+    e.preventDefault(); dir = -1; step = STEPS.findIndex(s => s.id === a.dataset.jump); render();
+  });
+
+  api("GET", "/profile").then(p => {
+    profile = p; profile.address = p.address || {}; profile.stories = p.stories || {}; profile.answers = p.answers || {};
+    cats = new Set((p.fields || []).map(f => f.name));
+    render();
+  }).catch(e => { $("err").textContent = `We couldn't load your profile: ${e.message}`; });
+</script>
+</body>
+</html>

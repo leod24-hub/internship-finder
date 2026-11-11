@@ -120,9 +120,24 @@ export function answerFromProfile(field, p) {
   const authorized = p.auth ? !/not applying in the us/i.test(p.auth) : null;
   const sponsor = p.auth ? /need sponsorship|will need/i.test(p.auth) : null;
   const gradText = /mm\s*\/\s*yyyy|mm\/yy/i.test(label) && p.grad ? toMonthYear(p.grad) : p.grad;
+  const a = p.answers || {};
+  // Questionnaire answers. An unanswered one returns null, so the question goes to drafting or the student.
+  const yn = v => (v ? { value: yes(/^y/i.test(v)) } : null);
+  const usCitizen = a.citizenship ? /^u\.?s\.? citizen/i.test(a.citizenship) : null;
   const rules = [
     [/resume|\bcv\b/i, () => (field.type === "file" ? { value: "resume.pdf", source: "file" } : null)],
     [/cover letter/i, () => ({ value: field.type === "file" ? "cover-letter.pdf" : "(cover letter)", source: "cover_letter" })],
+    [/(18|eighteen) years|at least 18|age of 18|legal age/i, () => yn(a.over18)],
+    [/are you an? (u\.?s\.?|united states) citizen|citizenship status|^citizenship$/i, () => (usCitizen == null ? null : { value: field.options?.length > 2 ? a.citizenship : yes(usCitizen), flag: true, note: "From your citizenship answer." })],
+    [/clearance/i, () => (a.clearance ? { value: a.clearance, flag: true, note: "From your questionnaire." } : null)],
+    [/relocat/i, () => (a.relocate ? { value: a.relocate === "Depends on the role" ? pickOption(field.options, "Yes") || "Open to it, depending on the role" : a.relocate } : null)],
+    [/start date|earliest.*start|available to start|when can you start/i, () => (a.startDate ? { value: a.startDate } : null)],
+    [/end date|available until|last day/i, () => (a.endDate ? { value: a.endDate } : null)],
+    [/hours (per|a|each) week|weekly hours/i, () => (a.hoursPerWeek ? { value: a.hoursPerWeek } : null)],
+    [/driver.?s licen[cs]e/i, () => yn(a.driversLicense)],
+    [/background check/i, () => yn(a.backgroundCheck)],
+    [/salary|compensation|pay expectation|desired (pay|wage|rate)/i, () => (a.payExpectation ? { value: a.payExpectation, flag: true, note: "From your questionnaire." } : null)],
+    [/languages? .*speak|spoken languages|fluent in/i, () => (a.languages ? { value: a.languages } : null)],
     [/first name|given name/i, () => ({ value: first })],
     [/last name|surname|family name/i, () => ({ value: last })],
     [/preferred (first )?name/i, () => ({ value: p.preferredName || first })],
@@ -143,7 +158,7 @@ export function answerFromProfile(field, p) {
     [/\bgpa\b|grade point/i, () => ({ value: p.gpa, flag: true, note: "Check that this matches your transcript." })],
     [/sponsor/i, () => (sponsor == null ? null : { value: yes(sponsor), flag: true, note: "From your work authorization answer." })],
     [/authori[sz]ed to work|work authori[sz]ation|eligible to work|legally (able|permitted)/i, () => (authorized == null ? null : { value: yes(authorized), flag: true, note: "From your work authorization answer." })],
-    [/how did you (hear|find|learn)|where did you (hear|find)|source/i, () => ({ value: pickOption(field.options, "Online job board") || pickOption(field.options, "Job board") || pickOption(field.options, "Other") || "Online job posting" })],
+    [/how did you (hear|find|learn)|where did you (hear|find)|source/i, () => ({ value: (a.hearAbout && pickOption(field.options, a.hearAbout)) || (a.hearAbout && !field.options?.length && a.hearAbout) || pickOption(field.options, "Online job board") || pickOption(field.options, "Job board") || pickOption(field.options, "Other") || "Online job posting" })],
   ];
   if (DEMOGRAPHIC.test(label) && field.type !== "textarea") {
     if (!p.eeoDecline) return { value: "", source: "you", flag: true, note: "You chose to answer demographic questions yourself." };

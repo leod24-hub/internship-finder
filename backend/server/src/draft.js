@@ -17,7 +17,7 @@ const Draft = z.object({
 
 const SYSTEM = `You prepare internship applications for a college student, on their behalf.
 
-Use only facts that appear in the student's profile and resume. Never invent experience, skills, coursework, numbers, awards or dates. If a question can't be answered truthfully from what you have, return an empty answer with needs_review set to true so the student writes it. Set needs_review to true as well when an answer depends on a judgment only the student can make.
+Use only facts that appear in the student's profile and resume. The profile's in_their_own_words section is the student's own answers about themselves (who they are, why their fields, stories, strengths, goals): draw on it for open-ended answers and the cover letter, keeping their voice. Never mention anything listed under in_their_own_words.avoid. For "have you worked here before" questions, use questionnaire.previousEmployers, and if it doesn't settle the question, leave it for the student. Never invent experience, skills, coursework, numbers, awards or dates. If a question can't be answered truthfully from what you have, return an empty answer with needs_review set to true so the student writes it. Set needs_review to true as well when an answer depends on a judgment only the student can make.
 
 For a question with options, the answer must be exactly one of the listed options, or empty.
 
@@ -39,6 +39,7 @@ export async function draftApplication({ profile, posting, questions }) {
     name: profile.name, school: profile.school, major: profile.major, minor: profile.minor, degree: profile.degree,
     class_year: profile.classYear, graduation: profile.grad, gpa: profile.gpa, fields_of_interest: profile.fields.map(f => f.name),
     field_details: profile.fieldDetails, linkedin: profile.li, website: profile.site,
+    in_their_own_words: profile.stories, questionnaire: profile.answers,
   };
   const content = [
     `<student_profile>\n${JSON.stringify(student, null, 2)}\n</student_profile>`,
