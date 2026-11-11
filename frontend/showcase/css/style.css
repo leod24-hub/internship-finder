@@ -65,6 +65,8 @@ button{font:inherit;color:inherit}
 .nav a.l{white-space:nowrap;padding:10px 12px;border-radius:999px;text-decoration:none;font-size:.92rem;font-weight:500;color:var(--text-muted)}
 .nav a.l:hover{color:var(--text);background:rgba(255,255,255,.07)}
 @media(max-width:760px){.nav a.l{display:none}}
+/* Phones: the bar spans the screen; the hero's own button replaces the bar's sign-up button. */
+@media(max-width:600px){.nav{left:12px;right:12px;transform:none;padding-left:14px}.nav .tgl{margin-left:auto}.nav .btn.nv{display:none}}
 
 /* buttons */
 .btn{white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 24px;border-radius:var(--btn-radius);border:2px solid var(--line);background:var(--surface);color:var(--text);font-weight:700;text-decoration:none;cursor:pointer;transition:background .2s,color .2s,border-color .2s,transform .2s var(--p-ease-out)}
@@ -129,14 +131,14 @@ button{font:inherit;color:inherit}
 .slotbar{position:absolute;inset:0;background:var(--p-h-yellow)}
 .slot{position:relative;height:3.1em;overflow:hidden}
 .slot ul{list-style:none;margin:0;padding:0}
-.slot li{height:3.1em;display:flex;align-items:center;padding:0 1em;font:800 1.55em var(--p-display);letter-spacing:-.03em;color:#10131d}
+.slot li{height:2em;display:flex;align-items:center;padding:0 .65em;white-space:nowrap;font:800 1.55em/1 var(--p-display);letter-spacing:-.03em;color:#10131d}
 .codes{position:absolute;left:1.5em;right:1.5em;bottom:1.375em;height:2.75em;display:flex;gap:.19em;align-items:stretch}
 .codes i{flex:1;background:currentColor}
 .codes i:nth-child(3n){flex:2}.codes i:nth-child(5n){flex:.5}.codes i:nth-child(7n){flex:3}
 .scan{position:absolute;left:1.125em;right:1.125em;height:.19em;background:var(--p-ember);bottom:1.375em;box-shadow:0 0 .75em var(--p-ember)}
 .face.back .b1{font:800 2.2em/.95 var(--p-display);letter-spacing:-.04em}
 .face.back p{color:var(--p-n-200)}
-@media(max-width:900px){.zone{display:none}}
+@media(max-width:900px){.zone{display:none}.hero{grid-template-columns:1fr;padding-top:110px;min-height:0}.hero .stage{max-width:560px}}
 
 /* ---------- ribbons ---------- */
 .ribbons{--sheet-bg:var(--p-n-800);padding:60px 0 calc(var(--sheet-radius) + 60px);overflow:hidden;border-radius:0;border-top:0}
@@ -167,7 +169,7 @@ button{font:inherit;color:inherit}
 .pc.profile{border-color:var(--done);background:var(--p-n-750)}
 .pc.profile i em{color:var(--done)}
 .pc .tag{position:absolute;top:-12px;left:14px;padding:3px 10px;border-radius:99px;background:var(--done);color:#fff;font:700 .72rem var(--p-body);opacity:0}
-@media(max-width:900px){.pain-stick{grid-template-columns:1fr;grid-template-rows:auto 1fr auto}.pain-stage{grid-column:1;grid-row:2}.pain-count{grid-row:3}.pain-count .num{font-size:5rem}.pc{width:150px;margin:-80px 0 0 -75px}}
+@media(max-width:900px){.pain-stick{grid-template-columns:1fr;grid-template-rows:auto 1fr auto}.pain-stage{grid-column:1;grid-row:2}.pain-count{grid-row:3}.pain-count .num{font-size:5rem}.pc{width:150px;margin:-80px 0 0 -75px;overflow:hidden}.pc i{font-size:.68rem;padding:5px 6px}.pc i em{white-space:nowrap}.pain-stage{overflow:hidden}.pain-count{position:relative;z-index:2}}
 
 /* ---------- demo ---------- */
 .demo{--sheet-bg:var(--p-n-800);padding:0;overflow:hidden}
@@ -231,6 +233,8 @@ button{font:inherit;color:inherit}
 .mt small{display:block;color:var(--text-muted)}
 .lnote{max-width:1040px;margin:28px auto 0;font-size:.95rem;color:var(--contrast-muted)}
 @media(max-width:800px){.scr-grid{grid-template-columns:1fr}}
+/* Phones: the deadline and Review button sit under the role instead of beside it. */
+@media(max-width:560px){.q2{grid-template-columns:5px 1fr}.q2 .act{grid-column:2}}
 
 /* ---------- example week ---------- */
 .week{--sheet-bg:var(--p-n-900)}
@@ -314,7 +318,7 @@ button{font:inherit;color:inherit}
 
 /* ---------- cta ---------- */
 .cta{--sheet-bg:var(--p-n-900);background:radial-gradient(800px 480px at 50% 100%,var(--glow-a),transparent 65%),var(--p-n-900);text-align:center;padding-bottom:140px;overflow:hidden}
-.cta h2{font-size:clamp(3.4rem,12vw,11rem);line-height:.88;margin-bottom:30px}
+.cta h2{font-size:clamp(3rem,9vw,8.5rem);line-height:.88;margin-bottom:30px}
 .cta p{margin:0 auto 34px;max-width:36ch;font-size:1.2rem;color:var(--p-n-200)}
 .join{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;max-width:620px;margin:0 auto}
 .join input{flex:1;min-width:220px;min-height:60px;border-radius:999px;border:1.5px solid var(--line);background:var(--p-n-850);color:var(--text);padding:0 26px;font:inherit;font-size:1.1rem}

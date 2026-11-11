@@ -21,6 +21,11 @@
   --p-cobalt-600: #2b3ce0;
   --p-cobalt-300: #96a0f7;
   --p-yellow-400: #ffd84d;
+  /* Lamplight amber, shared with the marketing page. */
+  --p-amber-400: #e9b872;
+  --p-amber-300: #f3cb90;
+  --p-amber-800: #8a5a12;
+  --p-amber-900: #6f480e;
   --p-green-600: #117a55;
   --p-green-300: #5ccb9f;
   --p-red-600:   #c23a30;
@@ -50,7 +55,7 @@
   --p-ease: cubic-bezier(.2,.7,.2,1);
 }
 
-/* ---- Semantic: light (default) ---- */
+/* ---- Semantic: light (used only when data-theme="light" is set) ---- */
 :root {
   --bg: var(--p-ink-50);
   --surface: var(--p-white);
@@ -60,40 +65,22 @@
   --text-faint: var(--p-ink-400);
   --border: var(--p-ink-200);
   --border-strong: var(--p-ink-950);
-  --primary: var(--p-cobalt-600);
-  --primary-hover: var(--p-cobalt-700);
+  --primary: var(--p-amber-800);
+  --primary-hover: var(--p-amber-900);
   --on-primary: var(--p-white);
-  --highlight: var(--p-yellow-400);
+  --highlight: var(--p-amber-400);
   --on-highlight: var(--p-ink-950);
   --success: var(--p-green-600);
   --danger: var(--p-red-600);
-  --focus: var(--p-cobalt-600);
+  --focus: var(--p-amber-800);
   --hue-blue: var(--p-hue-blue);     --hue-teal: var(--p-hue-teal);
   --hue-green: var(--p-hue-green);   --hue-yellow: var(--p-hue-yellow);
   --hue-orange: var(--p-hue-orange); --hue-rose: var(--p-hue-rose);
   --hue-purple: var(--p-hue-purple); --hue-slate: var(--p-hue-slate);
 }
 
-/* ---- Semantic: dark ---- */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: var(--p-night-950);
-    --surface: var(--p-night-900);
-    --surface-sunk: var(--p-night-800);
-    --text: var(--p-night-100);
-    --text-muted: var(--p-night-300);
-    --text-faint: var(--p-night-600);
-    --border: var(--p-night-600);
-    --border-strong: var(--p-night-100);
-    --primary: var(--p-cobalt-300);
-    --primary-hover: #b4bcfa;
-    --on-primary: var(--p-ink-950);
-    --success: var(--p-green-300);
-    --danger: var(--p-red-300);
-    --focus: var(--p-cobalt-300);
-  }
-}
-:root[data-theme="dark"] {
+/* ---- Semantic: dark (the default, matching the marketing page) ---- */
+:root:not([data-theme="light"]) {
   --bg: var(--p-night-950);
   --surface: var(--p-night-900);
   --surface-sunk: var(--p-night-800);
@@ -102,12 +89,15 @@
   --text-faint: var(--p-night-600);
   --border: var(--p-night-600);
   --border-strong: var(--p-night-100);
-  --primary: var(--p-cobalt-300);
-  --primary-hover: #b4bcfa;
+  --primary: var(--p-amber-400);
+  --primary-hover: var(--p-amber-300);
   --on-primary: var(--p-ink-950);
+  --highlight: var(--p-amber-400);
+  --on-highlight: var(--p-ink-950);
   --success: var(--p-green-300);
   --danger: var(--p-red-300);
-  --focus: var(--p-cobalt-300);
+  --focus: var(--p-amber-400);
+  color-scheme: dark;
 }
 
 /* ---- Component tokens ---- */

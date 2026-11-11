@@ -103,5 +103,4 @@
   form.addEventListener("submit", e => { e.preventDefault(); const v = input.value; input.value = ""; ask(v); });
   nudge.querySelector("button").addEventListener("click", e => { e.stopPropagation(); nudge.classList.remove("show"); store.set("nudge", "1"); });
   nudge.addEventListener("click", () => setOpen(true));
-  if (!store.get("nudge")) setTimeout(() => { if (!root.classList.contains("chat-open")) nudge.classList.add("show"); }, 7000);
 })();

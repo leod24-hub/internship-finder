@@ -37,7 +37,10 @@ function renderBar(active, mode) {
        <div class="right"><span class="small muted" id="barUsage"></span><a class="btn sm" href="index.html#pricing">See plans</a><button type="button" class="btn ghost sm" id="logout">Log out</button><span class="avatar" id="barAvatar" title="Your account"></span></div>`
     : `<nav aria-label="Main"><a href="how-it-works.html" ${active === "how" ? 'aria-current="page"' : ""}>How it works</a><a href="index.html#fields">Fields</a><a href="index.html#pricing">Pricing</a><a href="index.html#faq">Questions</a></nav>
        <div class="right"><a class="btn ghost sm" href="login.html">Log in</a><a class="btn sm" href="login.html?mode=signup">Get started</a></div>`;
-  el.innerHTML = `<div class="wrap"><a class="wordmark" href="${mode === "app" ? "app.html" : "index.html"}">${LOGO}Lanyard</a>${links}</div>`;
+  el.innerHTML = `<div class="wrap"><a class="wordmark" href="../showcase/index.html">${LOGO}Lanyard</a>${links}</div>`;
+  // On phones the tab bar scrolls sideways; bring the current tab into view.
+  const current = el.querySelector("nav [aria-current=page]");
+  if (current) { const nav = current.parentElement; nav.scrollLeft = current.offsetLeft - (nav.clientWidth - current.offsetWidth) / 2; }
   if (mode !== "app") return Promise.resolve(null);
   document.getElementById("logout").addEventListener("click", async () => { await api("POST", "/auth/logout").catch(() => {}); location.href = "login.html"; });
   return api("GET", "/me").then(me => {
