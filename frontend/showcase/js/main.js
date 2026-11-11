@@ -132,7 +132,8 @@
   hang.addEventListener("pointerup", end); hang.addEventListener("pointercancel", end);
   hang.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); badge.classList.toggle("flip"); w += 2; kick(); } });
   hang.tabIndex = 0; hang.setAttribute("role", "button"); hang.setAttribute("aria-label", "Name badge. Press to flip it.");
-  $(".hero").addEventListener("pointermove", e => { if (dragging || reduce) return; w += (e.movementX || 0) * 0.0035; if (Math.abs(w) > 0.02) kick(); });
+  // Moving the mouse nudges the badge gently; dragging it can still swing it hard.
+  $(".hero").addEventListener("pointermove", e => { if (dragging || reduce) return; w = Math.max(-0.6, Math.min(0.6, w + (e.movementX || 0) * 0.0018)); if (Math.abs(w) > 0.02) kick(); });
   if (!reduce) gsap.from(hang, { y: -420, duration: 1.4, delay: 0.7, ease: "bounce.out", onComplete: () => { hang.style.transform = ""; w = 2.4; kick(); } });
 
   /* ---------- ribbons ---------- */
@@ -164,7 +165,9 @@
     const xs = [-.33, .3, -.06, .36, -.38, .1, -.2, .32, -.1, .2, -.3, .02], ys = [-.3, -.26, -.12, 0, .13, .22, .3, -.33, .34, .31, .02, -.18], rs = [-7, 5, -3, 8, -6, 4, -9, 6, -4, 9, -5, 3];
     const v = { n: 0 }, paint = () => { num.textContent = Math.round(v.n); };
     const tl = gsap.timeline({ defaults: { ease: "none" }, onUpdate() { count.classList.toggle("ok", this.time() > 3.3); }, scrollTrigger: { trigger: "#painwrap", start: "top top", end: "bottom bottom", scrub: 0.6, invalidateOnRefresh: true } });
-    tl.fromTo(cards, { y: () => -stage.clientHeight, opacity: 0, rotation: -24, scale: 0.9 }, { x: i => xs[i] * stage.clientWidth * 0.75, y: i => ys[i] * stage.clientHeight * 0.62, rotation: i => rs[i], opacity: 1, scale: 1, duration: 0.7, ease: "power2.out", stagger: 0.14 }, 0)
+    // Cards turn opaque almost at once, so overlapping cards never show each other's text through them.
+    tl.fromTo(cards, { y: () => -stage.clientHeight, rotation: -24, scale: 0.9 }, { x: i => xs[i] * stage.clientWidth * 0.75, y: i => ys[i] * stage.clientHeight * 0.62, rotation: i => rs[i], scale: 1, duration: 0.7, ease: "power2.out", stagger: 0.14 }, 0)
+      .fromTo(cards, { opacity: 0 }, { opacity: 1, duration: 0.12, stagger: 0.14 }, 0)
       .to(v, { n: 40, duration: 2.3, onUpdate: paint }, 0)
       .to({}, { duration: 0.5 }, 2.3)
       .to([p1, l1], { opacity: 0, duration: 0.3 }, 2.8).to([p2, l2], { opacity: 1, duration: 0.3 }, 3.0)

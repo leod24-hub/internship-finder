@@ -91,6 +91,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px soli
   .bar nav a{white-space:nowrap;padding:6px 10px}
   #barUsage{display:none}
 }
+/* Small phones: keep the logo and account buttons on one row; plans stay one tap away on the dashboard. */
+@media(max-width:520px){.bar .right a.btn[href*="pricing"]{display:none}}
 
 /* Status messages from the API (role="status") */
 [role="status"].err{color:var(--danger)}

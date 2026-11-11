@@ -16,11 +16,11 @@ cd frontend/site && python3 -m http.server 8765
 | `review.html` | Approval screen: every filled answer, editable cover letter, checklist, approve or decline |
 
 ## Design system (`css/tokens.css`)
-Three layers: primitive (raw values), semantic (`--bg`, `--text`, `--primary`, ...), component (`--btn-*`, `--chip-*`, ...). Light and dark are both defined at the semantic layer. Category colors come from 8 hues; chips derive their tints from the hue with `color-mix`, so adding a category needs no new CSS.
+Three layers: primitive (raw values), semantic (`--bg`, `--text`, `--primary`, ...), component (`--btn-*`, `--chip-*`, ...). Dark is the default, matching the marketing page; light applies only with `data-theme="light"`. Both are defined at the semantic layer. Category colors come from 8 hues; chips derive their tints from the hue with `color-mix`, so adding a category needs no new CSS.
 
 - Type: Bricolage Grotesque (headings) and Public Sans (body), loaded from Google Fonts.
 - Signature element: the field wall. Chips fill with their hue when selected; a second click marks a top choice.
-- Yellow is reserved for deadlines, the badge, and warnings the student must check.
+- Amber (`#e9b872`, shared with the marketing page) is the accent: buttons, deadlines, and warnings the student must check.
 
 ## Draft items to settle
 - "Lanyard" is a placeholder name.
@@ -30,7 +30,7 @@ Three layers: primitive (raw values), semantic (`--bg`, `--text`, `--primary`, .
 - Screenshot, resume upload, and the browser extension handoff are mocked.
 
 ## Mock mode (no server or database)
-Add `?mock=1` to any page's address to run the whole app in the browser: sign up, the questionnaire, picking internships, review and approval. `js/mock-api.js` answers the app's API calls and keeps everything in localStorage, laid out as the Supabase tables will be (`users`, `profiles`, `user_interests`, `applications`, `approvals`). "Your profile" > "How it's stored" shows those rows. A yellow strip marks every page while it's on; `?mock=0` turns it off.
+Add `?mock=1` to any page's address to run the whole app in the browser: sign up, the questionnaire, picking internships, review and approval. `js/mock-api.js` answers the app's API calls and keeps everything in localStorage, laid out as the Supabase tables will be (`users`, `profiles`, `user_interests`, `applications`, `approvals`). "Your profile" > "How it's stored" shows those rows. An amber strip marks every page while it's on; `?mock=0` turns it off.
 
 ```bash
 cd frontend && python3 -m http.server 8790
