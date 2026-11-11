@@ -55,11 +55,8 @@ button{font:inherit;color:inherit}
 .w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.12em;margin-bottom:-.12em}
 .wi{display:inline-block;will-change:transform}
 
-/* progress + cursor */
+/* progress */
 #progress{position:fixed;inset:0 0 auto 0;height:4px;background:var(--accent);transform:scaleX(0);transform-origin:0 50%;z-index:60}
-.cursor{position:fixed;left:0;top:0;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:#fff;mix-blend-mode:difference;pointer-events:none;z-index:70;opacity:0;transition:width .25s var(--p-ease-out),height .25s var(--p-ease-out),margin .25s var(--p-ease-out)}
-.cursor.big{width:72px;height:72px;margin:-36px 0 0 -36px}
-@media (pointer:coarse){.cursor{display:none}}
 
 /* nav */
 .nav{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:50;display:flex;align-items:center;gap:6px;background:color-mix(in srgb,var(--p-n-850) 88%,transparent);backdrop-filter:blur(14px);color:var(--text);border:1.5px solid var(--line);border-radius:999px;padding:6px 6px 6px 18px;box-shadow:var(--shadow-md)}
@@ -329,7 +326,6 @@ button{font:inherit;color:inherit}
 footer{background:var(--p-n-900);color:var(--text-muted);padding:0 var(--pad-x) 40px;text-align:center;font-size:.9rem}
 
 /* ---------- reduced motion ---------- */
-.nomo .cursor{display:none}
 .nomo .nots .no{stroke-dashoffset:0}
 .nomo .days .rail i{transform:none!important}
 .nomo .pain-wrap{height:auto}

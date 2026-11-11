@@ -5,7 +5,7 @@
   if (reduce) root.classList.add("nomo");
   gsap.registerPlugin(ScrollTrigger);
 
-  /* ---------- theme switch (default is light; choice is remembered) ---------- */
+  /* ---------- theme switch (default is dark; choice is remembered) ---------- */
   const tgl = $("#themeToggle");
   tgl.setAttribute("aria-checked", root.dataset.theme === "dark");
   function applyTheme(t) {
@@ -155,9 +155,9 @@
       + `<div class="pc profile"><span class="tag">Filled once</span><b>Your Lanyard profile</b>${row("Name", "Jordan Sample")}${row("School", "State University")}${row("GPA", "3.6")}${row("Work authorization", "Authorized")}</div>`;
     // second copy line and label, stacked so they can cross-fade
     const p1 = $("#ptext"), px = document.createElement("div"); px.className = "px"; p1.replaceWith(px); px.appendChild(p1);
-    const p2 = document.createElement("p"); p2.textContent = "Lanyard keeps one profile and fills every form from it. You type it once, then review."; px.appendChild(p2);
+    const p2 = document.createElement("p"); p2.textContent = "We keep one profile for you and fill every form from it. You tell us once, then just review."; px.appendChild(p2);
     const l1 = $("#plbl"), lx = document.createElement("div"); lx.className = "lblx"; l1.replaceWith(lx); lx.appendChild(l1);
-    const l2 = document.createElement("div"); l2.className = "lbl"; l2.textContent = "time you type it with Lanyard"; lx.appendChild(l2);
+    const l2 = document.createElement("div"); l2.className = "lbl"; l2.textContent = "time you type it with us"; lx.appendChild(l2);
     const num = $("#pnum"), cards = $$(".pc:not(.profile)", stage), prof = $(".pc.profile", stage);
     if (reduce) { num.textContent = "1"; count.classList.add("ok"); p1.style.display = "none"; l1.style.display = "none"; return; }
     gsap.set(p2, { opacity: 0 }); gsap.set(l2, { opacity: 0 }); gsap.set(prof, { opacity: 0 });
@@ -294,11 +294,8 @@
     }
   });
 
-  /* ---------- cursor + magnetic buttons ---------- */
+  /* ---------- magnetic buttons ---------- */
   if (!reduce && matchMedia("(pointer:fine)").matches) {
-    const cur = $("#cursor"), qx = gsap.quickTo(cur, "x", { duration: 0.2, ease: "power3" }), qy = gsap.quickTo(cur, "y", { duration: 0.2, ease: "power3" });
-    addEventListener("pointermove", e => { cur.style.opacity = 1; qx(e.clientX); qy(e.clientY); });
-    document.addEventListener("pointerover", e => cur.classList.toggle("big", !!e.target.closest("a,button,.tile,.hang,input[type=range]")));
     $$(".magnet").forEach(b => {
       const mx = gsap.quickTo(b, "x", { duration: 0.4, ease: "power3" }), my = gsap.quickTo(b, "y", { duration: 0.4, ease: "power3" });
       b.addEventListener("pointermove", e => { const r = b.getBoundingClientRect(); mx((e.clientX - r.left - r.width / 2) * 0.28); my((e.clientY - r.top - r.height / 2) * 0.4); });

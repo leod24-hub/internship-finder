@@ -34,7 +34,7 @@ a{color:var(--primary);text-underline-offset:3px}
 .field{display:grid;gap:var(--p-space-2);margin-bottom:var(--p-space-4)}
 .field>label,.field>.label{font-weight:600;font-size:.92rem}
 .field .hint{font-size:var(--p-step--1);color:var(--text-muted)}
-input:not([type]),input[type=text],input[type=email],input[type=url],input[type=password],input[type=tel],select,textarea{
+input:not([type]),input[type=text],input[type=email],input[type=url],input[type=password],input[type=tel],input[type=search],select,textarea{
   width:100%;font:inherit;color:var(--text);background:var(--input-bg);border:1.5px solid var(--input-border);
   border-radius:var(--input-radius);padding:11px 13px}
 textarea{min-height:96px;resize:vertical}
@@ -85,10 +85,21 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px soli
 .bar nav a:hover,.bar nav a[aria-current=page]{color:var(--text);background:var(--surface-sunk)}
 .bar .right{margin-left:auto;display:flex;gap:var(--p-space-2);align-items:center}
 .avatar{width:36px;height:36px;border-radius:50%;background:var(--highlight);color:var(--on-highlight);display:grid;place-items:center;font-weight:700;font-size:.85rem}
-@media(max-width:720px){.bar nav{display:none}}
+@media(max-width:720px){
+  .bar .wrap{flex-wrap:wrap;gap:var(--p-space-2) var(--p-space-3);padding:8px 0}
+  .bar nav{order:3;width:100%;margin:0;overflow-x:auto;scrollbar-width:none}
+  .bar nav a{white-space:nowrap;padding:6px 10px}
+  #barUsage{display:none}
+}
 
 /* Status messages from the API (role="status") */
 [role="status"].err{color:var(--danger)}
 [role="status"].ok{color:var(--success)}
 a.k{display:block}
 [hidden]{display:none !important}
+
+/* Mock mode strip (js/mock-api.js) */
+.mockbar{background:var(--highlight);color:var(--on-highlight);font-size:.85rem}
+.mockbar .wrap{display:flex;gap:6px 14px;align-items:center;flex-wrap:wrap;padding:7px 0}
+.mockbar span{flex:1;min-width:200px}
+.mockbar a,.mockbar button{color:inherit;font:600 .85rem var(--font-body);text-decoration:underline;background:none;border:0;padding:0;cursor:pointer}

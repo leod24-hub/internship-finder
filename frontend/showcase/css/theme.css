@@ -9,7 +9,6 @@
   --contrast-bg:#14121f; --contrast-text:#eeeae2; --contrast-muted:#b6b9cb;
   color-scheme:light;
 }
-:root[data-theme="light"] .cursor{background:#fff}
 :root[data-theme="light"] .lbase{background:linear-gradient(#5a5d70,#3a3c4d)}
 :root[data-theme="dark"]{color-scheme:dark}
 

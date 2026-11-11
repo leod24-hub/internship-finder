@@ -19,7 +19,7 @@
   .stage > section{display:none}
   .stage > section.on{display:block}
   .stage h1{font-size:var(--p-step-3)}
-  .two{display:grid;grid-template-columns:1fr 1fr;gap:var(--p-space-4)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:var(--p-space-4);align-items:start}
   .wall{display:flex;flex-wrap:wrap;gap:10px;margin:var(--p-space-4) 0}
   .legend{display:flex;gap:var(--p-space-4);flex-wrap:wrap;font-size:var(--p-step--1);color:var(--text-muted);align-items:center}
   .narrow{margin-top:var(--p-space-5);display:grid;gap:var(--p-space-4)}
@@ -33,7 +33,21 @@
   .module h3{font-size:1.05rem;display:flex;gap:8px;align-items:center}
   .check{display:flex;gap:12px;align-items:flex-start;padding:var(--p-space-4);background:var(--surface);border:1.5px solid var(--border);border-radius:var(--p-radius-md)}
   .check input{margin-top:5px;width:18px;height:18px;accent-color:var(--primary)}
+  .welcome{margin-bottom:var(--p-space-6);border-left:6px solid var(--highlight)}
+  .welcome h2{font-size:1.4rem}
+  .qh{font-size:1.15rem;margin:var(--p-space-6) 0 var(--p-space-3);padding-top:var(--p-space-4);border-top:1.5px solid var(--border)}
+  .stage section > p.muted + .qh{border-top:0;padding-top:0}
+  .ynrow{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--p-space-4)}
+  .story{margin-bottom:var(--p-space-5)}
+  .story label{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+  .story .ex{font-size:var(--p-step--1);color:var(--text-muted);margin:0}
+  .story textarea{min-height:110px}
+  .story .rec{font:600 .72rem var(--font-body);text-transform:uppercase;letter-spacing:.05em;color:var(--on-highlight);background:var(--highlight);padding:2px 7px;border-radius:var(--badge-radius)}
+  .story-progress{margin:var(--p-space-4) 0}
+  .missing{margin:var(--p-space-5) 0}
+  .missing ul{margin:0;padding-left:1.2em} .missing li{margin:4px 0}
   @media(max-width:860px){
+    .ynrow{grid-template-columns:1fr}
     .layout{grid-template-columns:1fr;gap:var(--p-space-5)}
     .steps{position:static;grid-auto-flow:column;overflow-x:auto}
     .steps .t{display:none}
@@ -49,12 +63,25 @@
   <div class="stage" id="stage">
     <!-- 1 -->
     <section data-step="0">
+      <div class="welcome panel" id="welcome" hidden>
+        <h2>Welcome. Let's get you set up.</h2>
+        <p>This questionnaire is how we apply for you. Every application asks for the same things, so you answer them here once, and we use your answers on every application you pick. It saves as you go, and you can change anything later.</p>
+        <p class="small muted" style="margin:0">Six short steps: about you, the fields you want, preferences, the usual application questions, a few answers in your own words, and your resume.</p>
+      </div>
       <h1>Tell us where you are in school.</h1>
       <p class="muted">We use this to filter out openings you aren't eligible for, like roles for seniors only or with a GPA cutoff.</p>
-      <div class="field"><label for="name">Full name</label><input id="name" type="text" autocomplete="name" placeholder="Jordan Sample"></div>
+      <div class="two">
+        <div class="field"><label for="name">Full legal name</label><input id="name" type="text" autocomplete="name" placeholder="Jordan Sample"></div>
+        <div class="field"><label for="preferredName">Name you go by <span class="muted">(optional)</span></label><input id="preferredName" type="text" autocomplete="nickname" placeholder="Jordy"></div>
+      </div>
       <div class="two">
         <div class="field"><label for="school">School</label><input id="school" type="text" list="schools" placeholder="Start typing your school"><datalist id="schools"></datalist></div>
+        <div class="field"><label for="degree">Degree</label>
+          <select id="degree"><option value="">Choose one</option><option>Bachelor's</option><option>Associate's</option><option>Master's</option><option>PhD</option><option>Other</option></select></div>
+      </div>
+      <div class="two">
         <div class="field"><label for="major">Major</label><input id="major" type="text" list="majors" placeholder="Start typing your major"><datalist id="majors"></datalist></div>
+        <div class="field"><label for="minor">Minor <span class="muted">(optional)</span></label><input id="minor" type="text" list="majors"></div>
       </div>
       <div class="field"><span class="label">Class year</span>
         <div class="seg" id="classYear">
@@ -129,13 +156,59 @@
           <label><input type="radio" name="pay" value="paid-stipend"><span>Paid or stipend</span></label>
         </div>
       </div>
-      <div class="field"><label for="auth">Work authorization</label>
-        <select id="auth"><option>Authorized to work in the US, no sponsorship needed</option><option>Authorized now, will need sponsorship later</option><option>Need sponsorship</option><option>Not applying in the US</option></select>
-        <span class="hint">Some federal and defense roles require citizenship. We'll flag those instead of hiding them.</span></div>
     </section>
 
     <!-- 4 -->
     <section data-step="3">
+      <h1>The questions every application asks.</h1>
+      <p class="muted">Answer these once and we'll use your exact words everywhere they come up. We never guess at these. If you skip one, we'll leave that question for you on each application.</p>
+
+      <h2 class="qh">Eligibility</h2>
+      <div class="field"><label for="auth">Work authorization</label>
+        <select id="auth"><option value="">Choose one</option><option>Authorized to work in the US, no sponsorship needed</option><option>Authorized now, will need sponsorship later</option><option>Need sponsorship</option><option>Not applying in the US</option></select>
+        <span class="hint">We answer "authorized to work" and "need sponsorship" questions from this, and flag each one for you to double-check.</span></div>
+      <div class="two">
+        <div class="field"><label for="a-citizenship">Citizenship</label>
+          <select id="a-citizenship" data-answer="citizenship"><option value="">Choose one</option><option>U.S. citizen</option><option>U.S. permanent resident</option><option>Other (on a visa or outside the U.S.)</option></select>
+          <span class="hint">Some government and defense roles ask. We flag those roles instead of hiding them.</span></div>
+        <div class="field"><label for="a-clearance">Security clearance <span class="muted">(if any)</span></label><input id="a-clearance" data-answer="clearance" placeholder="None"></div>
+      </div>
+      <div class="ynrow">
+        <div class="field"><span class="label">Are you 18 or older?</span><div class="seg"><label><input type="radio" name="a-over18" data-answer="over18" value="Yes"><span>Yes</span></label><label><input type="radio" name="a-over18" data-answer="over18" value="No"><span>No</span></label></div></div>
+        <div class="field"><span class="label">OK with a background check?</span><div class="seg"><label><input type="radio" name="a-bg" data-answer="backgroundCheck" value="Yes"><span>Yes</span></label><label><input type="radio" name="a-bg" data-answer="backgroundCheck" value="No"><span>No</span></label></div></div>
+        <div class="field"><span class="label">Valid driver's license?</span><div class="seg"><label><input type="radio" name="a-dl" data-answer="driversLicense" value="Yes"><span>Yes</span></label><label><input type="radio" name="a-dl" data-answer="driversLicense" value="No"><span>No</span></label></div></div>
+      </div>
+
+      <h2 class="qh">Availability</h2>
+      <div class="two">
+        <div class="field"><label for="a-start">Earliest start date</label><input id="a-start" data-answer="startDate" placeholder="May 26, 2027"></div>
+        <div class="field"><label for="a-end">Available until</label><input id="a-end" data-answer="endDate" placeholder="August 20, 2027"></div>
+      </div>
+      <div class="two">
+        <div class="field"><label for="a-hours">Hours a week during the school year <span class="muted">(optional)</span></label><input id="a-hours" data-answer="hoursPerWeek" placeholder="15"><span class="hint">For part-time and fall or spring roles.</span></div>
+        <div class="field"><span class="label">Willing to relocate?</span><div class="seg"><label><input type="radio" name="a-rel" data-answer="relocate" value="Yes"><span>Yes</span></label><label><input type="radio" name="a-rel" data-answer="relocate" value="No"><span>No</span></label><label><input type="radio" name="a-rel" data-answer="relocate" value="Depends on the role"><span>Depends</span></label></div></div>
+      </div>
+
+      <h2 class="qh">The rest of the usual questions</h2>
+      <div class="two">
+        <div class="field"><label for="a-pay">Pay expectations</label><input id="a-pay" data-answer="payExpectation" placeholder="Open to the posted rate"><span class="hint">Flagged for you each time it's asked.</span></div>
+        <div class="field"><label for="a-hear">"How did you hear about us?"</label>
+          <select id="a-hear" data-answer="hearAbout"><option>Online job board</option><option>Company website</option><option>Career fair</option><option>School career center</option><option>Social media</option><option>Referral</option></select></div>
+      </div>
+      <div class="field"><label for="a-lang">Languages you speak, and how well <span class="muted">(optional)</span></label><input id="a-lang" data-answer="languages" placeholder="English (native), Spanish (conversational)"></div>
+      <div class="field"><label for="a-prev">Companies you've worked or interned at before <span class="muted">(optional)</span></label><input id="a-prev" data-answer="previousEmployers" placeholder="Campus bookstore, Riverside Animal Clinic"><span class="hint">So we can answer "Have you worked here before?" correctly.</span></div>
+    </section>
+
+    <!-- 5 -->
+    <section data-step="4">
+      <h1>Now, in your own words.</h1>
+      <p class="muted">Applications ask open questions like "Why this role?" and "Tell us about a challenge." We write those answers and your cover letters from what you put here and your resume, and nothing else. A few honest sentences each beats anything polished.</p>
+      <div class="story-progress"><span id="storyCount" class="small muted" aria-live="polite"></span></div>
+      <div id="stories"></div>
+    </section>
+
+    <!-- 6 -->
+    <section data-step="5">
       <h1>Add your resume and links.</h1>
       <p class="muted">We write your answers only from what you give us here. We never make up experience.</p>
       <label class="drop" id="drop" for="resume"><strong id="dropTitle">Choose your resume</strong><br><span class="muted small" id="dropSub">PDF, up to 5 MB. You can drag it in.</span><input class="sr" id="resume" type="file" accept=".pdf"></label>
@@ -147,12 +220,13 @@
       <div class="check"><input id="eeo" type="checkbox" checked><label for="eeo"><strong>Decline demographic questions</strong><br><span class="muted small">Employers often ask about race, gender, disability, or veteran status. Leave this on and we answer "decline to answer" wherever that option exists. Turn it off only if you want to enter answers yourself.</span></label></div>
     </section>
 
-    <!-- 5 -->
-    <section data-step="4">
+    <!-- 7 -->
+    <section data-step="6">
       <h1 id="doneTitle">You're set.</h1>
       <p class="muted" id="doneText"></p>
       <div id="doneChips" class="wall"></div>
-      <p><a class="btn lg" href="app.html">See my applications</a></p>
+      <div class="panel missing" id="missing" hidden><h3>Worth finishing</h3><p class="small muted">You can pick internships now. These make your applications stronger and mean fewer questions left for you.</p><ul id="missingList"></ul></div>
+      <p style="display:flex;gap:var(--p-space-3);flex-wrap:wrap"><a class="btn lg" href="browse.html">Pick internships</a><a class="btn lg secondary" href="how-it-works.html">How we apply for you</a></p>
     </section>
 
     <div class="nav" id="nav">
@@ -164,18 +238,46 @@
 </main>
 
 <script src="js/data.js"></script>
+<script src="js/mock-api.js"></script>
 <script src="js/common.js"></script>
 <script>
   renderBar("profile", "app");
-  const STEPS = ["About you", "Fields", "Preferences", "Resume and links", "Done"];
-  const state = { step: 0, name: "", school: "", major: "", classYear: "", grad: "", gpa: "", phone: "", address: {}, cats: {}, subs: {}, types: ["Internship"], modes: ["remote", "hybrid", "onsite"], where: "", term: "Summer 2027", pay: "any", auth: "", li: "", site: "", resumeName: "", eeoDecline: true, fieldDetails: {} };
+  const STEPS = ["About you", "Fields", "Preferences", "Application questions", "In your own words", "Resume and links", "Done"];
+  const RESUME = 5, DONE = 6;
+  const state = { step: 0, name: "", preferredName: "", school: "", degree: "", major: "", minor: "", classYear: "", grad: "", gpa: "", phone: "", address: {}, cats: {}, subs: {}, types: ["Internship"], modes: ["remote", "hybrid", "onsite"], where: "", term: "Summer 2027", pay: "any", auth: "", li: "", site: "", resumeName: "", eeoDecline: true, fieldDetails: {}, answers: {}, stories: {} };
+
+  // Open questions employers ask, and where the student's answer gets used.
+  const STORIES = [
+    ["aboutMe", "Tell us about yourself", "Two to four sentences: who you are, what you study, what you're into.", "Used for \"Tell us about yourself\" and the opening of your cover letters.", true],
+    ["whyField", "Why these fields?", "What pulled you toward the work you picked. A class, a job, a person, a moment.", "Used for \"Why are you interested in this role?\"", true],
+    ["proudOf", "Something you're proud of", "A project, job, club, team or class. What you did and how it turned out.", "Used for \"Describe a project or accomplishment.\"", true],
+    ["challenge", "A time something went wrong", "What happened, what you did about it, what you learned.", "Used for \"Tell us about a challenge you faced.\"", false],
+    ["teamwork", "A time you worked with others", "A group project, shift, team or club. What was your part?", "Used for teamwork questions.", false],
+    ["leadership", "A time you took the lead", "Doesn't need a title. Organizing something counts.", "Used for leadership questions.", false],
+    ["strengths", "Your strengths, in your words", "Three or four things you're good at, with a quick example if you have one.", "Used for \"What are your strengths?\"", false],
+    ["goals", "What you want from an internship", "Skills to learn, the kind of team, where you're headed after school.", "Used for \"What are your career goals?\"", false],
+    ["avoid", "Anything we should never mention", "A job you'd rather leave off, a topic you're not comfortable with.", "We keep this out of every answer and letter.", false],
+  ];
+  document.getElementById("stories").innerHTML = STORIES.map(([k, label, prompt, use, rec]) => `
+    <div class="field story"><label for="s-${k}"><span>${esc(label)}</span>${rec ? '<span class="rec">Most asked</span>' : '<span class="muted small" style="font-weight:400">Optional</span>'}</label>
+      <p class="ex">${esc(prompt)}</p><textarea id="s-${k}" data-story="${k}" rows="4"></textarea><span class="hint">${esc(use)}</span></div>`).join("");
+  function countStories() {
+    const n = STORIES.filter(([k]) => k !== "avoid" && (state.stories[k] || "").trim()).length;
+    document.getElementById("storyCount").textContent = `${n} of ${STORIES.length - 1} answered. The three marked "Most asked" cover most applications.`;
+  }
   const $ = id => document.getElementById(id);
   $("schools").innerHTML = LAN.schools.map(s => `<option value="${esc(s)}">`).join("");
   $("majors").innerHTML = LAN.majors.map(s => `<option value="${esc(s)}">`).join("");
   const ADDR = ["street", "city", "state", "zip"];
 
   function restore() {
-    ["name", "school", "major", "grad", "gpa", "phone", "where", "term", "auth", "li", "site"].forEach(k => { if (state[k]) $(k).value = state[k]; });
+    ["name", "preferredName", "school", "degree", "major", "minor", "grad", "gpa", "phone", "where", "term", "auth", "li", "site"].forEach(k => { if (state[k]) $(k).value = state[k]; });
+    document.querySelectorAll("[data-answer]").forEach(el => {
+      const v = state.answers[el.dataset.answer];
+      if (el.type === "radio") el.checked = v === el.value; else if (v) el.value = v;
+    });
+    document.querySelectorAll("[data-story]").forEach(el => { el.value = state.stories[el.dataset.story] || ""; });
+    countStories();
     ADDR.forEach(k => { if (state.address[k]) $(k).value = state.address[k]; });
     if (state.classYear) { const r = document.querySelector(`input[name=cy][value=${state.classYear}]`); if (r) r.checked = true; }
     document.querySelectorAll("#types input").forEach(i => i.checked = state.types.includes(i.value));
@@ -187,6 +289,11 @@
 
   function collect() {
     state.name = $("name").value; state.school = $("school").value; state.major = $("major").value; state.grad = $("grad").value; state.gpa = $("gpa").value;
+    state.preferredName = $("preferredName").value; state.degree = $("degree").value; state.minor = $("minor").value;
+    state.answers = {};
+    document.querySelectorAll("[data-answer]").forEach(el => { if (el.type !== "radio" || el.checked) state.answers[el.dataset.answer] = el.value; });
+    state.stories = Object.fromEntries([...document.querySelectorAll("[data-story]")].map(el => [el.dataset.story, el.value]));
+    countStories();
     state.phone = $("phone").value; state.address = Object.fromEntries(ADDR.map(k => [k, $(k).value]));
     state.classYear = (document.querySelector("input[name=cy]:checked") || {}).value || "";
     state.types = [...document.querySelectorAll("#types input:checked")].map(i => i.value);
@@ -293,30 +400,46 @@
     if (n > state.step && !(await save(true))) return;
     state.step = n;
     document.querySelectorAll("#stage > section").forEach(s => s.classList.toggle("on", +s.dataset.step === n));
-    if (n === 3) renderModules();
-    if (n === 4) {
+    if (n === RESUME) renderModules();
+    if (n === DONE) {
       const picked = LAN.categories.filter(c => state.cats[c.id]);
-      $("doneTitle").textContent = state.name ? `You're set, ${state.name.split(" ")[0]}.` : "You're set.";
-      $("doneText").textContent = picked.length ? "We'll match openings in these fields. We'll start with the first matches and show them on your applications page." : "You haven't picked any fields yet. You can add them later, or send us a link to any posting.";
+      $("doneTitle").textContent = state.name ? `You're set, ${(state.preferredName || state.name).split(" ")[0]}.` : "You're set.";
+      $("doneText").textContent = picked.length ? "Next, pick the internships you want. We'll prepare each application and bring it back for your OK." : "You haven't picked any fields yet, so you'll see every opening. You can add fields later, or send us a link to any posting.";
       $("doneChips").innerHTML = picked.map(c => chipButton(c, true)).join("");
+      const missing = [
+        [!state.resumeName, "Your resume. We can't prepare applications without it.", RESUME],
+        [!state.auth, "Your work authorization. Almost every application asks.", 3],
+        [!state.answers.startDate, "Your start date.", 3],
+        [!["aboutMe", "whyField", "proudOf"].every(k => (state.stories[k] || "").trim()), "The three \"Most asked\" answers in your own words.", 4],
+      ].filter(([m]) => m);
+      $("missing").hidden = !missing.length;
+      $("missingList").innerHTML = missing.map(([, text, step]) => `<li><a href="#" data-goto="${step}">${esc(text)}</a></li>`).join("");
       $("nav").hidden = true;
     } else $("nav").hidden = false;
     $("back").style.visibility = n === 0 ? "hidden" : "visible";
-    $("next").textContent = n === 3 ? "Finish setup" : "Continue";
+    $("next").textContent = n === RESUME ? "Finish setup" : "Continue";
     renderSteps(); window.scrollTo({ top: 0 });
   }
-  $("next").addEventListener("click", () => go(Math.min(state.step + 1, 4)));
+  $("missingList").addEventListener("click", e => { const a = e.target.closest("[data-goto]"); if (a) { e.preventDefault(); go(+a.dataset.goto); } });
+  $("next").addEventListener("click", () => go(Math.min(state.step + 1, DONE)));
   $("back").addEventListener("click", () => go(Math.max(state.step - 1, 0)));
-  $("stage").addEventListener("input", e => { if (e.target.matches("input:not([type=file]), select")) save(); });
-  $("stage").addEventListener("change", e => { if (e.target.matches("input:not([type=file]), select")) save(); });
+  $("stage").addEventListener("input", e => { if (e.target.matches("input:not([type=file]), select, textarea")) save(); });
+  $("stage").addEventListener("change", e => { if (e.target.matches("input:not([type=file]), select, textarea")) save(); });
 
   // Load the saved profile, mapping saved field names back to the picker's ids.
+  // Show the first step right away, then fill in anything already saved.
+  const q = new URLSearchParams(location.search);
+  $("welcome").hidden = !q.has("welcome");
+  renderWall(); renderNarrow(); go(0);
   api("GET", "/profile").then(p => {
-    Object.assign(state, p, { cats: {}, subs: {}, address: p.address || {}, fieldDetails: p.fieldDetails || {} });
+    Object.assign(state, p, { cats: {}, subs: {}, address: p.address || {}, fieldDetails: p.fieldDetails || {}, answers: p.answers || {}, stories: p.stories || {} });
     for (const f of p.fields) { const c = LAN.byName[f.name]; if (c) state.cats[c.id] = f.top ? 2 : 1; }
     for (const s of p.subfields) { const c = LAN.byName[s.parent]; const sub = c && c.subs.find(x => x.name === s.name); if (sub) state.subs[sub.id] = true; }
-    restore(); renderWall(); renderNarrow(); go(0);
-  }).catch(() => {});
+    restore(); renderWall(); renderNarrow();
+    // ?step=N opens a later step directly (the profile page's "Edit" links).
+    const start = Math.min(Math.max(parseInt(q.get("step"), 10) || 0, 0), DONE - 1);
+    state.step = start; go(start);
+  }).catch(e => say($("saveStatus"), `We couldn't load your saved answers: ${e.message}`, "err"));
 </script>
 </body>
 </html>

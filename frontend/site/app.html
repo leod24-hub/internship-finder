@@ -62,7 +62,7 @@
       <h2 class="s">Needs you <span class="tag due" id="needCount"></span></h2>
       <div class="queue" id="queue"></div>
 
-      <h2 class="s" style="margin-top:var(--p-space-8)">New matches</h2>
+      <h2 class="s" style="margin-top:var(--p-space-8)">New matches <a class="small" href="browse.html" style="font:500 .9rem var(--font-body);margin-left:auto">Browse and pick several at once</a></h2>
       <p class="small" id="pasteStatus" role="status" style="margin:0 0 8px"></p>
       <form class="paste" id="paste"><label class="sr" for="link">Posting link</label><input id="link" type="url" placeholder="Paste a link to any internship posting"><button class="btn" type="submit">Add posting</button></form>
       <div class="filters" id="filters" role="group" aria-label="Filter matches by field"></div>
@@ -96,6 +96,7 @@
 </main>
 
 <script src="js/data.js"></script>
+<script src="js/mock-api.js"></script>
 <script src="js/common.js"></script>
 <script>
   const $ = id => document.getElementById(id);
@@ -106,6 +107,7 @@
 
   renderBar("app", "app").then(me => {
     if (!me) return;
+    if (!me.onboarded) { location.href = "welcome.html"; return; }
     if (me.usage.limit == null) { $("usagePanel").hidden = true; return; }
     const used = Math.min(me.usage.used, me.usage.limit);
     $("meterFill").style.width = `${(used / me.usage.limit) * 100}%`;
@@ -133,7 +135,7 @@
   }
 
   function paint() {
-    const first = (profile.name || "").split(" ")[0];
+    const first = (profile.preferredName || profile.name || "").split(" ")[0];
     $("hello").textContent = first ? `Hi ${first}, here's where things stand.` : "Here's where things stand.";
     const myFields = profile.fields || [];
     $("sub").textContent = myFields.length ? `Showing matches in ${myFields.length} ${myFields.length === 1 ? "field" : "fields"}.` : "You haven't picked fields yet, so every opening is shown.";

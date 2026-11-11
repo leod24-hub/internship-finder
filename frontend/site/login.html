@@ -34,6 +34,7 @@
   </div>
 </main>
 <script src="js/data.js"></script>
+<script src="js/mock-api.js"></script>
 <script src="js/common.js"></script>
 <script>
   renderBar("", "site");
@@ -63,7 +64,7 @@
     try {
       await api("POST", signup ? "/auth/signup" : "/auth/login", { email, password, name: $("name").value.trim() });
       const me = await api("GET", "/me");
-      location.href = next || (me.onboarded ? "app.html" : "onboarding.html");
+      location.href = signup ? "welcome.html" : next || (me.onboarded ? "app.html" : "welcome.html");
     } catch (err) {
       say($("status"), err.message, "err");
       $("submit").disabled = false;

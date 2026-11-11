@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How it works | Lanyard</title>
+<meta name="description" content="Exactly how we apply to internships for you: what you fill out, what we do, where the applying happens, and when we hand things back to you.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='5' y='6' width='14' height='16' rx='3' fill='%23ffd84d' stroke='%2312152a' stroke-width='1.5'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/base.css">
+<style>
+  .hero{padding:var(--p-space-8) 0 var(--p-space-6)}
+  .hero h1{max-width:18ch}
+  .hero .lead{font-size:var(--p-step-1);color:var(--text-muted);max-width:56ch}
+  .block{padding:var(--p-space-8) 0}
+  .block.tint{background:var(--surface-sunk)}
+  .head{max-width:640px;margin-bottom:var(--p-space-6)}
+
+  /* the six steps */
+  .steps{list-style:none;margin:0;padding:0;counter-reset:s;display:grid;gap:0}
+  .steps > li{counter-increment:s;display:grid;grid-template-columns:64px 1fr;gap:var(--p-space-5);position:relative;padding-bottom:var(--p-space-6)}
+  .steps > li::before{content:counter(s);width:48px;height:48px;border-radius:50%;display:grid;place-items:center;font:800 1.3rem/1 var(--font-display);background:var(--surface);border:2px solid var(--border-strong);position:relative;z-index:1}
+  .steps > li:not(:last-child)::after{content:"";position:absolute;left:23px;top:48px;bottom:0;width:2px;background:var(--border)}
+  .steps > li.you::before{background:var(--highlight);color:var(--on-highlight);border-color:var(--highlight)}
+  .steps > li.done::before{background:var(--success);color:var(--bg);border-color:var(--success)}
+  .steps h3{margin:10px 0 6px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .steps p{color:var(--text-muted)}
+  .who{font:600 .72rem var(--font-body);text-transform:uppercase;letter-spacing:.06em;padding:3px 8px;border-radius:var(--badge-radius);background:var(--surface-sunk);color:var(--text-muted)}
+  .who.you{background:var(--highlight);color:var(--on-highlight)}
+  .steps ul{margin:0;padding-left:1.2em;color:var(--text-muted);font-size:.95rem} .steps ul li{margin:3px 0}
+
+  /* where it happens */
+  .where{display:grid;grid-template-columns:1fr 1fr;gap:var(--p-space-7);align-items:center}
+  .browser{background:var(--surface);border:1.5px solid var(--border-strong);border-radius:var(--p-radius-lg);overflow:hidden;box-shadow:0 18px 40px -24px rgba(0,0,0,.35)}
+  .browser .chrome{display:flex;gap:6px;padding:10px 12px;border-bottom:1.5px solid var(--border);background:var(--surface-sunk);align-items:center}
+  .browser .chrome i{width:10px;height:10px;border-radius:50%;background:var(--border-strong);display:block}
+  .tabs{display:flex;gap:4px;margin-left:10px;overflow:hidden}
+  .tabs span{font-size:.72rem;padding:4px 10px;border-radius:6px 6px 0 0;background:var(--surface);border:1px solid var(--border);white-space:nowrap;color:var(--text-muted)}
+  .tabs span.on{color:var(--text);font-weight:600}
+  .browser .body{padding:var(--p-space-5);display:grid;gap:10px}
+  .row{display:grid;grid-template-columns:110px 1fr;gap:10px;align-items:center;font-size:.85rem}
+  .row .v{border:1.5px solid var(--border);border-radius:8px;padding:6px 9px;background:var(--input-bg);position:relative;overflow:hidden;white-space:nowrap}
+  .row .v.fill::after{content:"";position:absolute;inset:0;background:var(--surface);animation:type 1.4s steps(18) forwards;animation-delay:var(--d);animation-play-state:paused}
+  .browser.go .row .v.fill::after{animation-play-state:running}
+  .row .v.flag{border-color:var(--highlight)}
+  @keyframes type{to{transform:translateX(100%)}}
+  .helper{display:flex;gap:10px;align-items:center;font-size:.82rem;padding:10px 12px;border-top:1.5px solid var(--border);background:color-mix(in srgb,var(--success) 9%,var(--surface))}
+  .helper b{font-family:var(--font-display)}
+  .helper .dotpulse{width:9px;height:9px;border-radius:50%;background:var(--success);animation:pulse 1.6s infinite}
+  @keyframes pulse{50%{opacity:.3}}
+  .keep{border-left:5px solid var(--highlight);background:color-mix(in srgb,var(--highlight) 14%,var(--surface));padding:var(--p-space-4) var(--p-space-5);border-radius:0 var(--p-radius-md) var(--p-radius-md) 0;margin-top:var(--p-space-5)}
+  .keep h3{font-size:1.05rem;margin-bottom:6px}
+  .keep ul{margin:0;padding-left:1.2em} .keep li{margin:4px 0}
+
+  /* tables */
+  .tbl{width:100%;border-collapse:collapse;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--p-radius-md);overflow:hidden;font-size:.95rem}
+  .tbl th,.tbl td{text-align:left;padding:14px 16px;border-bottom:1.5px solid var(--border);vertical-align:top}
+  .tbl thead th{font:600 .8rem var(--font-body);text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);background:var(--surface-sunk)}
+  .tbl tr:last-child td{border-bottom:0}
+  .tbl td:first-child{font-weight:600;width:32%}
+  .tbl .muted{font-size:.88rem}
+
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:var(--p-space-6)}
+  .list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+  .list li{display:flex;gap:12px;align-items:flex-start}
+  .list li::before{content:"";flex:none;width:10px;height:10px;border-radius:50%;margin-top:8px;background:var(--highlight)}
+  .list.never li::before{background:var(--danger);border-radius:2px}
+  .list.can li::before{background:var(--success)}
+  .panel h3{font-size:1.15rem}
+
+  /* extension, step by step */
+  .ext-steps{list-style:none;margin:0;padding:0;counter-reset:e;display:grid;grid-template-columns:repeat(3,1fr);gap:var(--p-space-5)}
+  .ext-steps li{counter-increment:e;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--p-radius-md);padding:var(--p-space-5)}
+  .ext-steps li::before{content:counter(e);display:inline-grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--surface-sunk);font:800 1rem/1 var(--font-display);margin-bottom:var(--p-space-3)}
+  .ext-steps li:first-child::before{background:var(--highlight);color:var(--on-highlight)}
+  .ext-steps h3{font-size:1.1rem;margin-bottom:6px}
+  .ext-steps p{color:var(--text-muted);font-size:.95rem;margin:0}
+  @media(max-width:960px){.ext-steps{grid-template-columns:1fr 1fr}}
+  @media(max-width:560px){.ext-steps{grid-template-columns:1fr}}
+
+  details{border-bottom:1.5px solid var(--border);padding:var(--p-space-4) 0}
+  summary{cursor:pointer;font-weight:600;font-size:1.05rem}
+  details p{margin:var(--p-space-3) 0 0;color:var(--text-muted)}
+  .cta{text-align:center;padding:var(--p-space-8) 0}
+  .cta h2{max-width:none}
+  .cta .actions{display:flex;gap:var(--p-space-3);justify-content:center;flex-wrap:wrap}
+
+  @media(max-width:860px){
+    .where,.two{grid-template-columns:1fr}
+    .steps > li{grid-template-columns:48px 1fr;gap:var(--p-space-4)}
+    .tbl td:first-child{width:auto}
+  }
+  @media(max-width:560px){
+    .tbl thead{display:none}
+    .tbl tr{display:block;border-bottom:1.5px solid var(--border);padding:6px 0}
+    .tbl td{display:block;border:0;padding:6px 16px}
+    .row{grid-template-columns:90px 1fr}
+  }
+  @media (prefers-reduced-motion: reduce){.row .v.fill::after{display:none}.helper .dotpulse{animation:none}}
+</style>
+</head>
+<body>
+<header class="bar" id="bar"></header>
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <h1>Exactly how we apply for you.</h1>
+      <p class="lead">You tell us about yourself once and pick the internships you want. We fill out every application and write your cover letters, then bring each one back to you. Nothing goes to an employer until you've read it and said OK.</p>
+    </div>
+  </section>
+
+  <section class="block tint" aria-labelledby="h-steps">
+    <div class="wrap">
+      <div class="head">
+        <h2 id="h-steps">Six steps, start to finish.</h2>
+        <p class="muted">The yellow steps are yours. The rest are ours.</p>
+      </div>
+      <ol class="steps">
+        <li class="you">
+          <div><h3>Fill out your questionnaire <span class="who you">You, once</span></h3>
+            <p>The questions every application asks, answered one time. We use your exact words everywhere they come up.</p>
+            <ul><li>School, major, class year, GPA and graduation date</li><li>Work authorization, start date and the other yes-or-no questions</li><li>A few short answers in your own words: why your fields, something you're proud of, a challenge you handled</li><li>Your resume</li></ul></div>
+        </li>
+        <li class="you">
+          <div><h3>Pick your internships <span class="who you">You</span></h3>
+            <p>We show you openings in your fields. Check the ones you want, as many at once as you like. Found one somewhere else? Paste the link and we'll handle that one too.</p></div>
+        </li>
+        <li>
+          <div><h3>We prepare each application <span class="who">Us</span></h3>
+            <p>For every internship you picked, we open the employer's application and fill in each field from your questionnaire. We attach your resume, write a cover letter for that specific role, and draft answers to the open questions from your own words and resume. We take a screenshot of the finished form, and we stop before the submit button.</p></div>
+        </li>
+        <li class="you">
+          <div><h3>You read it and give the OK <span class="who you">You</span></h3>
+            <p>It shows up under "Needs you" on your applications page. You see every answer exactly as the employer will, with anything worth a second look flagged in yellow. Edit whatever you want, then approve it, or say no.</p></div>
+        </li>
+        <li>
+          <div><h3>We submit it <span class="who">Us</span></h3>
+            <p>Once you approve, we send in exactly the answers you approved and save the employer's confirmation page as proof it went through. If the form changed after you reviewed it, we stop and check with you again.</p></div>
+        </li>
+        <li class="done">
+          <div><h3>We keep track <span class="who">Us</span></h3>
+            <p>Every application lands on your tracker with its deadline, status and confirmation. You mark interviews and offers as they come in.</p></div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="h-where">
+    <div class="wrap where">
+      <div>
+        <h2 id="h-where">Where the applying happens: your own browser.</h2>
+        <p>You add our helper to Google Chrome. It's a small extension, and it's what fills out and submits the applications you approve.</p>
+        <p>It works inside your Chrome, so employers see a normal application coming from you, and we never need your passwords. When you approve a batch, the helper opens each application in a background tab, fills it in, and sends the ones you approved. You can keep using your computer while it works.</p>
+        <div class="keep">
+          <h3>One thing to know</h3>
+          <ul>
+            <li>Your computer needs to be on, with Chrome open, while it works. Close Chrome and it pauses, then picks up where it left off next time you open it.</li>
+            <li>The easiest way: pick and approve a batch, leave Chrome open while you study or sleep, and check your tracker after.</li>
+            <li>Preparing your answers and cover letters happens on our side, so those are ready for review even when your computer is off.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="browser" aria-hidden="true">
+        <div class="chrome"><i></i><i></i><i></i>
+          <div class="tabs"><span class="on">Research Intern · Northwind</span><span>Design Intern · Harbor</span><span>+3</span></div></div>
+        <div class="body">
+          <div class="row"><span class="muted">First name</span><span class="v fill" style="--d:.2s">Jordan</span></div>
+          <div class="row"><span class="muted">School</span><span class="v fill" style="--d:.8s">State University</span></div>
+          <div class="row"><span class="muted">Start date</span><span class="v fill" style="--d:1.4s">May 26, 2027</span></div>
+          <div class="row"><span class="muted">Authorized?</span><span class="v fill flag" style="--d:2s">Yes</span></div>
+          <div class="row"><span class="muted">Resume</span><span class="v fill" style="--d:2.6s">resume.pdf</span></div>
+        </div>
+        <div class="helper"><span class="dotpulse"></span><span><b>Applying: 2 of 5</b> · all 5 approved by you</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block tint" aria-labelledby="h-ext">
+    <div class="wrap">
+      <div class="head">
+        <h2 id="h-ext">What the extension does in your browser.</h2>
+        <p class="muted">"An extension that fills out forms" can sound like it takes over your computer. It doesn't. Here's exactly what it does, one application at a time.</p>
+      </div>
+      <ol class="ext-steps">
+        <li><h3>It waits for your approval</h3><p>The extension does nothing on its own. It only starts once you approve applications on your applications page, and it only works on those.</p></li>
+        <li><h3>It opens a background tab</h3><p>For each approved application, it opens the employer's application page in a new tab in your Chrome. Your other tabs stay as they are, and you can keep working.</p></li>
+        <li><h3>It reads the form</h3><p>It reads the question labels and answer choices on that page, the same way your browser's autofill does, to match each question to the answer you approved.</p></li>
+        <li><h3>It fills in your approved answers</h3><p>It types each answer into its field, picks from dropdowns, and attaches your resume and cover letter. It uses only the answers you approved for that application, nothing new.</p></li>
+        <li><h3>It checks, then submits</h3><p>Before pressing submit, it checks that the form still matches what you approved. If anything changed, it stops and asks you. If everything matches, it submits and saves the employer's confirmation page.</p></li>
+        <li><h3>It closes the tab and moves on</h3><p>The tab closes, your tracker updates, and it starts the next approved application. When the batch is done, it goes back to waiting.</p></li>
+      </ol>
+
+      <div class="two" style="margin-top:var(--p-space-7)">
+        <div class="panel">
+          <h3>What it can do</h3>
+          <ul class="list can">
+            <li>Open, fill in and submit applications you approved, on employer application sites.</li>
+            <li>Attach your resume and cover letter to those applications.</li>
+            <li>Save a screenshot of each finished form and confirmation page for your records.</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>What it can't do</h3>
+          <ul class="list never">
+            <li>Work on any site that isn't an employer application page. Your email, bank, social media and other tabs are off limits.</li>
+            <li>See or type your passwords, or sign in for you.</li>
+            <li>Read your browsing history, or what you do in other tabs.</li>
+            <li>Submit anything you didn't approve.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="two" style="margin-top:var(--p-space-6)">
+        <div>
+          <h3>You can watch it, and stop it</h3>
+          <p class="muted">The extension's icon in your Chrome toolbar shows what it's doing, like "Applying: 2 of 5." Click the tab to watch it fill in a form. Press <strong>Pause</strong> any time and it stops before the next step. Nothing half-finished is sent.</p>
+        </div>
+        <div>
+          <h3>What Chrome asks when you add it</h3>
+          <p class="muted">Chrome shows you the permissions an extension wants before you add it. Ours asks to read and change data only on the job application sites we support, not on every website. You can see it in Chrome's extension settings, turn it off, or remove it whenever you like.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="h-sites">
+    <div class="wrap">
+      <div class="head">
+        <h2 id="h-sites">What we can do on each kind of site.</h2>
+        <p class="muted">Employers use different application systems. Here's what we handle on each, and what you'll do yourself. When you pick an internship, we tell you which kind it is.</p>
+      </div>
+      <table class="tbl">
+        <thead><tr><th>Kind of site</th><th>What we do</th><th>What you do</th></tr></thead>
+        <tbody>
+          <tr><td>Simple application forms<br><span class="muted">Greenhouse, Lever, Ashby and most company career pages</span></td><td>Fill in everything, attach your resume and cover letter, and submit after your OK.</td><td>Review and approve.</td></tr>
+          <tr><td>Sign-in portals<br><span class="muted">Workday, iCIMS, SuccessFactors and others that need an account</span></td><td>Prepare every answer and your cover letter, ready to copy.</td><td>Sign in or make the account, then finish the form with our answers beside you.</td></tr>
+          <tr><td>Sites that don't allow automation<br><span class="muted">LinkedIn, Handshake, Indeed</span></td><td>Prepare your answers and cover letter. We don't fill these in for you, because their rules forbid it.</td><td>Apply on the site yourself, or use the link to the employer's own page when there is one.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="block tint" aria-labelledby="h-source">
+    <div class="wrap">
+      <div class="head">
+        <h2 id="h-source">Where every answer comes from.</h2>
+        <p class="muted">Nothing is made up. If we can't answer something truthfully from what you gave us, we leave it for you.</p>
+      </div>
+      <table class="tbl">
+        <thead><tr><th>Question</th><th>How we answer it</th></tr></thead>
+        <tbody>
+          <tr><td>Name, contact details, school, major, GPA</td><td>Copied from your questionnaire. GPA is always flagged so you can check it against your transcript.</td></tr>
+          <tr><td>Work authorization, sponsorship, citizenship</td><td>Exactly what you told us, never guessed. Flagged on every application for a second look.</td></tr>
+          <tr><td>Start date, relocation, background check and other yes-or-no questions</td><td>From your questionnaire. If you skipped one, it's left for you to answer.</td></tr>
+          <tr><td>Race, gender, veteran and disability questions</td><td>"Decline to answer" by default. You can choose to answer these yourself instead.</td></tr>
+          <tr><td>"Why this role?", "Tell us about a challenge" and other open questions</td><td>Written from your own short answers and your resume, in your voice. Never invented experience.</td></tr>
+          <tr><td>Cover letter</td><td>Written for each role from your resume and your own words, one page, and fully editable before you approve.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="h-stop">
+    <div class="wrap two">
+      <div>
+        <h2 id="h-stop" style="font-size:var(--p-step-2)">When we stop and hand it to you</h2>
+        <p class="muted">These steps are yours on purpose. We tell you right away and show you exactly where we stopped.</p>
+        <ul class="list">
+          <li>The site asks you to sign in or create an account.</li>
+          <li>It asks for a verification code from your email or phone.</li>
+          <li>A "prove you're human" check (a CAPTCHA) shows up.</li>
+          <li>A question can't be answered truthfully from what you gave us.</li>
+          <li>The form changed after you approved it.</li>
+        </ul>
+      </div>
+      <div>
+        <h2 style="font-size:var(--p-step-2)">What we'll never do</h2>
+        <p class="muted">No matter what plan you're on.</p>
+        <ul class="list never">
+          <li>Send anything without your OK.</li>
+          <li>Type your passwords, create accounts or enter verification codes.</li>
+          <li>Get around a site's security checks.</li>
+          <li>Make up experience, skills, grades or dates.</li>
+          <li>Automate sites whose rules forbid it.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="block tint" aria-labelledby="h-faq">
+    <div class="wrap" style="max-width:780px">
+      <h2 id="h-faq">Questions people ask</h2>
+      <details><summary>How long does the questionnaire take?</summary><p>Most of it is quick yes-or-no and fill-in questions. The short answers in your own words take the longest, and only three of them are marked "most asked." It saves as you go, so you can stop and come back, and everything stays editable.</p></details>
+      <details><summary>Do I have to keep my laptop open the whole time?</summary><p>Only while applications you've approved are being sent. Approve a batch, leave Chrome open, and it works through them. If you close Chrome, it pauses and picks up again later. Preparing answers and cover letters happens on our side, so that part doesn't need your computer.</p></details>
+      <details><summary>Will employers know I used a service?</summary><p>Employers get a normal application from you, with answers you've read and approved. Some employers have rules about AI tools in applications. If a posting says so, follow it, and write those answers yourself.</p></details>
+      <details><summary>Can I change an answer after it's sent?</summary><p>No. Once an employer has your application, it's theirs. That's why you see and can edit every answer before you approve.</p></details>
+      <details><summary>What if I find an internship you don't list?</summary><p>Paste the link on your applications page. If it's a form we can fill, we prepare it like any other. If it's a sign-in portal, we prepare your answers and cover letter for you to use.</p></details>
+    </div>
+  </section>
+
+  <section class="cta block">
+    <div class="wrap">
+      <h2>Start with the questionnaire.</h2>
+      <p class="muted" style="margin-inline:auto">Answer it once. Pick your internships. Approve what we prepare.</p>
+      <div class="actions"><a class="btn lg" href="login.html?mode=signup">Get started</a><a class="btn lg secondary" href="index.html#pricing">See plans</a></div>
+    </div>
+  </section>
+</main>
+
+<script src="js/data.js"></script>
+<script src="js/mock-api.js"></script>
+<script src="js/common.js"></script>
+<script>
+  renderBar("how", "public");
+  // Start the form-filling demo when it scrolls into view.
+  const demo = document.querySelector(".browser");
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver((entries, io) => { if (entries[0].isIntersecting) { demo.classList.add("go"); io.disconnect(); } }, { threshold: .4 }).observe(demo);
+  } else demo.classList.add("go");
+</script>
+</body>
+</html>

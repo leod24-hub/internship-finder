@@ -3,6 +3,12 @@ const LOGO = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2l4 7 4-7"
 
 // Calls the AutoInterns API. Sends people to the login page when their session has ended.
 async function api(method, path, body) {
+  if (window.MOCK_API) {
+    try { return await window.MOCK_API.handle(method, path, body); } catch (e) {
+      if (e.status === 401 && !path.startsWith("/auth")) location.href = "login.html?next=" + encodeURIComponent(location.pathname.split("/").pop() + location.search);
+      throw e;
+    }
+  }
   const opts = { method, headers: {}, credentials: "same-origin" };
   if (body instanceof FormData) opts.body = body;
   else if (body !== undefined) { opts.headers["Content-Type"] = "application/json"; opts.body = JSON.stringify(body); }
@@ -27,9 +33,9 @@ function renderBar(active, mode) {
   const el = document.getElementById("bar");
   if (!el) return Promise.resolve(null);
   const links = mode === "app"
-    ? `<nav aria-label="Main"><a href="app.html" ${active === "app" ? 'aria-current="page"' : ""}>My applications</a><a href="review.html" ${active === "review" ? 'aria-current="page"' : ""}>Ready for your OK</a><a href="onboarding.html" ${active === "profile" ? 'aria-current="page"' : ""}>Fields and profile</a></nav>
+    ? `<nav aria-label="Main"><a href="app.html" ${active === "app" ? 'aria-current="page"' : ""}>My applications</a><a href="browse.html" ${active === "browse" ? 'aria-current="page"' : ""}>Pick internships</a><a href="review.html" ${active === "review" ? 'aria-current="page"' : ""}>Ready for your OK</a><a href="profile.html" ${active === "profile" ? 'aria-current="page"' : ""}>Your profile</a></nav>
        <div class="right"><span class="small muted" id="barUsage"></span><a class="btn sm" href="index.html#pricing">See plans</a><button type="button" class="btn ghost sm" id="logout">Log out</button><span class="avatar" id="barAvatar" title="Your account"></span></div>`
-    : `<nav aria-label="Main"><a href="index.html#how">What we handle</a><a href="index.html#fields">Fields</a><a href="index.html#pricing">Pricing</a><a href="index.html#faq">Questions</a></nav>
+    : `<nav aria-label="Main"><a href="how-it-works.html" ${active === "how" ? 'aria-current="page"' : ""}>How it works</a><a href="index.html#fields">Fields</a><a href="index.html#pricing">Pricing</a><a href="index.html#faq">Questions</a></nav>
        <div class="right"><a class="btn ghost sm" href="login.html">Log in</a><a class="btn sm" href="login.html?mode=signup">Get started</a></div>`;
   el.innerHTML = `<div class="wrap"><a class="wordmark" href="${mode === "app" ? "app.html" : "index.html"}">${LOGO}Lanyard</a>${links}</div>`;
   if (mode !== "app") return Promise.resolve(null);
@@ -42,6 +48,10 @@ function renderBar(active, mode) {
     return me;
   });
 }
+
+// Display names for application systems (stored lowercase, like "workday").
+const PORTAL_NAMES = { workday: "Workday", icims: "iCIMS", greenhouse: "Greenhouse", lever: "Lever", ashby: "Ashby", successfactors: "SuccessFactors", handshake: "Handshake", linkedin: "LinkedIn", indeed: "Indeed", "company site": "the company's site", "test form": "a test form" };
+const portalName = ats => PORTAL_NAMES[ats] || ats || "the employer's form";
 
 function chipButton(cat, pressed) {
   return `<button type="button" class="chip" data-hue="${cat.hue}" data-id="${cat.id}" aria-pressed="${pressed ? "true" : "false"}">${esc(cat.name)}</button>`;

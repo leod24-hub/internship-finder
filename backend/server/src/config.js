@@ -37,6 +37,10 @@ export const config = {
   allowLocalLinks: env.ALLOW_LOCAL_LINKS ? env.ALLOW_LOCAL_LINKS === "1" : env.NODE_ENV !== "production",
   claudeModel: env.CLAUDE_MODEL || "claude-opus-5-5",
   headless: env.WORKER_HEADLESS !== "0",
+  // Local development only: visitors without a session are signed in as this demo student, so there is
+  // no login screen. Set DEV_AUTO_LOGIN=0 to get the login screen back. Always off in production.
+  devAutoLogin: env.NODE_ENV !== "production" && env.DEV_AUTO_LOGIN !== "0",
+  devUserEmail: env.DEV_USER_EMAIL || "demo-jordan@example.edu",
 };
 
 if (!config.appDatabaseUrl) {

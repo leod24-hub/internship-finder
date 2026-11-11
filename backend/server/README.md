@@ -30,6 +30,7 @@ Settings (all optional locally, read from the environment or `.env`):
 | `FREE_MONTHLY_APPLICATIONS` | `3` | Free plan limit |
 | `WORKER_HEADLESS` | `1` | Set `0` to watch the browser while it fills forms |
 | `NODE_ENV` | none | `production` turns off the test job site and localhost links |
+| `DEV_AUTO_LOGIN`, `DEV_USER_EMAIL` | `1`, `demo-jordan@example.edu` | Local only: skips the login screen by signing every visitor in as this demo student. Set `0` to log in normally. Always off in production |
 
 `npm run test:e2e` (with the server and worker running) signs up a test student, fills a test application, approves it and checks that the test job site received it.
 

@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pick internships | Lanyard</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='5' y='6' width='14' height='16' rx='3' fill='%23ffd84d' stroke='%2312152a' stroke-width='1.5'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/base.css">
+<style>
+  main{padding:var(--p-space-7) 0 140px}
+  .top{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--p-space-5);flex-wrap:wrap;margin-bottom:var(--p-space-6)}
+  .top h1{font-size:var(--p-step-3);margin:0 0 6px}
+  .top p{margin:0}
+  .layout{display:grid;grid-template-columns:260px 1fr;gap:var(--p-space-6);align-items:start}
+  .filters{position:sticky;top:88px;display:grid;gap:var(--p-space-5)}
+  .filters h3{font:600 .85rem var(--font-body);text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin:0 0 var(--p-space-2)}
+  .filters .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .toggle{display:flex;gap:10px;align-items:flex-start;font-size:.92rem;cursor:pointer}
+  .toggle input{width:18px;height:18px;margin-top:3px;accent-color:var(--primary);flex:none}
+  .listhead{display:flex;justify-content:space-between;align-items:center;gap:var(--p-space-3);margin-bottom:var(--p-space-3);flex-wrap:wrap}
+  .listhead select{width:auto;padding:8px 12px}
+  .selall{all:unset;cursor:pointer;color:var(--primary);font-weight:600;font-size:.9rem}
+  .selall:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+  .card{display:grid;grid-template-columns:auto 1fr auto;gap:var(--p-space-4);align-items:start;padding:var(--p-space-4) var(--p-space-5);
+    background:var(--surface);border:1.5px solid var(--border);border-left:6px solid var(--hue);border-radius:var(--p-radius-md);margin-bottom:10px;transition:border-color .15s,box-shadow .15s}
+  .card.on{border-color:var(--hue);box-shadow:0 0 0 1px var(--hue)}
+  .card input[type=checkbox]{width:22px;height:22px;margin-top:3px;accent-color:var(--hue);cursor:pointer}
+  .card b{font-family:var(--font-display);font-size:1.1rem;line-height:1.2;display:block}
+  .card .meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .how-note{display:flex;gap:6px;align-items:baseline;font-size:.86rem;margin-top:8px;color:var(--text-muted)}
+  .how-note::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--success);flex:none;transform:translateY(-1px)}
+  .how-note.handoff::before{background:var(--highlight)}
+  .card .side{display:grid;gap:8px;justify-items:end;text-align:right}
+  .card .side .links{display:flex;gap:4px}
+  .empty{padding:var(--p-space-7) var(--p-space-5);text-align:center;color:var(--text-muted);border:2px dashed var(--border);border-radius:var(--p-radius-lg)}
+
+  .tray{position:fixed;left:0;right:0;bottom:0;z-index:30;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(10px);border-top:1.5px solid var(--border-strong);transform:translateY(100%);transition:transform .25s var(--p-ease)}
+  .tray.show{transform:none}
+  .tray .wrap{display:flex;align-items:center;gap:var(--p-space-4);padding:var(--p-space-4) 0;flex-wrap:wrap}
+  .tray .count{font:800 1.3rem/1 var(--font-display)}
+  .tray .note{flex:1;min-width:200px;font-size:.9rem;color:var(--text-muted)}
+  .tray .acts{display:flex;gap:8px}
+  .result{margin-bottom:var(--p-space-5)}
+  .result h3{margin-bottom:6px}
+  .result ul{margin:8px 0 0;padding-left:1.2em;font-size:.92rem}
+  @media(max-width:900px){
+    .layout{grid-template-columns:1fr}
+    .filters{position:static;grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:560px){
+    .filters{grid-template-columns:1fr}
+    .card{grid-template-columns:auto 1fr;padding:var(--p-space-4)}
+    .card .side{grid-column:2;justify-items:start;text-align:left}
+    .tray .acts{width:100%}.tray .acts .btn{flex:1}
+  }
+  @media (prefers-reduced-motion: reduce){.tray{transition:none}}
+</style>
+</head>
+<body>
+<header class="bar" id="bar"></header>
+<main class="wrap">
+  <div class="top">
+    <div>
+      <h1>Pick your internships.</h1>
+      <p class="muted">Check the ones you want. We'll prepare each application and bring it back to you. Nothing is sent until you approve it.</p>
+    </div>
+    <a class="small" href="how-it-works.html">How we apply for you</a>
+  </div>
+
+  <div class="result panel" id="result" hidden role="status"></div>
+
+  <div class="layout">
+    <aside class="filters" aria-label="Filters">
+      <div class="field" style="margin:0"><label class="sr" for="q">Search</label><input id="q" type="search" placeholder="Search role, company or city"></div>
+      <div><h3>Fields</h3><div class="chips" id="fieldChips" role="group" aria-label="Fields"></div></div>
+      <div><h3>Work style</h3><div class="seg" id="modes">
+        <label><input type="checkbox" value="remote"><span>Remote</span></label>
+        <label><input type="checkbox" value="hybrid"><span>Hybrid</span></label>
+        <label><input type="checkbox" value="onsite"><span>On-site</span></label></div></div>
+      <div style="display:grid;gap:10px">
+        <h3>Narrow it down</h3>
+        <label class="toggle"><input type="checkbox" id="paid">Paid only</label>
+        <label class="toggle"><input type="checkbox" id="soon">Due in the next 2 weeks</label>
+        <label class="toggle"><input type="checkbox" id="weFill"><span>Only ones we can fill in fully<br><span class="muted small">Hides sign-in portals you'd finish yourself</span></span></label>
+      </div>
+      <p class="small muted" style="margin:0">Don't see one you want? <a href="app.html#paste">Paste its link</a> on My applications.</p>
+    </aside>
+
+    <section aria-labelledby="lh">
+      <div class="listhead">
+        <h2 class="sr" id="lh">Openings</h2>
+        <span class="muted small" id="shown" aria-live="polite"></span>
+        <div style="display:flex;gap:var(--p-space-4);align-items:center">
+          <button class="selall" id="selAll" type="button">Select all shown</button>
+          <label class="sr" for="sort">Sort</label>
+          <select id="sort"><option value="deadline">Deadline, soonest first</option><option value="company">Company, A to Z</option><option value="role">Role, A to Z</option></select>
+        </div>
+      </div>
+      <div id="list"></div>
+    </section>
+  </div>
+</main>
+
+<div class="tray" id="tray" aria-hidden="true">
+  <div class="wrap">
+    <span class="count" id="trayCount"></span>
+    <span class="note" id="trayNote"></span>
+    <div class="acts">
+      <button class="btn ghost" id="clear" type="button">Clear</button>
+      <button class="btn secondary" id="saveSel" type="button">Save for later</button>
+      <button class="btn" id="prepSel" type="button">Prepare applications</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/mock-api.js"></script>
+<script src="js/common.js"></script>
+<script>
+  const $ = id => document.getElementById(id);
+  const hue = cat => (LAN.byName[cat] || {}).hue || "slate";
+  let matches = [], me = null;
+  const picks = new Set(), fields = new Set();
+
+  renderBar("browse", "app").then(m => {
+    // The questionnaire comes first: matches and applications depend on it.
+    if (m && !m.onboarded) { location.href = "welcome.html"; return; }
+    me = m; paintTray();
+  });
+
+  async function load() {
+    try { matches = await api("GET", "/postings/matches"); }
+    catch (e) { $("list").innerHTML = `<div class="empty">${esc(e.message)}</div>`; return; }
+    for (const id of [...picks]) if (!matches.some(m => m.id === id)) picks.delete(id);
+    const cats = LAN.categories.filter(c => matches.some(m => m.category === c.name));
+    $("fieldChips").innerHTML = cats.length ? cats.map(c => chipButton(c, fields.has(c.name)).replace("class=\"chip\"", "class=\"chip sub\"").replace(`data-id="${c.id}"`, `data-name="${esc(c.name)}"`)).join("") : '<span class="muted small">None yet</span>';
+    paint();
+  }
+
+  function visible() {
+    const q = $("q").value.trim().toLowerCase();
+    const modes = [...document.querySelectorAll("#modes input:checked")].map(i => i.value);
+    let list = matches.filter(m =>
+      (!q || [m.role, m.company, m.location, m.category].join(" ").toLowerCase().includes(q))
+      && (!fields.size || fields.has(m.category))
+      && (!modes.length || modes.includes(m.mode))
+      && (!$("paid").checked || m.paid === "yes")
+      && (!$("soon").checked || (m.deadline_in != null && m.deadline_in <= 14))
+      && (!$("weFill").checked || !m.hands_off));
+    const by = $("sort").value;
+    const key = { deadline: m => m.deadline_in ?? 9999, company: m => m.company.toLowerCase(), role: m => m.role.toLowerCase() }[by];
+    return list.sort((a, b) => (key(a) < key(b) ? -1 : key(a) > key(b) ? 1 : 0));
+  }
+
+  function card(m) {
+    const on = picks.has(m.id);
+    const portal = m.hands_off
+      ? `<div class="how-note handoff">Sign-in portal (${esc(portalName(m.ats))}). We prepare your answers and cover letter; you sign in and finish it.</div>`
+      : `<div class="how-note">We fill this one in on ${esc(portalName(m.ats))}, then wait for your OK.</div>`;
+    return `<article class="card ${on ? "on" : ""}" data-hue="${hue(m.category)}">
+      <input type="checkbox" id="p-${esc(m.id)}" data-pick="${esc(m.id)}" ${on ? "checked" : ""} aria-describedby="d-${esc(m.id)}">
+      <div><label for="p-${esc(m.id)}" style="cursor:pointer"><b>${esc(m.role)}</b></label>
+        <div class="muted small" id="d-${esc(m.id)}">${esc(m.company)}${m.location ? " · " + esc(m.location) : ""}</div>
+        <div class="meta">${m.category ? `<span class="tag">${esc(m.category)}</span>` : ""}<span class="tag">${m.opportunity_type === "co_op" ? "Co-op" : "Internship"}</span><span class="tag">${m.paid === "no" ? "Unpaid" : m.paid === "yes" ? "Paid" : "Pay not listed"}</span>${m.mode ? `<span class="tag">${esc(m.mode[0].toUpperCase() + m.mode.slice(1))}</span>` : ""}</div>
+        ${portal}</div>
+      <div class="side">${dueLabel(m.deadline_in) || '<span class="tag">No deadline listed</span>'}
+        <div class="links">${m.link ? `<a class="btn sm ghost" href="${esc(m.link)}" target="_blank" rel="noopener">View posting</a>` : ""}<button class="btn sm ghost" type="button" data-skip="${esc(m.id)}">Not interested</button></div></div>
+    </article>`;
+  }
+
+  function paint() {
+    const list = visible();
+    $("shown").textContent = matches.length ? `Showing ${list.length} of ${matches.length} openings` : "";
+    $("selAll").hidden = !list.length;
+    $("selAll").textContent = list.length && list.every(m => picks.has(m.id)) ? "Unselect all shown" : "Select all shown";
+    $("list").innerHTML = list.length ? list.map(card).join("")
+      : `<div class="empty">${matches.length ? "Nothing matches these filters. Try removing one." : "No new openings in your fields right now. We add openings as we find them, and you can paste a link to any posting on My applications."}</div>`;
+    paintTray();
+  }
+
+  function paintTray() {
+    const n = picks.size;
+    $("tray").classList.toggle("show", n > 0);
+    $("tray").setAttribute("aria-hidden", n ? "false" : "true");
+    $("tray").inert = !n;
+    if (!n) return;
+    $("trayCount").textContent = `${n} picked`;
+    const sel = matches.filter(m => picks.has(m.id));
+    const handoff = sel.filter(m => m.hands_off).length;
+    const left = me && me.usage.limit != null ? Math.max(0, me.usage.limit - me.usage.used) : null;
+    const parts = [];
+    if (left != null && n > left) parts.push(`Your plan has ${left} ${left === 1 ? "application" : "applications"} left this month. We'll prepare the first ${left} and save the rest.`);
+    if (handoff) parts.push(`${handoff} ${handoff === 1 ? "is a sign-in portal" : "are sign-in portals"} you'll finish yourself.`);
+    $("trayNote").textContent = parts.join(" ") || "We'll fill these in. Each one shows up under \"Needs you\" when it's ready for your OK.";
+    $("prepSel").textContent = `Prepare ${n} ${n === 1 ? "application" : "applications"}`;
+  }
+
+  // Adds each picked posting to the student's list, and queues filling for it when `prepare` is set.
+  async function run(prepare) {
+    const ids = [...picks];
+    const buttons = [$("prepSel"), $("saveSel"), $("clear")];
+    buttons.forEach(b => (b.disabled = true));
+    const started = [], saved = [], failed = [];
+    let limitHit = false, blocker = "";
+    for (const id of ids) {
+      const m = matches.find(x => x.id === id);
+      const name = m ? `${m.role} at ${m.company}` : id;
+      $("trayNote").textContent = `${prepare ? "Starting" : "Saving"} ${name}...`;
+      try {
+        const app = await api("POST", "/applications", { posting_id: id });
+        if (prepare && !limitHit && !blocker) {
+          try { await api("POST", `/applications/${app.id}/prepare`); started.push(name); }
+          catch (e) {
+            // Out of free applications, or no resume yet: keep the rest saved instead of repeating the error.
+            if (e.status === 402) limitHit = true;
+            else if (/resume/i.test(e.message)) blocker = e.message;
+            else if (e.status !== 409) { failed.push(`${name}: ${e.message}`); continue; }
+            saved.push(name);
+          }
+        } else saved.push(name);
+      } catch (e) { failed.push(`${name}: ${e.message}`); }
+    }
+    picks.clear();
+    buttons.forEach(b => (b.disabled = false));
+    const r = $("result");
+    r.hidden = false;
+    r.innerHTML = `<h3>${started.length ? `We're on ${started.length} ${started.length === 1 ? "application" : "applications"}.` : saved.length ? "Saved to your list." : "That didn't work."}</h3>
+      <p class="small muted" style="margin:0">${started.length ? "Each one shows up under \"Needs you\" on My applications when it's ready for your OK." : ""}
+      ${blocker ? `${esc(blocker)} <a href="onboarding.html">Add it here</a>, then choose "Prepare application" on each one. ` : ""}${limitHit ? "You've reached this month's limit on your plan, so the rest are saved for later. " : ""}${saved.length ? `${saved.length} saved to your list.` : ""}</p>
+      ${failed.length ? `<ul>${failed.map(f => `<li>${esc(f)}</li>`).join("")}</ul>` : ""}
+      <p style="margin:var(--p-space-3) 0 0"><a class="btn sm" href="app.html">Go to My applications</a></p>`;
+    r.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "nearest" });
+    renderBar("browse", "app").then(m => { me = m; });
+    await load();
+  }
+
+  $("list").addEventListener("change", e => {
+    const id = e.target.dataset.pick; if (!id) return;
+    e.target.checked ? picks.add(id) : picks.delete(id);
+    e.target.closest(".card").classList.toggle("on", e.target.checked);
+    $("selAll").textContent = visible().every(m => picks.has(m.id)) ? "Unselect all shown" : "Select all shown";
+    paintTray();
+  });
+  $("list").addEventListener("click", async e => {
+    const b = e.target.closest("[data-skip]"); if (!b) return;
+    b.disabled = true;
+    try {
+      const a = await api("POST", "/applications", { posting_id: b.dataset.skip });
+      await api("PATCH", `/applications/${a.id}`, { status: "skipped" });
+      picks.delete(b.dataset.skip);
+      await load();
+    } catch (err) { b.disabled = false; alert(err.message); }
+  });
+  $("selAll").addEventListener("click", () => {
+    const list = visible(), all = list.every(m => picks.has(m.id));
+    list.forEach(m => (all ? picks.delete(m.id) : picks.add(m.id)));
+    paint();
+  });
+  $("fieldChips").addEventListener("click", e => {
+    const b = e.target.closest("[data-name]"); if (!b) return;
+    const n = b.dataset.name; fields.has(n) ? fields.delete(n) : fields.add(n);
+    b.setAttribute("aria-pressed", fields.has(n)); paint();
+  });
+  ["q", "sort", "paid", "soon", "weFill"].forEach(id => $(id).addEventListener(id === "q" ? "input" : "change", paint));
+  $("modes").addEventListener("change", paint);
+  $("clear").addEventListener("click", () => { picks.clear(); paint(); });
+  $("prepSel").addEventListener("click", () => run(true));
+  $("saveSel").addEventListener("click", () => run(false));
+
+  load();
+</script>
+</body>
+</html>

@@ -71,6 +71,8 @@ export async function loadProfile(client, userId) {
     where: (p.preferred_locations || []).join(", "),
     term: t.term || "Summer 2027",
     pay: t.pay || "any",
+    answers: p.positioning?.answers || {},
+    stories: p.positioning?.stories || {},
     fieldDetails: p.category_data || {},
     resumeName: p.resume_filename || "",
     hasResumeText: Boolean(p.resume_text),
@@ -82,6 +84,19 @@ export async function loadProfile(client, userId) {
 }
 
 const clean = (v, max = 300) => (v == null ? null : String(v).trim().slice(0, max) || null);
+
+// Questionnaire keys and their length limits. Answers are screening questions the worker fills
+// directly; stories are the student's own words that Claude drafts open-ended answers from.
+const ANSWER_KEYS = {
+  over18: 10, citizenship: 80, clearance: 120, startDate: 40, endDate: 40, hoursPerWeek: 40, relocate: 40,
+  driversLicense: 10, backgroundCheck: 10, languages: 300, previousEmployers: 500, payExpectation: 80, hearAbout: 80,
+};
+const STORY_KEYS = {
+  aboutMe: 1500, whyField: 1500, proudOf: 1500, challenge: 1500, teamwork: 1500, leadership: 1500,
+  strengths: 800, goals: 1000, avoid: 800,
+};
+const pick = (obj, spec) => Object.fromEntries(Object.entries(spec)
+  .map(([k, max]) => [k, clean(obj?.[k], max)]).filter(([, v]) => v));
 
 // Validates a profile update from the onboarding page. Returns { values } or { error }.
 export function readProfileInput(body) {
@@ -113,6 +128,7 @@ export function readProfileInput(body) {
       preferred_locations: list(b.where),
       targets: JSON.stringify({ types: list(b.types), term: clean(b.term, 40) || "Summer 2027", pay: clean(b.pay, 20) || "any" }),
       category_data: JSON.stringify(b.fieldDetails && typeof b.fieldDetails === "object" ? b.fieldDetails : {}),
+      positioning: JSON.stringify({ answers: pick(b.answers, ANSWER_KEYS), stories: pick(b.stories, STORY_KEYS) }),
     },
   };
 }
@@ -128,9 +144,10 @@ export async function saveProfile(client, userId, v) {
         school = $7, major = $8, minor = $9, degree = $10, class_year = $11, grad_date = $12, gpa = $13,
         work_auth = $14, needs_sponsorship = $15, linkedin = $16, website = $17, eeo_opt_in = $18,
         preferred_modes = $19, preferred_locations = $20, targets = $21::jsonb, category_data = $22::jsonb,
+        positioning = positioning || $23::jsonb,
         updated_at = now()
       where user_id = $1`,
     [userId, v.legal_name, v.preferred_name, v.phone, config.encryptionKey, v.address, v.school, v.major, v.minor, v.degree,
       v.class_year, v.grad_date, v.gpa, v.work_auth, v.needs_sponsorship, v.linkedin, v.website, v.eeo_opt_in,
-      v.preferred_modes, v.preferred_locations, v.targets, v.category_data]);
+      v.preferred_modes, v.preferred_locations, v.targets, v.category_data, v.positioning]);
 }

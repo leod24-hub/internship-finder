@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your profile | Lanyard</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='5' y='6' width='14' height='16' rx='3' fill='%23ffd84d' stroke='%2312152a' stroke-width='1.5'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/base.css">
+<style>
+  main{padding:var(--p-space-7) 0 var(--p-space-9)}
+  .top{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--p-space-5);flex-wrap:wrap;margin-bottom:var(--p-space-6)}
+  .top h1{font-size:var(--p-step-3);margin:0 0 6px}
+  .top p{margin:0}
+  .ready{min-width:240px}
+  .ready b{font:800 2rem/1 var(--font-display)}
+  .meter{height:8px;border-radius:4px;background:var(--surface-sunk);overflow:hidden;margin:8px 0}
+  .meter i{display:block;height:100%;background:var(--success);transition:width .4s var(--p-ease)}
+  .tabs{display:flex;gap:4px;border-bottom:1.5px solid var(--border);margin-bottom:var(--p-space-6)}
+  .tabs button{all:unset;cursor:pointer;padding:10px 14px;font-weight:600;color:var(--text-muted);border-bottom:3px solid transparent;margin-bottom:-1.5px}
+  .tabs button[aria-selected=true]{color:var(--text);border-color:var(--text)}
+  .tabs button:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--p-space-5)}
+  .sec{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--p-radius-md);padding:var(--p-space-5)}
+  .sec.wide{grid-column:1/-1}
+  .sec header{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:var(--p-space-3)}
+  .sec h2{font-size:1.15rem;margin:0}
+  dl{display:grid;grid-template-columns:minmax(120px,38%) 1fr;gap:8px 16px;margin:0;font-size:.94rem}
+  dt{color:var(--text-muted)}
+  dd{margin:0;overflow-wrap:anywhere}
+  .missing{color:var(--text-faint);font-style:italic}
+  .story{border-top:1.5px solid var(--border);padding:var(--p-space-3) 0}
+  .story:first-of-type{border-top:0}
+  .story h3{font:600 .92rem var(--font-body);color:var(--text-muted);margin-bottom:4px}
+  .story p{margin:0;white-space:pre-wrap}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .db-intro{max-width:720px}
+  .tbl-wrap{overflow-x:auto;border:1.5px solid var(--border);border-radius:var(--p-radius-md);margin-bottom:var(--p-space-6);background:var(--surface)}
+  .tbl-wrap h3{font:700 .95rem ui-monospace,SFMono-Regular,Menlo,monospace;margin:0;padding:12px 14px;border-bottom:1.5px solid var(--border);background:var(--surface-sunk);display:flex;justify-content:space-between;gap:10px}
+  .tbl-wrap h3 span{font:400 .82rem var(--font-body);color:var(--text-muted)}
+  table{border-collapse:collapse;width:100%;font:400 .84rem/1.45 ui-monospace,SFMono-Regular,Menlo,monospace}
+  th,td{text-align:left;padding:8px 14px;border-bottom:1px solid var(--border);vertical-align:top}
+  th{color:var(--text-muted);font-weight:600;white-space:nowrap;width:1%}
+  td{overflow-wrap:anywhere}
+  tr:last-child th,tr:last-child td{border-bottom:0}
+  td .null{color:var(--text-faint)}
+  .rows th{width:auto}
+  .lock{font-size:.75rem;padding:2px 7px;border-radius:var(--badge-radius);background:color-mix(in srgb,var(--success) 14%,var(--surface));color:var(--success);font-family:var(--font-body);margin-left:6px}
+  @media(max-width:820px){.grid{grid-template-columns:1fr}dl{grid-template-columns:1fr;gap:2px}dd{margin-bottom:8px}}
+</style>
+</head>
+<body>
+<header class="bar" id="bar"></header>
+<main class="wrap">
+  <div class="top">
+    <div>
+      <h1 id="title">What we know about you.</h1>
+      <p class="muted">This is everything we use to fill out your applications. If it's not here or in your resume, we don't use it.</p>
+    </div>
+    <div class="ready" aria-live="polite"><b id="pct">0%</b> <span class="muted">ready to apply</span>
+      <div class="meter"><i id="bar-fill" style="width:0"></i></div><span class="small muted" id="readyNote"></span></div>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" id="t-view" aria-selected="true" aria-controls="p-view">Your answers</button>
+    <button role="tab" id="t-db" aria-selected="false" aria-controls="p-db">How it's stored</button>
+  </div>
+
+  <section id="p-view" role="tabpanel" aria-labelledby="t-view"><div class="grid" id="sections"></div></section>
+
+  <section id="p-db" role="tabpanel" aria-labelledby="t-db" hidden>
+    <div class="db-intro">
+      <p>Your information is stored in a database with one table per kind of thing. Each customer can only ever read and change their own rows. This is enforced by the database itself (row-level security), not just by the website.</p>
+      <p class="muted small" id="dbNote"></p>
+    </div>
+    <div id="tables"></div>
+  </section>
+</main>
+
+<script src="js/data.js"></script>
+<script src="js/mock-api.js"></script>
+<script src="js/common.js"></script>
+<script>
+  const $ = id => document.getElementById(id);
+  const blank = '<span class="missing">Not answered</span>';
+  const show = v => (v == null || String(v).trim() === "" ? blank : esc(v));
+  const yesno = v => (v ? esc(v) : blank);
+  const CLASS = { freshman: "Freshman", sophomore: "Sophomore", junior: "Junior", senior: "Senior", grad: "Graduate" };
+  const STORY_LABELS = { aboutMe: "Tell us about yourself", whyField: "Why these fields?", proudOf: "Something you're proud of", challenge: "A time something went wrong", teamwork: "A time you worked with others", leadership: "A time you took the lead", strengths: "Your strengths", goals: "What you want from an internship", avoid: "Never mention" };
+
+  renderBar("profile", "app");
+
+  function section(title, step, body, wide) {
+    return `<div class="sec ${wide ? "wide" : ""}"><header><h2>${title}</h2><a class="small" href="onboarding.html?step=${step}">Edit</a></header>${body}</div>`;
+  }
+  const dl = rows => `<dl>${rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${v}</dd>`).join("")}</dl>`;
+
+  function render(p) {
+    const a = p.answers || {}, s = p.stories || {}, addr = p.address || {};
+    $("title").textContent = p.preferredName || p.name ? `What we know about you, ${(p.preferredName || p.name).split(" ")[0]}.` : "What we know about you.";
+    const checks = [
+      [p.name && p.school && p.major && p.grad, "school basics"], [p.phone, "phone"], [(p.fields || []).length, "fields"],
+      [p.auth, "work authorization"], [a.startDate, "start date"], [a.over18, "18 or older"],
+      [s.aboutMe, "about you"], [s.whyField, "why these fields"], [s.proudOf, "something you're proud of"], [p.resumeName, "resume"],
+    ];
+    const done = checks.filter(([v]) => v).length, pct = Math.round(done / checks.length * 100);
+    $("pct").textContent = `${pct}%`; $("bar-fill").style.width = `${pct}%`;
+    const todo = checks.filter(([v]) => !v).map(([, l]) => l);
+    $("readyNote").textContent = todo.length ? `Still to add: ${todo.slice(0, 3).join(", ")}${todo.length > 3 ? ` and ${todo.length - 3} more` : ""}.` : "Everything we need is here.";
+
+    const fields = (p.fields || []).map(f => { const c = LAN.byName[f.name] || {}; return `<span class="chip sub" data-hue="${c.hue || "slate"}" aria-pressed="true" style="cursor:default">${esc(f.name)}${f.top ? " (top)" : ""}</span>`; }).join("");
+    $("sections").innerHTML = [
+      section("About you", 0, dl([
+        ["Legal name", show(p.name)], ["Goes by", show(p.preferredName)], ["Email", show(p.email)], ["Phone", show(p.phone)],
+        ["Address", show([addr.street, addr.city, addr.state, addr.zip].filter(Boolean).join(", "))],
+        ["School", show(p.school)], ["Degree", show(p.degree)], ["Major", show(p.major)], ["Minor", show(p.minor)],
+        ["Class year", show(CLASS[p.classYear])], ["Graduation", show(p.grad)], ["GPA", show(p.gpa)],
+      ])),
+      section("Eligibility and availability", 3, dl([
+        ["Work authorization", show(p.auth)], ["Citizenship", show(a.citizenship)], ["Security clearance", show(a.clearance)],
+        ["18 or older", yesno(a.over18)], ["Background check", yesno(a.backgroundCheck)], ["Driver's license", yesno(a.driversLicense)],
+        ["Start date", show(a.startDate)], ["Available until", show(a.endDate)], ["Hours a week (school year)", show(a.hoursPerWeek)],
+        ["Willing to relocate", yesno(a.relocate)], ["Pay expectations", show(a.payExpectation)], ["How you heard", show(a.hearAbout)],
+        ["Languages", show(a.languages)], ["Past employers", show(a.previousEmployers)],
+      ])),
+      section("What you're looking for", 1, `${fields ? `<div class="chips" style="margin-bottom:var(--p-space-4)">${fields}</div>` : `<p>${blank}</p>`}` + dl([
+        ["Types", show((p.types || []).join(", "))], ["Work style", show((p.modes || []).join(", "))], ["Places", show(p.where)],
+        ["When", show(p.term)], ["Pay", show({ any: "Show everything", paid: "Paid only", "paid-stipend": "Paid or stipend" }[p.pay])],
+      ])),
+      section("Resume and links", 5, dl([
+        ["Resume", p.resumeName ? esc(p.resumeName) : blank], ["LinkedIn", show(p.li)], ["Website", show(p.site)],
+        ["Demographic questions", p.eeoDecline ? "Decline to answer (default)" : "You answer them yourself"],
+        ...Object.entries(p.fieldDetails || {}).filter(([, v]) => v).map(([k, v]) => [k, esc(v)]),
+      ])),
+      section("In your own words", 4, Object.keys(STORY_LABELS).map(k => `<div class="story"><h3>${STORY_LABELS[k]}</h3><p>${s[k] ? esc(s[k]) : blank}</p></div>`).join(""), true),
+    ].join("");
+  }
+
+  // ---- "How it's stored": the Supabase tables, with this customer's rows ----
+  const cell = v => (v == null || v === "" ? '<span class="null">null</span>' : esc(typeof v === "object" ? JSON.stringify(v, null, 1) : String(v)));
+  function rowTable(name, note, row, lock) {
+    return `<div class="tbl-wrap"><h3>${name}<span>${note}</span></h3><table>${Object.entries(row).map(([k, v]) => `<tr><th>${esc(k)}</th><td>${(lock || []).includes(k) && v ? `${cell(v)} <em class="lock">encrypted</em>` : cell(v)}</td></tr>`).join("")}</table></div>`;
+  }
+  function listTable(name, note, rows, cols) {
+    return `<div class="tbl-wrap"><h3>${name}<span>${note}</span></h3><table class="rows"><tr>${cols.map(c => `<th>${c}</th>`).join("")}</tr>${rows.length ? rows.map(r => `<tr>${cols.map(c => `<td>${cell(r[c])}</td>`).join("")}</tr>`).join("") : `<tr><td colspan="${cols.length}"><span class="null">No rows yet</span></td></tr>`}</table></div>`;
+  }
+  function renderDb(p, db) {
+    const userId = db?.session || "(your user id)";
+    const row = db?.profiles.find(r => r.user_id === userId) || {
+      user_id: userId, legal_name: p.name, preferred_name: p.preferredName, phone: p.phone, address: p.address, school: p.school, degree: p.degree,
+      major: p.major, minor: p.minor, class_year: p.classYear, grad_date: p.grad, gpa: p.gpa, work_auth: p.auth, needs_sponsorship: p.needsSponsorship,
+      linkedin: p.li, website: p.site, eeo_opt_in: !p.eeoDecline, preferred_modes: p.modes, preferred_locations: p.where,
+      targets: { types: p.types, term: p.term, pay: p.pay }, category_data: p.fieldDetails, positioning: { answers: p.answers, stories: p.stories }, resume_filename: p.resumeName,
+    };
+    const ints = db ? db.user_interests.filter(r => r.user_id === userId) : [...(p.fields || []).map(f => ({ category: f.name, parent: null, priority: f.top ? 1 : 2 })), ...(p.subfields || []).map(f => ({ category: f.name, parent: f.parent, priority: 2 }))];
+    const apps = db ? db.applications.filter(r => r.user_id === userId) : [];
+    const aps = db ? db.approvals.filter(r => r.user_id === userId).map(r => ({ application_id: r.application_id, decision: r.decision, requested_at: r.requested_at, decided_at: r.decided_at, answers: `${r.answers.length} answers`, cover_letter: `${r.cover_letter.length} characters` })) : [];
+    const user = db?.users.find(u => u.id === userId) || { id: userId, email: p.email, plan: p.plan };
+    $("tables").innerHTML = [
+      rowTable("users", "Your account. In Supabase, sign-in itself is handled by Supabase Auth.", { id: user.id, email: user.email, plan: user.plan, created_at: user.created_at }),
+      rowTable("profiles", "One row per customer: the questionnaire. positioning holds the application questions and your own words.", row, ["phone", "address"]),
+      listTable("user_interests", "One row per field you picked.", ints, ["category", "parent", "priority"]),
+      db ? listTable("applications", "One row per internship on your list.", apps, ["company", "role", "status", "fill_state", "portal", "updated_at"]) : "",
+      db ? listTable("approvals", "What we prepared for each application, and your decision.", aps, ["application_id", "decision", "answers", "cover_letter", "requested_at", "decided_at"]) : "",
+      `<div class="tbl-wrap"><h3>storage: resumes<span>Files, not a table. Supabase Storage, private to you.</span></h3><table><tr><th>path</th><td>${cell(row.resume_url || (row.resume_filename ? `resumes/${userId}/resume.pdf` : null))}</td></tr><tr><th>file name</th><td>${cell(row.resume_filename)}</td></tr></table></div>`,
+    ].join("");
+    $("dbNote").textContent = db
+      ? "Mock mode: these are the actual rows saved in this browser, in the layout the Supabase tables will use."
+      : "These are your rows, shown in the layout the database uses.";
+  }
+
+  document.querySelector(".tabs").addEventListener("click", e => {
+    const b = e.target.closest("[role=tab]"); if (!b) return;
+    document.querySelectorAll("[role=tab]").forEach(t => t.setAttribute("aria-selected", t === b));
+    $("p-view").hidden = b.id !== "t-view"; $("p-db").hidden = b.id !== "t-db";
+  });
+
+  (async () => {
+    const p = await api("GET", "/profile");
+    render(p);
+    renderDb(p, window.MOCK_API ? await api("GET", "/mock/db") : null);
+  })().catch(() => {});
+</script>
+</body>
+</html>
